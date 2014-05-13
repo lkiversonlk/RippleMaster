@@ -30,7 +30,13 @@ RippleMaster.prototype = {
     AccountCurrencies : function(address, callback){
         var self = this;
         if(!self.ids[address]){
-            callback(Consts.RESULT.FAIL_ACCOUNTNOTLOADED);
+            self.AccountInfo(address, function(result, id){
+                if(result === Consts.RESULT.SUCCESS){
+                    callback(result, [id.XRP()].concat(id.Balances()));
+                }else{
+                    callback(Consts.RESULT.FAIL_ACCOUNTNOTLOADED);
+                }
+            })
         }else{
             callback(Consts.RESULT.SUCCESS, [self.ids[address].XRP()].concat(self.ids[address].Balances()));
         }

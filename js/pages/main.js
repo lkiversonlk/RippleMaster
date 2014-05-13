@@ -84,11 +84,20 @@ AccountPanelsControl.prototype = {
             return;
         }
 
-        self.accountWidgets[AccountPanelsControl.StructureKeys.TxHistory] = RippleBox.TxBox(
+        var txBox = RippleBox.TxBox(
             self.arbitragePanel.rightPanel,
             self.rippleMaster,
             self.account
         );
+        self.accountWidgets[AccountPanelsControl.StructureKeys.TxHistory] = txBox;
+
+        var txBind = function(){
+            txBox.refresh();
+        };
+        $(self.arbitragePanel).bind(AccountEvent.Loading, txBox.refresh.bind(txBox));
+        txBox.closeHooks.push(function () {
+            $(self.arbitragePanel).unbind(AccountEvent.Loading, txBox.refresh.bind(txBox));
+        })
         self.accountWidgets[AccountPanelsControl.StructureKeys.TxHistory].Init();
     },
 
@@ -152,7 +161,7 @@ MainPage.prototype = {
             var panelKey = $(self.modulePanelModulePicker).val();
             if(address && panelKey){
                 if(self.accountPanelControls[address]){
-                    self.accountPanelControls[address].initialComponents([panelKey]);
+                    self.addModuleToAddress(address, panelKey);
                 }
             }
             $("#modulePanel").modal('hide');
@@ -222,7 +231,7 @@ MainPage.prototype = {
         var self = this;
         var found = false;
         $.each(self.settings, function(i){
-            if(self.settings[i].address === rippleAddress){
+            if(self.settings[i].address === address){
                 self.settings[i].configure.push(moduleKey);
                 return false;
             };

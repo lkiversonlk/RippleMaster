@@ -9,6 +9,7 @@ function RippleBox(root, rippleMaster, address, options){
     this.SetAddress(address);
     this.initialLayout(options);
     this.startHooks = [];
+    this.closeHooks = [];
 };
 
 RippleBox.Keys = {
@@ -19,7 +20,8 @@ RippleBox.Keys = {
 
 RippleBox.ButtonTypes = {
     refresh : 'refresh',
-    ok : 'ok'
+    ok : 'ok',
+    close : 'close'
 };
 
 RippleBox.prototype = {
@@ -32,6 +34,17 @@ RippleBox.prototype = {
             }
         })
     },
+    Close : function(){
+        var self = this;
+        $.each(self.closeHooks, function(i){
+            var hook = self.closeHooks[i];
+            if(typeof(hook) === 'function'){
+                hook(self);
+            }
+        })
+        $(self.root).remove();
+    },
+
     initialLayout : function(options){
         var self = this;
         var title = $("<div />", {
@@ -62,6 +75,11 @@ RippleBox.prototype = {
                         case RippleBox.ButtonTypes.ok:
                             $(button).append($("<span />", {
                                 class : "glyphicon glyphicon-ok"
+                            }));
+                            break;
+                        case RippleBox.ButtonTypes.close:
+                            $(button).append($("<span />",{
+                                class : "glyphicon glyphicon-remove"
                             }));
                             break;
                     }
@@ -103,7 +121,7 @@ RippleBox.prototype = {
         self.content = content;
         $(fold).click(function(){
             $(content).toggle();
-        })
+        });
     },
     SetAddress : function(address){
         this.address = address;
@@ -177,7 +195,6 @@ RippleBox.TxBox = function(root, rippleMaster, address){
     option[RippleBox.Keys.title] = "Transactions History";
     option[RippleBox.Keys.progressBar] = true;
     option[RippleBox.Keys.buttons] = [{
-        type : RippleBox.ButtonTypes.refresh
     }];
     var ret = new RippleBox(root, rippleMaster, address, option);
     var tableHtml = '<table class="footable table" data-page-size="20"><thead><tr><th>Date</th><th>Type</th><th>Content</th></tr></thead><tbody></tbody><tfoot><tr style="text-align: center"><td colspan="5"><ul class="pagination"></div> </td> </tr></tfoot></table>';
@@ -205,7 +222,6 @@ RippleBox.TxBox = function(root, rippleMaster, address){
             }
         });
     };
-    $(ret.buttons[0]).click(ret.refresh);
     return ret;
 };
 
@@ -215,7 +231,7 @@ RippleBox.SellBuyBox = function(root, rippleMaster, address){
     option[RippleBox.Keys.progressBar] = true;
     option[RippleBox.Keys.buttons] = [
         {type : RippleBox.ButtonTypes.ok},
-        {type : RippleBox.ButtonTypes.refresh}
+        {type : RippleBox.ButtonTypes.close}
     ];
     var ret = new RippleBox(root, rippleMaster, address, option);
     ret.sellBuyPanel = new SellBuyPanel(ret.content);
@@ -280,7 +296,7 @@ RippleBox.SellBuyBox = function(root, rippleMaster, address){
         });
     }
     $(ret.buttons[0]).click(ret.ok);
-    $(ret.buttons[1]).click(ret.refresh);
+    $(ret.buttons[1]).click(ret.Close.bind(ret));
     ret.startHooks.push(ret.refresh);
     return ret;
 }
