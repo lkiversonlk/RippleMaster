@@ -91,12 +91,9 @@ AccountPanelsControl.prototype = {
         );
         self.accountWidgets[AccountPanelsControl.StructureKeys.TxHistory] = txBox;
 
-        var txBind = function(){
-            txBox.refresh();
-        };
-        $(self.arbitragePanel).bind(AccountEvent.Loading, txBox.refresh.bind(txBox));
+        $(self.arbitragePanel).bind(AccountEvent.ldTxes, txBox.refresh.bind(txBox));
         txBox.closeHooks.push(function () {
-            $(self.arbitragePanel).unbind(AccountEvent.Loading, txBox.refresh.bind(txBox));
+            $(self.arbitragePanel).unbind(AccountEvent.ldTxes, txBox.refresh.bind(txBox));
         })
         self.accountWidgets[AccountPanelsControl.StructureKeys.TxHistory].Init();
     },
@@ -110,6 +107,10 @@ AccountPanelsControl.prototype = {
             self.account
         );
         self.accountWidgets['common'].push(panel);
+        $(self.arbitragePanel).bind(AccountEvent.ldAcc, panel.refresh.bind(panel));
+        panel.closeHooks.push(function(){
+            $(self.arbitragePanel).unbind(AccountEvent.ldAcc, panel.refresh.bind(panel));
+        })
         panel.Init();
     }
 }

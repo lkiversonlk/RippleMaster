@@ -1,5 +1,6 @@
 var AccountEvent = {
-    Loading : "loading"
+    ldTxes : "ldTxes",
+    ldAcc : "ldAcc"
 };
 
 function AccountPanel(root, address){
@@ -21,15 +22,7 @@ function AccountPanel(root, address){
         class : "glyphicon glyphicon-th-list"
     }))
 
-    var close = $("<a />", {
-        class : "right"
-    });
-    close.append($("<span />",{
-        class : "glyphicon glyphicon-remove"
-    }));
-
     $(caption).append(fold);
-    $(caption).append(close);
 
     $(ele).append(caption);
     $(ele).append($("<div />", {
@@ -52,13 +45,11 @@ function AccountPanel(root, address){
     $(fold).click(function(){
         $(statgroup).toggle();
     });
-    $(close).click(function(){
-        $(self.root).remove();
-    })
 };
 
 function ArbitragePanel(root, address){
     var self = this;
+    self.address = address;
     var ele = $("<div />", {
         class : "account-panel"
     });
@@ -73,13 +64,6 @@ function ArbitragePanel(root, address){
         class : "glyphicon glyphicon-th-list"
     }))
 
-    var close = $("<a />", {
-        class : "right"
-    });
-    close.append($("<span />",{
-        class : "glyphicon glyphicon-remove"
-    }));
-
     var load = $("<a />", {
         class : "right"
     });
@@ -87,7 +71,6 @@ function ArbitragePanel(root, address){
         class : "glyphicon glyphicon-search"
     }));
     $(caption).append(fold);
-    $(caption).append(close);
     $(caption).append(load);
     $(ele).append(caption);
     $(ele).append($("<div />", {
@@ -111,9 +94,7 @@ function ArbitragePanel(root, address){
         $(statgroup).toggle();
     });
     $(load).click(function(){
-        $(self).trigger(AccountEvent.Loading);
+        $(self).trigger(AccountEvent.ldAcc)
+        setTimeout(function(){$(self).trigger(AccountEvent.ldTxes);}, 2000);
     });
-    $(close).click(function(){
-        $(self.root).remove();
-    })
 }

@@ -227,11 +227,12 @@ RippleBox.TxBox = function(root, rippleMaster, address){
 
 RippleBox.SellBuyBox = function(root, rippleMaster, address){
     var option = {};
-    option[RippleBox.Keys.title] = "Transactions History";
+    option[RippleBox.Keys.title] = "Sell & Buy Stats";
     option[RippleBox.Keys.progressBar] = true;
     option[RippleBox.Keys.buttons] = [
         {type : RippleBox.ButtonTypes.ok},
-        {type : RippleBox.ButtonTypes.close}
+        {type : RippleBox.ButtonTypes.close},
+        {type : RippleBox.ButtonTypes.refresh}
     ];
     var ret = new RippleBox(root, rippleMaster, address, option);
     ret.sellBuyPanel = new SellBuyPanel(ret.content);
@@ -297,6 +298,7 @@ RippleBox.SellBuyBox = function(root, rippleMaster, address){
     }
     $(ret.buttons[0]).click(ret.ok);
     $(ret.buttons[1]).click(ret.Close.bind(ret));
+    $(ret.buttons[2]).click(ret.refresh.bind(ret));
     ret.startHooks.push(ret.refresh);
     return ret;
 }
