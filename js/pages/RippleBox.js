@@ -306,7 +306,7 @@ RippleBox.SellBuyBox = function(root, rippleMaster, address){
 
 RippleBox.MoneyFlowBox = function(root, rippleMaster, address){
     var option = {};
-    option[RippleBox.Keys.title] = "Money Flow";
+    option[RippleBox.Keys.title] = "Money Flow Stats";
     option[RippleBox.Keys.progressBar] = true;
     option[RippleBox.Keys.buttons] = [
         {type : RippleBox.ButtonTypes.ok},
@@ -314,33 +314,27 @@ RippleBox.MoneyFlowBox = function(root, rippleMaster, address){
         {type : RippleBox.ButtonTypes.refresh}
     ];
     var ret = new RippleBox(root, rippleMaster, address, option);
-    ret.sellBuyPanel = new SellBuyPanel(ret.content);
+    ret.moneyFlowPanel = new MoneyFlowPanel(ret.content);
     ret.ok = function(){
         ret.progressBar.SetProgress(40, "Loading transaction data");
-        var startTime = new Date($(ret.sellBuyPanel.datepickers[0]).data('date'));
-        var endTime = new Date($(ret.sellBuyPanel.datepickers[1]).data('date'));
+        var startTime = new Date($(ret.moneyFlowPanel.datepickers[0]).data('date'));
+        var endTime = new Date($(ret.moneyFlowPanel.datepickers[1]).data('date'));
         if(startTime > endTime){
             ret.progressBar.SetProgress(100, "Verify the time range");
             return;
         }
-        var baseIOU = $(ret.sellBuyPanel.iouSelectors[0]).val();
-        var refIOU = $(ret.sellBuyPanel.iouSelectors[1]).val();
-        if(refIOU === baseIOU){
-            ret.progressBar.SetProgress(100, "Use different IOUs");
-            return;
-        }
+        var iou = $(ret.moneyFlowPanel.iouSelector).val();
         var dataCollections = ret.rippleMaster.QueryTransactions(ret.address, function(result, data){
             if(result === Consts.RESULT.SUCCESS){
-                var sellBuy = Stat.CalIOUBuySell(startTime,
+                var iouSummary = Stat.CalIOUSummary(startTime,
                     endTime,
-                    baseIOU,
-                    refIOU,
+                    iou,
                     data);
-                if(sellBuy === null){
+                if(iouSummary === null){
                     ret.progressBar.SetProgress(100, "No related transactions found");
                     return;
                 }
-                ret.sellBuyPanel.PaintData(sellBuy);
+                ret.moneyFlowPanel.PaintData(iouSummary);
                 ret.progressBar.SetProgress(100, "Succeed");
             }else if(result === Consts.RESULT.FAIL_NETWORKERROR) {
                 ret.progressBar.SetProgress(100, "Fail, verify your network status");
@@ -353,18 +347,19 @@ RippleBox.MoneyFlowBox = function(root, rippleMaster, address){
     };
     ret.refresh = function(){
         ret.progressBar.SetProgress(40, "Loading account info");
-        ret.rippleMaster.AccountCurrencies(ret.address, function(result, currencies){
+        ret.rippleMaster.AccountInfoNoRefresh(ret.address, function(result, id){
             if(result === Consts.RESULT.SUCCESS){
-                $(ret.sellBuyPanel.iouSelectors).empty();
+                var currencies = [id.XRP()].concat(id.Balances());
+                $(ret.moneyFlowPanel.iouSelector).empty();
                 $.each(currencies, function(i){
                     var balance = currencies[i];
                     var opt = $("<option />", {
                         value : balance.Currency()+balance.Issuer(),
                         text : balance.Currency() + " " + Consts.GetGatewayNick(balance.Issuer())
                     });
-                    $(ret.sellBuyPanel.iouSelectors).append(opt);
+                    $(ret.moneyFlowPanel.iouSelector).append(opt);
                 });
-                $(ret.sellBuyPanel.iouSelectors).selectpicker('refresh');
+                $(ret.moneyFlowPanel.iouSelector).selectpicker('refresh');
                 ret.progressBar.SetProgress(100, "Succeed");
             }else if(result === Consts.RESULT.FAIL_NETWORKERROR) {
                 ret.progressBar.SetProgress(100, "Fail, verify your network status");

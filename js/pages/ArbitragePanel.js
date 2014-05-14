@@ -4,12 +4,45 @@ function SellBuyPanel(root){
     this.parseLayout();
 };
 
-var dateSelectHtml = '<div class="row"><div class="col-md-2"><span class="label label-default">Start Time</span></div><div class="col-md-4"><div class="input-group date"><input type="text" class="form-control"><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div></div><div class="col-md-2"><span class="label label-default">End Time</span></div><div class="col-md-4"><div class="input-group date"><input type="text" class="form-control"><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div></div></div> '
+var dateSelectHtml = '<div class="form-group">' +
+                        '<div class="col-md-2">' +
+                            '<label class="form-control">Start Time</label>' +
+                        '</div>' +
+                        '<div class="col-md-4">' +
+                            '<div class="input-group date">' +
+                                '<input type="text" class="form-control"><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="col-md-2">' +
+                            '<label class="form-control">End Time</label>' +
+                        '</div>' +
+                        '<div class="col-md-4">' +
+                            '<div class="input-group date">' +
+                                '<input type="text" class="form-control"><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div> '
 
 SellBuyPanel.prototype = {
     initialLayout : function(){
         var self = this;
-        var configureTableHtml = '<div class="container-fluid">' + dateSelectHtml + '<div class="row"><div class="col-md-2"><span class="label label-default">Base Currency</span></div><div class="col-md-4"><select class="selectpicker" data-width="auto"></select></div><div class="col-md-2"><span class="label label-default">Pair Currency</span></div><div class="col-md-4"><select class="selectpicker" data-width="auto"></select></div></div></div>';
+        var configureTableHtml = '<form class="form-horizontal" role="form">' +
+                                    dateSelectHtml +
+                                    '<div class="form-group">' +
+                                        '<div class="col-md-2">' +
+                                            '<label class="form-control">Currency1</label>' +
+                                        '</div>' +
+                                        '<div class="col-md-4">' +
+                                            '<select class="selectpicker" data-width="auto"></select>' +
+                                        '</div>' +
+                                        '<div class="col-md-2">' +
+                                            '<label class="form-control">Currency2</span>' +
+                                        '</div>' +
+                                        '<div class="col-md-4">' +
+                                            '<select class="selectpicker" data-width="auto"></select>' +
+                                        '</div>' +
+                                    '</div>' +
+                                '</form>';
         var configureDiv = $("<div />", {
             class : "stat-panel-configure"
         });
@@ -101,7 +134,17 @@ function MoneyFlowPanel(root){
 MoneyFlowPanel.prototype = {
     initialLayout : function(){
         var self = this;
-        var configureTableHtml = '<div class="container-fluid">' + dateSelectHtml + '<div class="row"><div class="col-md-2"><span class="label label-default">Select Currency</span></div><div class="col-md-4"><select class="selectpicker" data-width="auto"></select></div></div></div>';
+        var configureTableHtml = '<form class="form-horizontal" role="form">' +
+            dateSelectHtml +
+            '<div class="form-group">' +
+            '<div class="col-md-2">' +
+            '<label class="form-control">Currency</label>' +
+            '</div>' +
+            '<div class="col-md-4">' +
+            '<select class="selectpicker" data-width="auto"></select>' +
+            '</div>'
+            '</div>' +
+            '</form>';
         var configureDiv = $("<div />", {
             class : "stat-panel-configure"
         });
@@ -137,7 +180,13 @@ MoneyFlowPanel.prototype = {
             series:{
                 type :'bar',
                 argumentField:'type',
-                valueField:'value'
+                valueField:'value',
+                label:{
+                    visible : true,
+                    precision : 4,
+                    position : "outside",
+                    format : 'fixedPoint'
+                }
             },
             valueAxis:{
                 visible : true
@@ -148,21 +197,30 @@ MoneyFlowPanel.prototype = {
             tooltip: {
                 enabled : true,
                 customizeText : function(point){
-                    return "Rate: " + point.argumentText + " : " + point.value.toFixed(2);
+                    return point.argumentText + " : " + point.value.toFixed(2);
                 },
                 font:{
                     size : 14
                 }
-            }
+            },
+            palette : Consts.Palette
         });
+
         $(self.inComeChart).dxPieChart({
             series : {
                 type : 'doughnut',
                 argumentField : 'type',
-                valueField : 'value'
+                valueField : 'value',
+                label:{
+                    visible : true,
+                    position : "inside",
+                    precision : 4,
+                    format : 'fixedPoint'
+
+                }
             },
             legend : {
-                vericalAlignment : 'bottom',
+                verticalAlignment : 'bottom',
                 horizontalAlignment : 'center',
                 itemTextPosition : 'right',
                 columnCount : 2
@@ -184,10 +242,16 @@ MoneyFlowPanel.prototype = {
             series : {
                 type : 'doughnut',
                 argumentField : 'type',
-                valueField : 'value'
+                valueField : 'value',
+                label:{
+                    visible : true,
+                    position : "inside",
+                    precision : 4,
+                    format : 'fixedPoint'
+                }
             },
             legend : {
-                vericalAlignment : 'bottom',
+                verticalAlignment : 'bottom',
                 horizontalAlignment : 'center',
                 itemTextPosition : 'right',
                 columnCount : 2
@@ -202,7 +266,7 @@ MoneyFlowPanel.prototype = {
 
                 }
             },
-            palette : Consts.Palette
+            palette : Consts.ReversePalette
         });
     },
 
@@ -219,11 +283,11 @@ MoneyFlowPanel.prototype = {
         chart.option({
             dataSource : income.concat(outcome)
         });
-        var incomeChart = $(self.inComeChart).dxChart("instance");
+        var incomeChart = $(self.inComeChart).dxPieChart("instance");
         incomeChart.option({
             dataSource : income
         });
-        var outChart = $(self.outComeChart).dxChart("instance");
+        var outChart = $(self.outComeChart).dxPieChart("instance");
         outChart.option({
             dataSource : outcome
         });

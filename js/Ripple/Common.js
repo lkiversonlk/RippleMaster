@@ -113,8 +113,15 @@ var mainPageParam = {
 };
 
 Consts.Palette = [
-    "#88B8cc",
-    "#aad53b",
-    "#428bca",
-    "#f2f3f5"
-]
+    "#AAD53B",
+    "#E9772E",
+    "#C0C0C0",
+    "#CFE1A9"
+];
+
+Consts.ReversePalette = [
+    "#E9772E",
+    "#AAD53B",
+    "#CFE1A9",
+    "#C0C0C0"
+];
