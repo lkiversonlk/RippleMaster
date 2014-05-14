@@ -8,7 +8,7 @@ var flash = require('connect-flash');
 var mongoose = require('mongoose');
 var models = require('./models');
 var Account = models.Account;
-mongoose.set('debug', true);
+//mongoose.set('debug', true);
 mongoose.connect('mongodb://localhost/ripplemaster');
 
 passport.use(new LocalStrategy(

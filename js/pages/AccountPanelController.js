@@ -24,7 +24,8 @@ function AccountPanelsControl(accountRoot, arbitrageRoot, address, extral, rippl
 }
 
 AccountPanelsControl.StructureKeys = {
-    SellBuy : 'sellBuy'
+    SellBuy : 'sellBuy',
+    MoneyFlow : 'moneyFlow'
 };
 
 AccountPanelsControl.prototype = {
@@ -110,6 +111,21 @@ AccountPanelsControl.prototype = {
         return panel;
     },
 
+    addMoneyFlowPanel : function(){
+        var self = this;
+        var panel = RippleBox.MoneyFlowBox(
+            self.arbitragePanel.rightPanel,
+            self.rippleMaster,
+            self.address
+        );
+
+        $(self.arbitragePanel).bind(AccountEvent.ldAcc, panel.refresh.bind(panel));
+        panel.closeHooks.push(function(){
+            $(self.arbitragePanel).unbind(AccountEvent.ldAcc, panel.refresh.bind(panel));
+        });
+        return panel;
+    },
+
     addExtralWidget : function(key){
         var self = this;
         var number = self.extralWidgetKeys.length;
@@ -118,6 +134,9 @@ AccountPanelsControl.prototype = {
         switch (key){
             case AccountPanelsControl.StructureKeys.SellBuy:
                 element = self.addArbitrageSellBuyPanel();
+                break;
+            case AccountPanelsControl.StructureKeys.MoneyFlow:
+                element = self.addMoneyFlowPanel();
                 break;
         }
         self.extralWidgetKeys.push(key);

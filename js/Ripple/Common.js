@@ -111,3 +111,10 @@ var mainPageParam = {
     ONLINE : 0,
     CONNECTING : 1
 };
+
+Consts.Palette = [
+    "#88B8cc",
+    "#aad53b",
+    "#428bca",
+    "#f2f3f5"
+]
