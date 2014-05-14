@@ -21,9 +21,14 @@ function AccountPanel(root, address){
     fold.append($("<span />",{
         class : "glyphicon glyphicon-th-list"
     }))
-
+    var load = $("<a />", {
+        class : "right"
+    });
+    load.append($("<span />", {
+        class : "glyphicon glyphicon-search"
+    }));
     $(caption).append(fold);
-
+    $(caption).append(load);
     $(ele).append(caption);
     $(ele).append($("<div />", {
         class : "shadow"
@@ -32,10 +37,10 @@ function AccountPanel(root, address){
         class : "row account-stat-group"
     });
     self.leftPanel = $("<div />", {
-        class : "col-md-6 col-xs-4"
+        class : "col-md-6"
     });
     self.rightPanel = $("<div />", {
-        class : "col-md-6 col-xs-8"
+        class : "col-md-6"
     });
     $(statgroup).append(self.leftPanel);
     $(statgroup).append(self.rightPanel);
@@ -45,6 +50,9 @@ function AccountPanel(root, address){
     $(fold).click(function(){
         $(statgroup).toggle();
     });
+    $(load).click(function(){
+        $(self).trigger(AccountEvent.ldAcc);
+    })
 };
 
 function ArbitragePanel(root, address){
@@ -80,10 +88,10 @@ function ArbitragePanel(root, address){
         class : "row account-stat-group"
     });
     self.leftPanel = $("<div />", {
-        class : "col-md-6 col-xs-4"
+        class : "col-md-6"
     });
     self.rightPanel = $("<div />", {
-        class : "col-md-6 col-xs-8"
+        class : "col-md-6"
     });
     $(statgroup).append(self.leftPanel);
     $(statgroup).append(self.rightPanel);

@@ -11,124 +11,146 @@ $("#cancel-loading").click(function(e){
 var lkAccount = "r9zbt4tB2s3KsrmgE6r1KoZtVN4cNAsfxN";
 var dyAccount = "rUsVKNn7zX315wzdLjarsrU8jJQ67vpK1g";
 
-function AccountPanelsControl(accountRoot, arbitrageRoot, account, structure, rippleMaster){
+function AccountPanelsControl(accountRoot, arbitrageRoot, address, extral, rippleMaster){
     var self = this;
-    self.accountPanel = new AccountPanel(accountRoot, account);
-    self.accountWidgets = {};
-    self.accountWidgets['common'] = [];
-    self.arbitragePanel = new ArbitragePanel(arbitrageRoot, account);
-    self.account = account;
+    self.address = address;
     self.rippleMaster = rippleMaster;
-    self.initialComponents(structure);
+    self.accountPanel = new AccountPanel(accountRoot, address);
+    self.arbitragePanel = new ArbitragePanel(arbitrageRoot, address);
+    self.initCommonWidgets();
+    self.extralWidgetKeys = [];
+    self.extralWidgets = [];
+    self.InitExtral(extral);
 }
 
 AccountPanelsControl.StructureKeys = {
-    Balance : 'balance',
-    Orders : "orders",
-    TxHistory : "txhis",
     SellBuy : 'sellBuy'
 };
 
 AccountPanelsControl.prototype = {
-    initialComponents : function(structure){
+    initCommonWidgets : function(){
         var self = this;
-        $.each(structure, function(i){
-            var key = structure[i];
-            switch (key){
-                case AccountPanelsControl.StructureKeys.Balance:
-                    self.addAccountBalancePanel();
-                    break;
-                case AccountPanelsControl.StructureKeys.Orders:
-                    self.addAccountOrdersPanel();
-                    break;
-                case AccountPanelsControl.StructureKeys.TxHistory:
-                    self.addArbitrageTxHistoryPanel();
-                    break;
-                case AccountPanelsControl.StructureKeys.SellBuy:
-                    self.addArbitrageSellBuyPanel();
-                    break;
-            }
+        self.addAccountBalancePanel();
+        self.addAccountOrdersPanel();
+        self.addArbitrageTxHistoryPanel();
+    },
+
+    InitExtral : function(extral){
+        var self = this;
+        self.removeAll();
+        $.each(extral, function(i){
+            self.addExtralWidget(extral[i]);
         })
+    },
+
+    removeAll : function(){
+        var self = this;
+        $.each(self.extralWidgets, function(i){
+            if(self.extralWidgets[i]){
+                self.extralWidgets[i].Close();
+            }
+        });
+        self.extralWidgetKeys = [];
+        self.extralWidgets = [];
     },
 
     addAccountBalancePanel : function(){
         var self = this;
-        if(self.accountWidgets[AccountPanelsControl.StructureKeys.Balance]){
-            return;
-        }
-        self.accountWidgets[AccountPanelsControl.StructureKeys.Balance] = RippleBox.AccountBox(
+        self.balanceWidgets = RippleBox.AccountBox(
             self.accountPanel.leftPanel,
             self.rippleMaster,
-            self.account
+            self.address
         );
-        self.accountWidgets[AccountPanelsControl.StructureKeys.Balance].Init();
+        $(self.accountPanel).bind(AccountEvent.ldAcc, self.balanceWidgets.refresh.bind(self.balanceWidgets));
+        self.balanceWidgets.closeHooks.push(function () {
+            $(self.accountPanel).unbind(AccountEvent.ldAcc, self.balanceWidgets.refresh.bind(self.balanceWidgets));
+        })
     },
 
     addAccountOrdersPanel : function(){
         var self = this;
-        if(self.accountWidgets[AccountPanelsControl.StructureKeys.Orders]){
-            return;
-        }
-        self.accountWidgets[AccountPanelsControl.StructureKeys.Orders] = RippleBox.OfferBox(
+        self.ordersWidgets = RippleBox.OfferBox(
             self.accountPanel.rightPanel,
             self.rippleMaster,
-            self.account
+            self.address
         );
-        self.accountWidgets[AccountPanelsControl.StructureKeys.Orders].Init();
+        $(self.accountPanel).bind(AccountEvent.ldAcc, self.ordersWidgets.refresh.bind(self.ordersWidgets));
+        self.ordersWidgets.closeHooks.push(function () {
+            $(self.accountPanel).unbind(AccountEvent.ldAcc, self.ordersWidgets.refresh.bind(self.ordersWidgets));
+        })
     },
-
 
     addArbitrageTxHistoryPanel : function(){
         var self = this;
-        if(self.accountWidgets[AccountPanelsControl.StructureKeys.TxHistory]){
-            return;
-        }
-
-        var txBox = RippleBox.TxBox(
-            self.arbitragePanel.rightPanel,
+        self.txHistoryWidgets = RippleBox.TxBox(
+            self.arbitragePanel.leftPanel,
             self.rippleMaster,
-            self.account
+            self.address
         );
-        self.accountWidgets[AccountPanelsControl.StructureKeys.TxHistory] = txBox;
 
-        $(self.arbitragePanel).bind(AccountEvent.ldTxes, txBox.refresh.bind(txBox));
-        txBox.closeHooks.push(function () {
-            $(self.arbitragePanel).unbind(AccountEvent.ldTxes, txBox.refresh.bind(txBox));
+        $(self.arbitragePanel).bind(AccountEvent.ldTxes, self.txHistoryWidgets.refresh.bind(self.txHistoryWidgets));
+        self.txHistoryWidgets.closeHooks.push(function () {
+            $(self.arbitragePanel).unbind(AccountEvent.ldTxes, self.txHistoryWidgets.refresh.bind(self.txHistoryWidgets));
         })
-        self.accountWidgets[AccountPanelsControl.StructureKeys.TxHistory].Init();
     },
 
     addArbitrageSellBuyPanel : function(){
         var self = this;
 
         var panel = RippleBox.SellBuyBox(
-            self.arbitragePanel.leftPanel,
+            self.arbitragePanel.rightPanel,
             self.rippleMaster,
-            self.account
+            self.address
         );
-        self.accountWidgets['common'].push(panel);
+
         $(self.arbitragePanel).bind(AccountEvent.ldAcc, panel.refresh.bind(panel));
         panel.closeHooks.push(function(){
             $(self.arbitragePanel).unbind(AccountEvent.ldAcc, panel.refresh.bind(panel));
-        })
-        panel.Init();
+        });
+        return panel;
+    },
+
+    addExtralWidget : function(key){
+        var self = this;
+        var number = self.extralWidgetKeys.length;
+
+        var element;
+        switch (key){
+            case AccountPanelsControl.StructureKeys.SellBuy:
+                element = self.addArbitrageSellBuyPanel();
+                break;
+        }
+        self.extralWidgetKeys.push(key);
+        self.extralWidgets.push(element);
+        element.closeHooks.push(function(){
+            self.extralWidgetKeys[number] = null;
+            self.extralWidgets[number] = null;
+        });
+    },
+
+    Settings : function(){
+        var self = this;
+        var ret = {
+            address : self.address
+        };
+        var settings = [];
+        $.each(self.extralWidgetKeys, function(i){
+            if(self.extralWidgetKeys[i]){
+                settings.push(self.extralWidgetKeys[i]);
+            }
+        });
+        ret['configure'] = settings;
+        return ret;
     }
 }
-
-var defaultConfiguration = [
-    AccountPanelsControl.StructureKeys.Balance,
-    AccountPanelsControl.StructureKeys.Orders,
-    AccountPanelsControl.StructureKeys.TxHistory
-];
 
 function MainPage(rippleMaster){
     var self = this;
     self.rippleMaster = rippleMaster;
-    self.accountPanelControls = {};
-
+    self.accountPanelControls = [];
     self.account = "";
-    self.settings = [];
-    self.initial();
+    self.initPage();
+    self.fetchConfigFromServer();
 }
 
 var addablePanels = [
@@ -136,13 +158,29 @@ var addablePanels = [
 ];
 
 MainPage.EVENT = {
-    SettingsLoaded : "settings"
+    updateRippleAddress : "uRpAd"
 },
 
 MainPage.prototype = {
-    initial : function(){
+    fetchConfigFromServer : function(){
         var self = this;
+        $.ajax(
+            {
+                url : "masteraccount",
+                type : "GET",
+                dataType : "json",
+                success : function(json){
+                    self.setMasterAccountAndSettings(json.account, json.settings);
+                },
+                error : function(xhr, status, errThrown){
 
+                }
+            }
+        )
+    },
+
+    initPage : function(){
+        var self = this;
         self.modulePanelAccountPicker = $("#modulePanel .selectpicker")[0];
         self.modulePanelModulePicker = $("#modulePanel .selectpicker")[1];
         self.addressPanelAccountInput = $("#addRippleAccountPanel input");
@@ -161,9 +199,7 @@ MainPage.prototype = {
             var address = $(self.modulePanelAccountPicker).val();
             var panelKey = $(self.modulePanelModulePicker).val();
             if(address && panelKey){
-                if(self.accountPanelControls[address]){
-                    self.addModuleToAddress(address, panelKey);
-                }
+                self.addModuleToAddress(address, panelKey);
             }
             $("#modulePanel").modal('hide');
             self.postMasterAccountAndSettings();
@@ -171,69 +207,55 @@ MainPage.prototype = {
 
         $("#add-rippleaddress-ok").click(function(){
             var address = $(self.addressPanelAccountInput).val();
-            self.addRippleAddressToSettings(address);
-            self.addAccount(address);
+            self.addRippleAddress(address, []);
             $("#addRippleAccountPanel").modal('hide');
-        })
+            self.postMasterAccountAndSettings();
 
-        $(self).bind(MainPage.EVENT.SettingsLoaded, self.updateModals.bind(self));
-        self.getMasterAccountAndSettings();
+        })
+        $(self).bind(MainPage.EVENT.updateRippleAddress, self.updateModals.bind(self));
     },
 
     updateModals : function(){
         var self = this;
         $(self.modulePanelAccountPicker).empty();
-        $.each(self.settings, function(i){
+        $.each(self.accountPanelControls, function(i){
             var opt = $("<option />",{
-                value : self.settings[i].address,
-                text : self.settings[i].address
+                value : self.accountPanelControls[i].address,
+                text : self.accountPanelControls[i].address
             })
             $(self.modulePanelAccountPicker).append(opt);
         });
         $(self.modulePanelAccountPicker).selectpicker('refresh');
     },
 
-    getMasterAccountAndSettings : function(){
-        var self = this;
-        $.ajax(
-            {
-                url : "masteraccount",
-                type : "GET",
-                dataType : "json",
-                success : function(json){
-                    self.account = json.account;
-                    self.settings = json.settings;
-                    $(self).trigger(MainPage.EVENT.SettingsLoaded);
-                    self.setMasterAccountAndSettings(self.account, self.settings);
-                },
-                error : function(xhr, status, errThrown){
-
-                }
-            }
-        )
-    },
-
-    addRippleAddressToSettings : function(rippleAddress){
+    addRippleAddress : function(rippleAddress, configure){
         var self = this;
         var found = false;
-        $.each(self.settings, function(i){
-            if(self.settings[i].address === rippleAddress){
+        $.each(self.accountPanelControls, function(i){
+            if(self.accountPanelControls[i].address === rippleAddress){
                 found = true;
+                if(configure) {
+                    self.accountPanelControls[i].InitExtral(configure);
+                }
                 return false;
             };
         });
         if(!found) {
-            self.settings.push({address : rippleAddress, configure : defaultConfiguration});
+            self.accountPanelControls.push(new AccountPanelsControl($("#account-content"), $("#arbitrage-content"), rippleAddress, configure, self.rippleMaster));
+            if(configure){
+                self.accountPanelControls[self.accountPanelControls.length - 1].InitExtral(configure);
+            }
+            $(self).trigger(MainPage.EVENT.updateRippleAddress);
         }
-        $(self).trigger(MainPage.EVENT.SettingsLoaded);
+
     },
 
     addModuleToAddress : function(address, moduleKey){
         var self = this;
         var found = false;
-        $.each(self.settings, function(i){
-            if(self.settings[i].address === address){
-                self.settings[i].configure.push(moduleKey);
+        $.each(self.accountPanelControls, function(i){
+            if(self.accountPanelControls[i].address === address){
+                self.accountPanelControls[i].addExtralWidget(moduleKey);
                 return false;
             };
         });
@@ -252,11 +274,16 @@ MainPage.prototype = {
 
     postMasterAccountAndSettings : function(){
         var self = this;
+        var settings = [];
+
+        $.each(self.accountPanelControls, function(i){
+            settings.push(self.accountPanelControls[i].Settings());
+        });
         $.ajax(
             {
                 url : "masteraccount",
                 type : "POST",
-                data : {account : self.account, settings : self.settings},
+                data : {account : self.account, settings : settings},
                 dataType : "json"
             }
         )
@@ -265,20 +292,10 @@ MainPage.prototype = {
     setMasterAccountAndSettings : function(account, settings){
         var self = this;
         self.account = account;
-        self.settings = settings;
         $("#account-title-text").text(account);
         $.each(settings, function(i){
-            self.addAccount(settings[i].address, settings[i].configure);
+            self.addRippleAddress(settings[i].address, settings[i].configure);
         })
-    },
-
-    addAccount : function(account) {
-        var self = this;
-        if (self.accountPanelControls[account]) {
-            return;
-        } else {
-            self.accountPanelControls[account] = new AccountPanelsControl($("#account-content"), $("#arbitrage-content"), account, self.addressConfigure(account), self.rippleMaster);
-        }
     }
 };
 
