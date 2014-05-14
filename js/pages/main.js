@@ -15,8 +15,8 @@ function AccountPanelsControl(accountRoot, arbitrageRoot, address, extral, rippl
     var self = this;
     self.address = address;
     self.rippleMaster = rippleMaster;
-    self.accountPanel = new AccountPanel(accountRoot, address);
-    self.arbitragePanel = new ArbitragePanel(arbitrageRoot, address);
+    self.accountPanel = new AccountPanel(accountRoot, address, rippleMaster);
+    self.arbitragePanel = new ArbitragePanel(arbitrageRoot, address, rippleMaster);
     self.initCommonWidgets();
     self.extralWidgetKeys = [];
     self.extralWidgets = [];

@@ -3,10 +3,11 @@ var AccountEvent = {
     ldAcc : "ldAcc"
 };
 
-function AccountPanel(root, address){
+function AccountPanel(root, address, rippleMaster){
     /* append a account panel uner root */
     var self = this;
-
+    self.rippleMaster = rippleMaster;
+    self.address = address;
     var ele = $("<div />", {
         class : "account-panel"
     });
@@ -51,12 +52,31 @@ function AccountPanel(root, address){
         $(statgroup).toggle();
     });
     $(load).click(function(){
-        $(self).trigger(AccountEvent.ldAcc);
+        var progressBar = new ProgressBar($("#loading"), "Loading " + self.address);
+        progressBar.Show();
+        progressBar.SetProgress(30, "Loading address balances");
+        self.rippleMaster.AccountInfo(self.address, function(result, id){
+            progressBar.SetProgress(60, "Loading address balances");
+            if(result === Consts.RESULT.SUCCESS){
+                progressBar.SetProgress(100, "success");
+                setTimeout(function(){
+                    progressBar.Close()
+                }, 2000);
+
+                $(self).trigger(AccountEvent.ldAcc);
+            }else{
+                progressBar.SetProgress(100, "failed, please try again later");
+                setTimeout(function(){
+                    progressBar.Close()
+                }, 2000);
+            }
+        })
     })
 };
 
-function ArbitragePanel(root, address){
+function ArbitragePanel(root, address, rippleMaster){
     var self = this;
+    self.rippleMaster = rippleMaster;
     self.address = address;
     var ele = $("<div />", {
         class : "account-panel"
@@ -102,7 +122,26 @@ function ArbitragePanel(root, address){
         $(statgroup).toggle();
     });
     $(load).click(function(){
-        $(self).trigger(AccountEvent.ldAcc)
-        setTimeout(function(){$(self).trigger(AccountEvent.ldTxes);}, 2000);
+        var progressBar = new ProgressBar($("#loading"), "Loading " + self.address);
+        progressBar.Show();
+        progressBar.SetProgress(30, "Loading address balances");
+        self.rippleMaster.AccountInfo(self.address, function(result, id){
+            progressBar.SetProgress(60, "Loading address balances");
+            if(result === Consts.RESULT.SUCCESS){
+                progressBar.SetProgress(100, "success, will start to load transaction history");
+
+                setTimeout(function(){
+                    progressBar.Close()
+                }, 2000);
+
+                $(self).trigger(AccountEvent.ldAcc);
+                setTimeout(function(){$(self).trigger(AccountEvent.ldTxes);}, 2000);
+            }else{
+                progressBar.SetProgress(100, "failed, please try again later");
+                setTimeout(function(){
+                    progressBar.Close()
+                }, 2000);
+            }
+        })
     });
 }

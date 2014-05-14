@@ -74,7 +74,7 @@ Consts.DefaultNetConfig = {
     secure   : true
 };
 
-Consts.BATCH_SIZE = 100;
+Consts.BATCH_SIZE = 40;
 
 Consts.DateToNumber = function(month, year){
     return ((year - 2000) * 12 + month);

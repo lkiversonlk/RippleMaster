@@ -342,6 +342,10 @@ html, body{
     margin-bottom: 20px;
 }
 
+.settings{
+    margin-top : 10px;
+}
+
 /* get font-awesome to work with BS3 */
 .input-group-addon .icon-2x {
     width: 28px;

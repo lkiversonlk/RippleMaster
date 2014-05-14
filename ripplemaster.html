@@ -91,25 +91,66 @@
     </div>
 
     <div class="shadow margin-top10"></div>
-
-    <div class="configure-panel">
-        <div class="container">
-            <button class="btn btn-primary" type="button" onclick="{$('#addRippleAccountPanel').modal('show');}" >Add RippleAddress</button>
-            <button class="btn btn-primary" type="button" onclick="{$('#modulePanel').modal('show');}" >Add Modules</button>
-        </div>
-    </div>
     <div style="min-height: 200px">
         <div class="tab-content">
             <div class="tab-pane active fade in" id="account">
+                <div class="configure-panel">
+                    <div class="container">
+                        <button class="btn btn-primary" type="button" onclick="{$('#addRippleAccountPanel').modal('show');}" >Add RippleAddress</button>
+                    </div>
+                </div>
                 <div id="account-content" class="container-fluid">
                 </div>
 
             </div>
             <div class="tab-pane fade" id="arbitrage">
+                <div class="configure-panel">
+                    <div class="container">
+                        <button class="btn btn-primary" type="button" onclick="{$('#modulePanel').modal('show');}" >Add Modules</button>
+                    </div>
+                </div>
                 <div id="arbitrage-content" class="container-fluid">
                 </div>
             </div>
             <div class="tab-pane fade" id="settings">
+                <div class="configure-panel">
+                    <div class="container">
+                        <button class='btn btn-primary' type='button' id="logout">log out</button>
+                    </div>
+                </div>
+                <div class="container settings">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <a href="#configure-account-basic" class="list-group-item">Account Basic</a>
+                            <a href="#configure-ripple-address" class="list-group-item">Ripple Addresses</a>
+                            <a href="#configure" class="list-group-item">Diagnostics</a>
+                        </div>
+                        <div class="col-md-9">
+                            <div id="configure-account-basic">
+                                <h2>Account Basic</h2>
+                                <hr>
+                                <form class="form-horizontal" role="form">
+                                    <div class="form-group">
+                                        <label for="configure-account" class="col-sm-2 control-label">Account Name</label>
+                                        <div class="col-sm-10">
+                                            <label id="configure-account" class="form-control"></label>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div id="configure-ripple-address">
+                                <h2>Ripple Addresses</h2>
+                                <hr>
+                                <form class="form-horizontal" role="form">
+                                </form>
+                            </div>
+                            <div id="configure-">
+                                <h2>Configure Basic</h2>
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -169,22 +210,22 @@
                 <h4 class="modal-title">Add Modules</h4>
             </div>
             <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-4" style="padding-top: 8px">
-                            <span class="label label-primary right">Ripple Address</span>
-                        </div>
-                        <div class="col-md-8">
-                    <select class="selectpicker"></select>
-                        </div>
+                <div class="row">
+                    <div class="col-md-4" style="padding-top: 8px">
+                        <span class="label label-primary right">Ripple Address</span>
                     </div>
-                    <div class="row">
-                        <div class="col-md-4" style="padding-top: 8px">
-                            <span class="label label-primary right">Module Type</span>
-                        </div>
-                        <div class="col-md-8">
-                            <select class="selectpicker"></select>
-                        </div>
+                    <div class="col-md-8">
+                        <select class="selectpicker"></select>
                     </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4" style="padding-top: 8px">
+                        <span class="label label-primary right">Module Type</span>
+                    </div>
+                    <div class="col-md-8">
+                        <select class="selectpicker"></select>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -214,7 +255,8 @@
 <script src="js/pages/RippleBox.js"></script>
 <script src="js/pages/ArbitragePanel.js"></script>
 <script src="js/pages/AccountPanel.js"></script>
-<script src="js/pages/main.js"></script>
+<script src="js/pages/AccountPanelController.js"></script>
+<script src="js/pages/MainPage.js"></script>
 <script src="js/Ripple/Model.js"></script>
 <script src="js/Ripple/Server.js"></script>
 <script src="js/Ripple/Common.js"></script>

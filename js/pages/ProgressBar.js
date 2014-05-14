@@ -19,7 +19,7 @@ ProgressBar.prototype = {
         var date = Date();
         var maxWidth = $(this._root).width();
         var width = maxWidth * number / 100;
-        $(this._root).find(".progress-bar").width(width);
+        $(this._root).find(".progress-bar").width(number + "%");
 
 
         if(label){

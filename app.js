@@ -128,8 +128,16 @@ app.post('/masteraccount', function(req, res){
                     doc.save();
                 }
             }
+            res.end();
         });
     }
+});
+
+app.get('/logout', function(req, res){
+    if(req.user){
+        req.logout();
+    }
+    res.redirect("/");
 });
 
 app.get('/account')
