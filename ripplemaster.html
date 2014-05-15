@@ -51,11 +51,16 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-md-3">
-                                <img src="images/ripple.png" class="max-width">
+                                <img src="images/ripple.png" class="max-width" style="display: none">
+                                <div class="loading" style="margin-top: 30px">
+                                    <i></i>
+                                    <i></i>
+                                    <i></i>
+                                </div>
                             </div>
                             <div class="col-md-8 col-md-offset-1">
                                 <div id="account-title-text">
-                                    Logging...
+                                    Loading...
                                 </div>
                             </div>
                         </div>
@@ -229,7 +234,7 @@
 
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+<script src="lib/jquery/jquery.js"></script>
 <script src="lib/utils/moment.js"></script>
 <script src="lib/bootstrap/bootstrap.min.js"></script>
 <script src="lib/bootstrap-datepicker/js/bootstrap-datetimepicker.min.js"></script>
@@ -264,9 +269,14 @@
 <script>
     $(document).ready(function(){
         Log.SetLevel(Log.DEBUG_LEVEL);
+        var img = $("#user-panel").find("img");
+        var load = $("#user-panel").find("div.loading");
         var main = new RippleMaster();
+
         main.Start(function(){
             var mainPage = new MainPage(main);
+            $(load).remove();
+            $(img).show()
         });
     });
 </script>

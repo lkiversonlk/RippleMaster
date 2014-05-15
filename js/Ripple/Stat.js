@@ -8,7 +8,9 @@ Stat.CalIOUSummary = function(start, end, iou, dataCollection){
         'send':0,
         'receive':0,
         'buy':0,
-        'sell':0
+        'sell':0,
+        buyDetail:{},
+        sellDetail:{}
     };
 
     dataCollection.ForeachTransaction(start, end, function(tx){
@@ -37,8 +39,18 @@ Stat.CalIOUSummary = function(start, end, iou, dataCollection){
                 case Transaction.Type.Trade :
                     if(proceed == 1){
                         ret['sell'] += tx.Cost().Money();
+                        if(ret.sellDetail[tx.Amount().Currency()]){
+                            ret.sellDetail[tx.Amount().Currency()] += tx.Cost().Money();
+                        }else{
+                            ret.sellDetail[tx.Amount().Currency()] = tx.Cost().Money();
+                        }
                     }else{
                         ret['buy'] += tx.Amount().Money();
+                        if(ret.buyDetail[tx.Cost().Currency()]){
+                            ret.buyDetail[tx.Cost().Currency()] += tx.Amount().Money();
+                        }else{
+                            ret.buyDetail[tx.Cost().Currency()] = tx.Amount().Money();
+                        }
                     }
                     break;
                 case Transaction.Type.ERROR   :

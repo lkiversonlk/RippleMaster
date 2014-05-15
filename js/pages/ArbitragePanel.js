@@ -53,39 +53,10 @@ SellBuyPanel.prototype = {
         }));
         var contentHtml = '<div class="row">' +
                             '<div class="col-md-6 chart-area margin-top10" style="height: 300px"></div>' +
-                            '<div class="col-md-4" style="padding-top: 12px">' +
-                                '<div class="row">' +
-                                    '<div class="col-md-4" style="padding-top: 12px">' +
-                                        '<span class="label label-default">Total Sell</span>' +
-                                    '</div>' +
-                                    '<div class="col-md-8">' +
-                                        '<p class="ripplemaster-nav-font font-size30 sell-text">&nbsp; </p>' +
-                                    '</div>' +
-                                '</div>' +
-                                '<div class="row">' +
-                                    '<div class="col-md-4" style="padding-top: 12px">' +
-                                        '<span class="label label-default">Sell Rate</span>' +
-                                    '</div>' +
-                                    '<div class="col-md-8">' +
-                                        '<p class="ripplemaster-nav-font font-size30 sell-text">&nbsp; </p>' +
-                                    '</div>' +
-                                '</div>' +
-                                '<div class="row">' +
-                                    '<div class="col-md-4" style="padding-top: 12px">' +
-                                        '<span class="label label-default">Total Buy</span>' +
-                                    '</div>' +
-                                    '<div class="col-md-8">' +
-                                        '<p class="ripplemaster-nav-font font-size30 buy-text">&nbsp; </p>' +
-                                    '</div>' +
-                                '</div>' +
-                                '<div class="row">' +
-                                    '<div class="col-md-4" style="padding-top: 12px">' +
-                                        '<span class="label label-default">Buy Rate</span>' +
-                                    '</div>' +
-                                    '<div class="col-md-8">' +
-                                        '<p class="ripplemaster-nav-font font-size30 buy-text">&nbsp; </p>' +
-                                    '</div>' +
-                                '</div>' +
+                            '<div class="col-md-4">' +
+                                '<p>You have bought <strong></strong> at price <strong></strong></p>' +
+                                '<p>You have sold <strong></strong> at price <strong></strong></p>' +
+                                '<p>You have get <strong></strong> in amount of <strong></strong>'
                             '</div>' +
                         '</div>';
         var contentDiv = $("<div />", {
@@ -93,6 +64,7 @@ SellBuyPanel.prototype = {
         });
         $(contentDiv).html(contentHtml);
         $(self._root).append(contentDiv);
+        self.summaryDiv = contentDiv;
     },
 
     parseLayout : function(){
@@ -136,11 +108,6 @@ SellBuyPanel.prototype = {
             palette : Consts.Palette
         });
         self.chart = chartArea;
-        var texts = $(self._root).find("p.ripplemaster-nav-font");
-        self.sellAmountText = texts[0];
-        self.sellRatioText = texts[1];
-        self.buyAmountText = texts[2];
-        self.buyRatioText = texts[3];
     },
 
     PaintData : function(data){
@@ -154,10 +121,21 @@ SellBuyPanel.prototype = {
                 min : data.lowestRatio
             }
         });
-        $(self.sellAmountText).html(data.sellBase?data.sellBase.toFixed(2) + data.baseCurrency:"&nbsp; ");
-        $(self.sellRatioText).html(data.sellRatio?data.sellRatio.toFixed(2) + data.refCurrency + "/1" + data.baseCurrency:"&nbsp; ");
-        $(self.buyAmountText).html(data.buyBase?data.buyBase.toFixed(2) + data.baseCurrency:"&nbsp; ");
-        $(self.buyRatioText).html(data.buyRatio?data.buyRatio.toFixed(2) + data.refCurrency + "/1" + data.baseCurrency:"&nbsp; ");
+        var strongs = $(self.summaryDiv).find("strong");
+        $(strongs[0]).text((data.buyBase? data.buyBase.toFixed(3) : "0.000") + data.baseCurrency());
+        $(strongs[1]).text((data.buyBase? data.buyRatio.toFixed(3) : "0.00") + data.refCurrency());
+        $(strongs[2]).text((data.sellBase? data.sellBase.toFixed(3) : "0.000") + data.baseCurrency());
+        $(strongs[3]).text((data.sellBase? data.sellRatio.toFixed(3) : "0.00") + data.refCurrency());
+
+        var amount, benefits;
+        if(data.sellBase && data.buyBase){
+            amount = data.sellBase < data.buyBase ? data.sellBase : data.buyBase;
+            benefits = (data.sellRatio - data.buyRatio) * amount;
+        }else{
+            amount = benefits = 0;
+        }
+        $(strongs[4]).text(benefits);
+        $(strongs[5]).text(amount);
     }
 };
 
@@ -189,7 +167,11 @@ MoneyFlowPanel.prototype = {
         $(self._root).append($("<div />", {
             class : "shadow"
         }));
-        var contentHtml = '<div class="row"><div class="col-md-6 chart-area margin-top10" style="height: 300px"></div><div class="col-md-3 chart-area margin-top10" style="height: 300px"></div><div class="col-md-3 chart-area margin-top10" style="height: 300px"></div></div>';
+        var contentHtml = '<div class="row">' +
+                            '<div class="col-md-6 chart-area margin-top10" style="height: 300px"></div>' +
+                            '<div class="col-md-3 chart-area margin-top10" style="height: 300px"></div>' +
+                            '<div class="col-md-3 chart-area margin-top10" style="height: 300px"></div>' +
+                          '</div>';
         var contentDiv = $("<div />", {
             class : "container-fluid"
         });
@@ -271,7 +253,8 @@ MoneyFlowPanel.prototype = {
 
                 }
             },
-            palette : Consts.Palette
+            palette : Consts.Palette,
+            title : "Buy from"
         });
 
         $(self.outComeChart).dxPieChart({
@@ -302,22 +285,34 @@ MoneyFlowPanel.prototype = {
 
                 }
             },
-            palette : Consts.ReversePalette
+            palette : Consts.ReversePalette,
+            title : "Sell for"
         });
     },
 
     PaintData : function(data){
         var self = this;
+        var chartData = [];
+        chartData.push({type:'send', value:data['send']});
+        chartData.push({type:'sell', value:data['sell']});
+        chartData.push({type:'receive', value:data['receive']});
+        chartData.push({type:'buy',value:data['buy']});
         var outcome = [];
-        outcome.push({type:'send', value:data['send']});
-        outcome.push({type:'sell', value:data['sell']});
+        for(var k in data.sellDetail){
+            if(data.sellDetail.hasOwnProperty(k)){
+                outcome.push({type:k, value:data.sellDetail[k]});
+            }
+        }
         var income = [];
-        income.push({type:'receive', value:data['receive']});
-        income.push({type:'buy',value:data['buy']});
+        for(var k in data.buyDetail){
+            if(data.buyDetail.hasOwnProperty(k)){
+                income.push({type:k, value:data.buyDetail[k]});
+            }
+        }
 
         var chart = $(self.barChart).dxChart("instance");
         chart.option({
-            dataSource : income.concat(outcome)
+            dataSource : chartData
         });
         var incomeChart = $(self.inComeChart).dxPieChart("instance");
         incomeChart.option({
