@@ -136,7 +136,12 @@ RippleBox.OfferBox = function(root, rippleMaster, address){
         type : RippleBox.ButtonTypes.refresh
     }];
     var ret = new RippleBox(root, rippleMaster, address, option);
-    var tableHtml = '<table class="footable table" data-page-size="10"><thead><tr><th>Sell</th><th>Issuer</th><th>Amount</th><th>Want</th><th>Issuer</th><th>Amount</th><th>Rate</th></tr></thead><tbody></tbody></table>';
+    var tableHtml = '<table class="footable table" data-page-size="10">' +
+                        '<thead>' +
+                            '<tr><th>Sell</th><th>Issuer</th><th>Amount</th><th>Want</th><th>Issuer</th><th>Amount</th><th>Rate</th></tr></thead>' +
+                        '<tbody>' +
+                        '</tbody>' +
+                    '</table>';
     $(ret.content).html(tableHtml);
     ret.table = new RippleTable(ret.content);
     ret.refresh = function(){

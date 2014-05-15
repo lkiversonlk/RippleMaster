@@ -97,6 +97,12 @@ function ArbitragePanel(root, address, rippleMaster){
     load.append($("<span />", {
         class : "glyphicon glyphicon-refresh"
     }));
+    var ldTx = $("<a />", {
+        class : "right"
+    });
+    ldTx.append($("<span />", {
+        class : "glyphicon glyphicon-search"
+    }));
     var add = $("<a />",{
         class : "right"
     });
@@ -105,6 +111,7 @@ function ArbitragePanel(root, address, rippleMaster){
     }))
     $(caption).append(fold);
     $(caption).append(load);
+    $(caption).append(ldTx);
     $(caption).append(add);
     $(ele).append(caption);
     $(ele).append($("<div />", {
@@ -155,5 +162,9 @@ function ArbitragePanel(root, address, rippleMaster){
 
     $(add).click(function(){
         $('#modulePanel').modal('show');
+    })
+
+    $(ldTx).click(function(){
+        $(self).trigger(AccountEvent.ldTxes);
     })
 }

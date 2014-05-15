@@ -51,7 +51,43 @@ SellBuyPanel.prototype = {
         $(self._root).append($("<div />", {
             class : "shadow"
         }));
-        var contentHtml = '<div class="row"><div class="col-md-6 chart-area margin-top10" style="height: 300px"></div><div class="col-md-4" style="padding-top: 12px"><div class="row"><div class="col-md-4" style="padding-top: 12px"><span class="label label-default">Total Sell</span></div><div class="col-md-8"><p class="ripplemaster-nav-font font-size30 sell-text">&nbsp; </p></div></div><div class="row"><div class="col-md-4" style="padding-top: 12px"><span class="label label-default">Sell Rate</span></div><div class="col-md-8"><p class="ripplemaster-nav-font font-size30 sell-text">&nbsp; </p></div></div><div class="row"><div class="col-md-4" style="padding-top: 12px"><span class="label label-default">Total Buy</span></div><div class="col-md-8"><p class="ripplemaster-nav-font font-size30 buy-text">&nbsp; </p></div></div><div class="row"><div class="col-md-4" style="padding-top: 12px"><span class="label label-default">Buy Rate</span></div><div class="col-md-8"><p class="ripplemaster-nav-font font-size30 buy-text">&nbsp; </p></div></div></div></div>';
+        var contentHtml = '<div class="row">' +
+                            '<div class="col-md-6 chart-area margin-top10" style="height: 300px"></div>' +
+                            '<div class="col-md-4" style="padding-top: 12px">' +
+                                '<div class="row">' +
+                                    '<div class="col-md-4" style="padding-top: 12px">' +
+                                        '<span class="label label-default">Total Sell</span>' +
+                                    '</div>' +
+                                    '<div class="col-md-8">' +
+                                        '<p class="ripplemaster-nav-font font-size30 sell-text">&nbsp; </p>' +
+                                    '</div>' +
+                                '</div>' +
+                                '<div class="row">' +
+                                    '<div class="col-md-4" style="padding-top: 12px">' +
+                                        '<span class="label label-default">Sell Rate</span>' +
+                                    '</div>' +
+                                    '<div class="col-md-8">' +
+                                        '<p class="ripplemaster-nav-font font-size30 sell-text">&nbsp; </p>' +
+                                    '</div>' +
+                                '</div>' +
+                                '<div class="row">' +
+                                    '<div class="col-md-4" style="padding-top: 12px">' +
+                                        '<span class="label label-default">Total Buy</span>' +
+                                    '</div>' +
+                                    '<div class="col-md-8">' +
+                                        '<p class="ripplemaster-nav-font font-size30 buy-text">&nbsp; </p>' +
+                                    '</div>' +
+                                '</div>' +
+                                '<div class="row">' +
+                                    '<div class="col-md-4" style="padding-top: 12px">' +
+                                        '<span class="label label-default">Buy Rate</span>' +
+                                    '</div>' +
+                                    '<div class="col-md-8">' +
+                                        '<p class="ripplemaster-nav-font font-size30 buy-text">&nbsp; </p>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>';
         var contentDiv = $("<div />", {
             class : "container-fluid"
         });
