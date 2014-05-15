@@ -86,9 +86,6 @@ MainPage.EVENT = {
             if(!found) {
                 accountPanel = new AccountPanelsControl($("#account-content"), $("#arbitrage-content"), rippleAddress, configure, self.rippleMaster);
                 self.accountPanelControls.push(accountPanel);
-                if(configure){
-                    accountPanel.InitExtral(configure);
-                }
                 $(self).trigger(MainPage.EVENT.updateRippleAddress);
             }
             accountPanel.refresh();
