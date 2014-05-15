@@ -103,21 +103,6 @@ td{
 
 /* common div */
 
-/* footer */
-html, body{
-    height: 100%;
-}
-.wrapper {
-    min-height: 100%;
-    margin-bottom: -100px;
-}
-.wrapper:after{
-    content: "";
-    display: block;
-}
-.footer{
-    height: 100px;
-}
 /* for specific part */
 #function-panel{
     font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
@@ -292,6 +277,7 @@ html, body{
      -o-appearance:button;
      -ms-appearance:button;
      border-radius: 5px;
+     margin-top: 20px;
  }
 
 .account-caption{
@@ -300,7 +286,6 @@ html, body{
     font-size: 30px;
     color: #3B3C3E;
     background-color: #F2F3F5;
-    margin-top: 30px;
     border-bottom: 1px solid #3B3C3E;
 
 }

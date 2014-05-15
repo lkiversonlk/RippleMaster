@@ -9,10 +9,10 @@ function AccountPanel(root, address, rippleMaster){
     self.rippleMaster = rippleMaster;
     self.address = address;
     var ele = $("<div />", {
-        class : "account-panel"
+        class : "account-panel container-fluid"
     });
     var caption = $("<div />", {
-        class : "account-caption",
+        class : "account-caption row",
         text : address
     });
 
@@ -78,10 +78,10 @@ function ArbitragePanel(root, address, rippleMaster){
     self.rippleMaster = rippleMaster;
     self.address = address;
     var ele = $("<div />", {
-        class : "account-panel"
+        class : "account-panel container-fluid"
     });
     var caption = $("<div />", {
-        class : "account-caption",
+        class : "account-caption row",
         text : address
     });
     var fold = $("<a />", {
