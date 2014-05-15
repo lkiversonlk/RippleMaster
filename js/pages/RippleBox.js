@@ -155,7 +155,7 @@ RippleBox.OfferBox = function(root, rippleMaster, address){
     };
     ret.initialCallback = ret.refresh;
     $(ret.buttons[0]).click(ret.refresh);
-    ret.startHooks.push(ret.refresh);
+    ret.startHooks.push(ret.refresh.bind(ret));
     return ret;
 };
 
@@ -164,7 +164,6 @@ RippleBox.AccountBox = function(root, rippleMaster, address){
     option[RippleBox.Keys.title] = "Account Balances";
     option[RippleBox.Keys.progressBar] = true;
     option[RippleBox.Keys.buttons] = [{
-        type : RippleBox.ButtonTypes.refresh
     }];
     var ret = new RippleBox(root, rippleMaster, address, option);
     ret.balancePanel = new BalancePanel(ret.content);
@@ -185,8 +184,7 @@ RippleBox.AccountBox = function(root, rippleMaster, address){
         })
     };
     ret.initialCallback = ret.refresh;
-    $(ret.buttons[0]).click(ret.refresh);
-    ret.startHooks.push(ret.refresh);
+    ret.startHooks.push(ret.refresh.bind(ret));
     return ret;
 };
 
@@ -232,7 +230,6 @@ RippleBox.SellBuyBox = function(root, rippleMaster, address){
     option[RippleBox.Keys.buttons] = [
         {type : RippleBox.ButtonTypes.ok},
         {type : RippleBox.ButtonTypes.close},
-        {type : RippleBox.ButtonTypes.refresh}
     ];
     var ret = new RippleBox(root, rippleMaster, address, option);
     ret.sellBuyPanel = new SellBuyPanel(ret.content);
@@ -299,8 +296,7 @@ RippleBox.SellBuyBox = function(root, rippleMaster, address){
     }
     $(ret.buttons[0]).click(ret.ok);
     $(ret.buttons[1]).click(ret.Close.bind(ret));
-    $(ret.buttons[2]).click(ret.refresh.bind(ret));
-    ret.startHooks.push(ret.refresh);
+    ret.startHooks.push(ret.refresh.bind(ret));
     return ret;
 }
 
@@ -311,7 +307,6 @@ RippleBox.MoneyFlowBox = function(root, rippleMaster, address){
     option[RippleBox.Keys.buttons] = [
         {type : RippleBox.ButtonTypes.ok},
         {type : RippleBox.ButtonTypes.close},
-        {type : RippleBox.ButtonTypes.refresh}
     ];
     var ret = new RippleBox(root, rippleMaster, address, option);
     ret.moneyFlowPanel = new MoneyFlowPanel(ret.content);
@@ -372,8 +367,7 @@ RippleBox.MoneyFlowBox = function(root, rippleMaster, address){
     }
     $(ret.buttons[0]).click(ret.ok);
     $(ret.buttons[1]).click(ret.Close.bind(ret));
-    $(ret.buttons[2]).click(ret.refresh.bind(ret));
-    ret.startHooks.push(ret.refresh);
+    ret.startHooks.push(ret.refresh.bind(ret));
     return ret;
 }
 

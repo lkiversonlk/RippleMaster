@@ -93,9 +93,11 @@ MainPage.EVENT = {
         addRippleAddress : function(rippleAddress, configure){
             var self = this;
             var found = false;
+            var accountPanel;
             $.each(self.accountPanelControls, function(i){
                 if(self.accountPanelControls[i].address === rippleAddress){
                     found = true;
+                    accountPanel = self.accountPanelControls[i];
                     if(configure) {
                         self.accountPanelControls[i].InitExtral(configure);
                     }
@@ -103,13 +105,14 @@ MainPage.EVENT = {
                 };
             });
             if(!found) {
-                self.accountPanelControls.push(new AccountPanelsControl($("#account-content"), $("#arbitrage-content"), rippleAddress, configure, self.rippleMaster));
+                accountPanel = new AccountPanelsControl($("#account-content"), $("#arbitrage-content"), rippleAddress, configure, self.rippleMaster);
+                self.accountPanelControls.push(accountPanel);
                 if(configure){
-                    self.accountPanelControls[self.accountPanelControls.length - 1].InitExtral(configure);
+                    accountPanel.InitExtral(configure);
                 }
                 $(self).trigger(MainPage.EVENT.updateRippleAddress);
             }
-
+            accountPanel.refresh();
         },
 
         addModuleToAddress : function(address, moduleKey){
@@ -117,7 +120,7 @@ MainPage.EVENT = {
             var found = false;
             $.each(self.accountPanelControls, function(i){
                 if(self.accountPanelControls[i].address === address){
-                    self.accountPanelControls[i].addExtralWidget(moduleKey);
+                    self.accountPanelControls[i].addExtralWidget(moduleKey, true);
                     return false;
                 };
             });

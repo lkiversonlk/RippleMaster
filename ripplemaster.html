@@ -102,12 +102,12 @@
     <div style="min-height: 200px">
         <div class="tab-content">
             <div class="tab-pane active fade in" id="account">
-                <div id="account-content" class="container-fluid">
+                <div id="account-content" class="container">
                 </div>
 
             </div>
             <div class="tab-pane fade" id="arbitrage">
-                <div id="arbitrage-content" class="container-fluid">
+                <div id="arbitrage-content" class="container">
                 </div>
             </div>
             <div class="tab-pane fade" id="settings">
@@ -131,7 +131,11 @@
                                 </form>
                             </div>
                             <div id="configure-ripple-address">
-                                <h2>Ripple Addresses</h2>
+                                <h2>
+                                    Ripple Addresses
+                                    <span class="glyphicon glyphicon-plus green-text right" onclick="{$('#addRippleAccountPanel').modal('show');}"></span>
+                                </h2>
+
                                 <hr>
                                 <form class="form-horizontal" role="form">
                                 </form>
@@ -254,15 +258,16 @@
 <script src="js/Ripple/RippleServer.js"></script>
 <script src="js/Ripple/Transaction.js"></script>
 <script src="js/Ripple/TransactionAnalyzer.js"></script>
-<script src="js/Ripple/TxManagement.js"></script>
+<script src="js/managers/TxManagement.js"></script>
 <script src="js/Ripple/Util.js"></script>
 <script src="js/RippleMaster.js"></script>
 <script>
     $(document).ready(function(){
         Log.SetLevel(Log.DEBUG_LEVEL);
         var main = new RippleMaster();
-        main.Start();
-        var mainPage = new MainPage(main);
+        main.Start(function(){
+            var mainPage = new MainPage(main);
+        });
     });
 </script>
 </body>

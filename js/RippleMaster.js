@@ -15,13 +15,16 @@ RippleMaster.prototype = {
         return this._state;
     },
 
-    Start : function(){
+    Start : function(callback){
         var self = this;
         var netConfig = Consts.DefaultNetConfig;
         self._rippleServer.Connect(netConfig, function(result, msg){
             switch (result){
                 case Consts.RESULT.SUCCESS:
                     self.SetState(Consts.STATE.ONLINE);
+                    if(callback){
+                        callback();
+                    }
                     break;
             }
         });
