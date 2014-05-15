@@ -54,9 +54,9 @@ SellBuyPanel.prototype = {
         var contentHtml = '<div class="row">' +
                             '<div class="col-md-6 chart-area margin-top10" style="height: 300px"></div>' +
                             '<div class="col-md-4">' +
-                                '<p>You have bought <strong></strong> at price <strong></strong></p>' +
-                                '<p>You have sold <strong></strong> at price <strong></strong></p>' +
-                                '<p>You have get <strong></strong> in amount of <strong></strong>'
+                                '<p>You have bought <strong class="green-text"></strong> at price <strong class="green-text"></strong></p>' +
+                                '<p>You have sold <strong class="green-text"></strong> at price <strong class="green-text"></strong></p>' +
+                                '<p>You have get <strong class="green-text"></strong> in amount of <strong class="green-text"></strong>'
                             '</div>' +
                         '</div>';
         var contentDiv = $("<div />", {
@@ -122,10 +122,10 @@ SellBuyPanel.prototype = {
             }
         });
         var strongs = $(self.summaryDiv).find("strong");
-        $(strongs[0]).text((data.buyBase? data.buyBase.toFixed(3) : "0.000") + data.baseCurrency());
-        $(strongs[1]).text((data.buyBase? data.buyRatio.toFixed(3) : "0.00") + data.refCurrency());
-        $(strongs[2]).text((data.sellBase? data.sellBase.toFixed(3) : "0.000") + data.baseCurrency());
-        $(strongs[3]).text((data.sellBase? data.sellRatio.toFixed(3) : "0.00") + data.refCurrency());
+        $(strongs[0]).text((data.buyBase? data.buyBase.toFixed(3) : "0.000") + data.baseCurrency);
+        $(strongs[1]).text((data.buyBase? data.buyRatio.toFixed(3) : "0.00") + data.refCurrency);
+        $(strongs[2]).text((data.sellBase? data.sellBase.toFixed(3) : "0.000") + data.baseCurrency);
+        $(strongs[3]).text((data.sellBase? data.sellRatio.toFixed(3) : "0.00") + data.refCurrency);
 
         var amount, benefits;
         if(data.sellBase && data.buyBase){
