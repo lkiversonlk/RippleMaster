@@ -20,6 +20,7 @@ function AccountPanelsControl(accountRoot, arbitrageRoot, address, extral, rippl
     self.initCommonWidgets();
     self.extralWidgetKeys = [];
     self.extralWidgets = [];
+    self.listenPanels();
     self.InitExtral(extral);
 }
 
@@ -29,6 +30,22 @@ AccountPanelsControl.StructureKeys = {
 };
 
 AccountPanelsControl.prototype = {
+    listenPanels : function(){
+        var self = this;
+        $(self.arbitragePanel).bind(AccountEvent.addMod, function(){
+            $("#add-module-ok").unbind();
+            $("#add-module-ok").click(function(){
+                var modulePanelModulePicker = $("#modulePanel .selectpicker")[0];
+                var panelKey = $(modulePanelModulePicker).val();
+                if(panelKey){
+                    self.addExtralWidget(panelKey, true);
+                }
+                $("#modulePanel").modal('hide');
+            });
+            $('#modulePanel').modal('show');
+        })
+    },
+
     initCommonWidgets : function(){
         var self = this;
         self.addAccountBalancePanel();
@@ -38,7 +55,6 @@ AccountPanelsControl.prototype = {
 
     InitExtral : function(extral){
         var self = this;
-        self.removeAll();
         $.each(extral, function(i){
             self.addExtralWidget(extral[i], false);
         })
@@ -77,6 +93,8 @@ AccountPanelsControl.prototype = {
         });
         self.extralWidgetKeys = [];
         self.extralWidgets = [];
+        $(self.accountPanel).unbind();
+        $(self.arbitragePanel).unbind();
     },
 
     addAccountBalancePanel : function(){

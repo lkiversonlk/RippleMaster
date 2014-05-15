@@ -36,37 +36,16 @@ MainPage.EVENT = {
 
         initPage : function(){
             var self = this;
-            self.modulePanelAccountPicker = $("#modulePanel .selectpicker")[0];
-            self.modulePanelModulePicker = $("#modulePanel .selectpicker")[1];
-            self.addressPanelAccountInput = $("#addRippleAccountPanel input");
-            $(self.modulePanelAccountPicker).selectpicker();
+            var modulePanelModulePicker = $("#modulePanel .selectpicker");
             $.each(addablePanels, function(i){
                 var addable = addablePanels[i];
                 var opt = $("<option />",{
                     value : addable.value,
                     text : addable.key
                 })
-                $(self.modulePanelModulePicker).append(opt);
+                $(modulePanelModulePicker).append(opt);
             })
-            $(self.modulePanelModulePicker).selectpicker();
-
-            $("#add-module-ok").click(function(){
-                var address = $(self.modulePanelAccountPicker).val();
-                var panelKey = $(self.modulePanelModulePicker).val();
-                if(address && panelKey){
-                    self.addModuleToAddress(address, panelKey);
-                }
-                $("#modulePanel").modal('hide');
-            });
-
-            $("#add-rippleaddress-ok").click(function(){
-                var address = $(self.addressPanelAccountInput).val();
-                self.addRippleAddress(address, []);
-                self.addRippleAddressToConfigurePanel(address);
-                $("#addRippleAccountPanel").modal('hide');
-                self.postMasterAccountAndSettings();
-
-            });
+            $(modulePanelModulePicker).selectpicker();
 
             $("#logout").click(function(){
                 location.href = "/logout";

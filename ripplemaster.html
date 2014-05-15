@@ -183,23 +183,6 @@
     </div>
 </div>
 
-<div class="modal fade" id="addRippleAccountPanel">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Add RippleAddress</h4>
-            </div>
-            <div class="modal-body">
-                <div class="input-group date"><input type="text" class="form-control"><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button id="add-rippleaddress-ok" type="button" class="btn btn-primary">OK</button>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-
 <div class="modal fade" id="modulePanel">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -207,22 +190,16 @@
                 <h4 class="modal-title">Add Modules</h4>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-4" style="padding-top: 8px">
-                        <span class="label label-primary right">Ripple Address</span>
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            <label class="form-control">Select Module</label>
+                        </div>
+                        <div class="col-md-8">
+                            <select class="selectpicker"></select>
+                        </div>
                     </div>
-                    <div class="col-md-8">
-                        <select class="selectpicker"></select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4" style="padding-top: 8px">
-                        <span class="label label-primary right">Module Type</span>
-                    </div>
-                    <div class="col-md-8">
-                        <select class="selectpicker"></select>
-                    </div>
-                </div>
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -250,7 +227,7 @@
 <script src="js/pages/BalancePanel.js"></script>
 <script src="js/pages/ProgressBar.js"></script>
 <script src="js/pages/RippleBox.js"></script>
-<script src="js/pages/ArbitragePanel.js"></script>
+<script src="js/pages/statPanels.js"></script>
 <script src="js/pages/AccountPanel.js"></script>
 <script src="js/pages/AccountPanelController.js"></script>
 <script src="js/pages/MainPage.js"></script>

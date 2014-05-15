@@ -81,7 +81,7 @@ SellBuyPanel.prototype = {
         $(chartArea).dxChart({
             commonSeriesSettings : {
                 type : "bar",
-                argumentField : 'rate'
+                argumentField : "rate"
             },
             series:[
                 {valueField : 'buy', name:'buy'},
@@ -99,7 +99,7 @@ SellBuyPanel.prototype = {
             tooltip: {
                 enabled : true,
                 customizeText : function(point){
-                    return "Rate: " + point.argumentText + " : " + point.value.toFixed(2);
+                    return "Rate: " + point.argumentText + " Amount:" + point.value.toFixed(2);
                 },
                 font:{
                     size : 14

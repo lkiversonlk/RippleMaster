@@ -204,6 +204,7 @@ RippleBox.TxBox = function(root, rippleMaster, address){
     $(ret.content).html(tableHtml);
     ret.table = new RippleTable(ret.content);
     ret.refresh = function(){
+        ret.progressBar.SetProgress(0, "");
         ret.progressBar.SetProgress(30, "Loading account transactions");
         ret.table.Clear();
         ret.rippleMaster.ConsultTransactions(ret.address, function(result, isThereMore, addedTxes){

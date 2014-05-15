@@ -1,6 +1,7 @@
 var AccountEvent = {
     ldTxes : "ldTxes",
-    ldAcc : "ldAcc"
+    ldAcc : "ldAcc",
+    addMod : "adMod"
 };
 
 function AccountPanel(root, address, rippleMaster){
@@ -158,12 +159,9 @@ function ArbitragePanel(root, address, rippleMaster){
     };
 
     $(load).click(self.refresh.bind(self));
-
-
     $(add).click(function(){
-        $('#modulePanel').modal('show');
+        $(self).trigger(AccountEvent.addMod);
     })
-
     $(ldTx).click(function(){
         $(self).trigger(AccountEvent.ldTxes);
     })
