@@ -3,58 +3,56 @@ function Stat(){
 };
 
 
-Stat.CalIOUSummary = function(start, end, dataCollection){
-    var ret = {};
+Stat.CalIOUSummary = function(start, end, iou, dataCollection){
+    var ret = {
+        'send':0,
+        'receive':0,
+        'buy':0,
+        'sell':0
+    };
 
     dataCollection.ForeachTransaction(start, end, function(tx){
-        var cost = null;
-        var amount = null;
+        var proceed = 0;
         if(tx.Cost()){
-            cost = tx.Cost().Currency() + tx.Cost().Issuer();
-            if(!ret[cost]){
-                ret[cost] = {
-                    sell : 0, send : 0, receive : 0, buy : 0
-                };
+            var costiou = tx.Cost().Currency() + tx.Cost().Issuer();
+            if(costiou == iou){
+                proceed = 1;
             }
         }
         if(tx.Amount()){
-            amount = tx.Amount().Currency() + tx.Amount().Issuer();
-            if(!ret[amount]){
-                ret[amount] = {
-                    sell : 0, send : 0, receive : 0, buy : 0
-                };
+            var amountiou = tx.Amount().Currency() + tx.Amount().Issuer();
+            if(amountiou == iou){
+                proceed = 2;
             }
         }
-        switch (tx.Type()){
-            case Transaction.Type.Send:
-                ret[cost].send += tx.Cost().Money();
-                break;
-            case Transaction.Type.Receive:
-                ret[amount].receive += tx.Amount().Money();
-                break;
-            case Transaction.Type.Trade :
-                ret[cost].sell += tx.Cost().Money();
-                ret[amount].buy += tx.Amount().Money();
-                break;
-            case Transaction.Type.ERROR   :
-                // do nothing //
-                break;
+
+        if(proceed != 0) {
+            switch (tx.Type()){
+                case Transaction.Type.Send:
+                    ret['send'] += tx.Cost().Money();
+                    break;
+                case Transaction.Type.Receive:
+                    ret['receive'] += tx.Amount().Money();
+                    break;
+                case Transaction.Type.Trade :
+                    if(proceed == 1){
+                        ret['sell'] += tx.Cost().Money();
+                    }else{
+                        ret['buy'] += tx.Amount().Money();
+                    }
+                    break;
+                case Transaction.Type.ERROR   :
+                    // do nothing //
+                    break;
+            }
         }
     });
-
-    return ret;
-};
-
-Stat.CallIOUSendReceive = function(start, end, dataCollection){
-    var ret = new Array();
-    dataCollection.ForeachTransaction(start, end, function(tx){
-
-    });
-
     return ret;
 };
 
 Stat.CalIOUBuySell = function(start, end, baseIOU, refIOU, dataCollection){
+    var baseCurrency = baseIOU.substr(0,3);
+    var refCurrency = refIOU.substr(0, 3);
     var sellHigh = null;
     var sellLow = null;
     var buyHigh = null;
@@ -137,6 +135,11 @@ Stat.CalIOUBuySell = function(start, end, baseIOU, refIOU, dataCollection){
 
     var categoryCount = 5;
     var gap = (high - low) / categoryCount;
+    if(gap == 0){
+        //maybe only one transaction
+        gap = 1;
+        categoryCount = 1;
+    }
     var sellShaped = new Array();
     var buyShaped = new Array();
     var finalRecords = new Array();
@@ -200,7 +203,9 @@ Stat.CalIOUBuySell = function(start, end, baseIOU, refIOU, dataCollection){
         buyBase : buyBase,
         sellRef : sellRef,
         buyRef : buyRef,
-        records : finalRecords
+        records : finalRecords,
+        baseCurrency : baseCurrency,
+        refCurrency : refCurrency
     };
     return ret;
 };

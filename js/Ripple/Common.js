@@ -111,3 +111,17 @@ var mainPageParam = {
     ONLINE : 0,
     CONNECTING : 1
 };
+
+Consts.Palette = [
+    "#AAD53B",
+    "#E9772E",
+    "#C0C0C0",
+    "#CFE1A9"
+];
+
+Consts.ReversePalette = [
+    "#E9772E",
+    "#AAD53B",
+    "#CFE1A9",
+    "#C0C0C0"
+];
