@@ -41,6 +41,9 @@
 .padding-top20{
     padding-top: 20px;
 }
+.height40{
+    height: 40px;
+}
 .button-look {
     -webkit-appearance:button;
     -moz-appearance:button;
@@ -268,20 +271,9 @@ html, body{
     text-align: center;
 }
 .configure-panel{
-    color: #F2F3F5;
     background-color: #AAD53B;
-    padding-bottom: 5px;
-    padding-top: 5px;
-    font-size: 17px;
 }
-.configure-panel{
-    color: #428BCA;
-    cursor: pointer;
-}
- .configure-panel a:hover,
- .configure-panel a:focus{
-     color: #3B3C3E;
- }
+
  .account-stat-group{
      margin-left: 10px;
      margin-right: 10px;

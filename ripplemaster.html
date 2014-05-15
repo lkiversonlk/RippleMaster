@@ -20,7 +20,7 @@
     <![endif]-->
 </head>
 <body class="white-background">
-<div class="wrapper">
+<div >
     <div class="navbar black-background ripplemaster-nav" role="navigation">
         <div class="container">
             <div class="havbar-header green-text">
@@ -47,15 +47,15 @@
     <div id="function-panel">
         <div class="container">
             <div class="row">
-                <div id="user-panel" class="col-md-8 col-xs-8">
+                <div id="user-panel" class="col-md-6 col-xs-6">
                     <div class="container-fluid">
                         <div class="row">
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <img src="images/ripple.png" class="max-width">
                             </div>
-                            <div class="col-md-9 col-md-offset-1">
+                            <div class="col-md-8 col-md-offset-1">
                                 <div id="account-title-text">
-                                    lkiversonlk
+                                    Logging...
                                 </div>
                             </div>
                         </div>
@@ -64,7 +64,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 col-xs-4">
+                <div class="col-md-6 col-xs-6">
                     <ul class="nav nav-pills nav-justified panel-font">
                         <li class="active">
                             <a href="#account"  data-toggle="tab">
@@ -84,46 +84,38 @@
                                 <div>Settings<br>&nbsp; </div>
                             </a>
                         </li>
+                        <li>
+                            <a id="logout">
+                                <span class="glyphicon glyphicon-log-out"></span>
+                                <div>Logout<br>&nbsp; </div>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="shadow margin-top10"></div>
+    <div class="green-background button-look height40 margin-top10">
+    </div>
+
     <div style="min-height: 200px">
         <div class="tab-content">
             <div class="tab-pane active fade in" id="account">
-                <div class="configure-panel">
-                    <div class="container">
-                        <button class="btn btn-primary" type="button" onclick="{$('#addRippleAccountPanel').modal('show');}" >Add RippleAddress</button>
-                    </div>
-                </div>
                 <div id="account-content" class="container-fluid">
                 </div>
 
             </div>
             <div class="tab-pane fade" id="arbitrage">
-                <div class="configure-panel">
-                    <div class="container">
-                        <button class="btn btn-primary" type="button" onclick="{$('#modulePanel').modal('show');}" >Add Modules</button>
-                    </div>
-                </div>
                 <div id="arbitrage-content" class="container-fluid">
                 </div>
             </div>
             <div class="tab-pane fade" id="settings">
-                <div class="configure-panel">
-                    <div class="container">
-                        <button class='btn btn-primary' type='button' id="logout">log out</button>
-                    </div>
-                </div>
                 <div class="container settings">
                     <div class="row">
                         <div class="col-md-3">
                             <a href="#configure-account-basic" class="list-group-item">Account Basic</a>
                             <a href="#configure-ripple-address" class="list-group-item">Ripple Addresses</a>
-                            <a href="#configure" class="list-group-item">Diagnostics</a>
                         </div>
                         <div class="col-md-9">
                             <div id="configure-account-basic">
@@ -144,10 +136,6 @@
                                 <form class="form-horizontal" role="form">
                                 </form>
                             </div>
-                            <div id="configure-">
-                                <h2>Configure Basic</h2>
-                                <hr>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -156,7 +144,7 @@
     </div>
 </div>
 
-<div class="footer" style="padding-top: 140px">
+<div style="padding-top: 140px">
     <div class="black-background">
         <div class="container">
             <div class="col-md-4">
