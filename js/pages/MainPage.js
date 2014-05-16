@@ -53,6 +53,16 @@ MainPage.EVENT = {
 
             $(self).bind(MainPage.EVENT.updateRippleAddress, self.updateModals.bind(self));
 
+
+            var addressPanelAccountInput = $("#addRippleAccountPanel input");
+            $("#add-rippleaddress-ok").click(function(){
+                var address = $(addressPanelAccountInput).val();
+                self.addRippleAddress(address, []);
+                self.addRippleAddressToConfigurePanel(address);
+                $("#addRippleAccountPanel").modal('hide');
+                self.postMasterAccountAndSettings();
+            });
+
             setInterval(self.postMasterAccountAndSettings.bind(self), 60 * 1000);
         },
 
