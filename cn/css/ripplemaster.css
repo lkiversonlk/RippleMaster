@@ -1,0 +1,492 @@
+.max-width{
+    max-width: 100%;
+}
+.max-height{
+    max-height: 100%;
+}
+.left{
+    float: left;
+}
+.right{
+    float: right;
+}
+.center{
+    margin-left: auto;
+    margin-right: auto;
+}
+.full-height{
+    height: 100%;
+}
+.full-width{
+    width: 100%;
+}
+.round-corner20{
+    border-radius: 20px;
+}
+.font-size30{
+    font-size: 30px;
+}
+.font-size40{
+    font-size: 40px;
+}
+.font-size60{
+    font-size: 60px;
+}
+.margin-top20{
+    margin-top: 20px;
+}
+.margin-top10{
+    margin-top: 10px;
+}
+.padding-top20{
+    padding-top: 20px;
+}
+.height40{
+    height: 40px;
+}
+.button-look {
+    -webkit-appearance:button;
+    -moz-appearance:button;
+    -o-appearance:button;
+    -ms-appearance:button;
+}
+/* this is for the basic fonts, colors */
+.darkgray-background {
+    background-color: #C0C0C0;
+}
+.lightblue-background{
+    background-color: #99ccff;
+}
+.black-background{
+    background-color: #3B3C3E;
+}
+.white-background{
+    background-color: #F2F3F5;
+}
+.purewhite-background{
+    background-color: #ffffff;
+}
+.gray-background{
+    background-color: #D3D5D7;
+}
+.green-background{
+    background-color: #AAD53B;
+}
+.blue-background{
+    background-color: #88B8CC;
+}
+.darkblue-background{
+    background-color: #428BCA;
+}
+.darkblue-text{
+    color: #428BCA;
+}
+.green-text{
+    color: #AAD53B;
+}
+.red-text{
+    color: #FF0033;
+}
+.white-text{
+    color: #F2F3F5;
+}
+.sell-text{
+    color : #BA4D51;
+}
+.buy-text{
+    color : #669099;
+}
+td{
+    text-align: center;
+}
+/* this is for the size */
+
+/* common div */
+
+/* for specific part */
+#function-panel{
+    font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
+    color: #3B3C3E;
+}
+#function-panel a{
+    color: #3B3C3E;
+}
+#function-panel ul{
+    font-size: 17px;
+}
+#function-panel p{
+    font-size: 20px;
+}
+#function-panel span{
+    font-size: 30px;
+}
+#function-panel .nav-pills > li.active > a{
+    background-color: #AAD53B;
+    color: #ffffff;
+}
+.ripplemaster-nav{
+    height: 70px;
+    padding-top: 10px;
+}
+.ripplemaster-nav-font{
+    font-family: Impact, Haettenschweiler, "Franklin Gothic Bold", Charcoal, "Helvetica Inserat", "Bitstream Vera Sans Bold", "Arial Black", sans serif;
+}
+#netstat .nav > li > a{
+    color: #AAD53B;
+}
+#netstat .nav > li > a:hover,
+#netstat .nav > li > a:focus {
+    text-decoration: none;
+    background-color: #3B3C3E;
+}
+.shadow{
+    width: 100%;
+    background : url(../images/shadow.png) repeat-x;
+    height: 2px;
+}
+.separator40{
+    height: 40px;
+}
+.progress-bar-ripplemaster{
+    background-color: #AAD53B;
+}
+
+/* for holds display */
+.pricingtable{
+    height: 100px;
+    width:  150px;
+    margin: 3px;
+    opacity: 0.9;
+    position: relative;
+    display: inline-block;
+    background-color: #D3D5D7;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.pricingtable-height{
+    height: 100px;
+}
+
+.pricingtable-width{
+    width:  170px;
+}
+
+.pricingtable-top{
+    position: absolute;
+    width: 150px; height: 30px;
+    background: #428BCA;
+    -webkit-border-radius: 5px 5px 0 0;
+    -moz-border-radius: 5px 5px 0 0;
+    border-radius: 5px 5px 0 0;
+}
+
+.pricingtable-top .currency {
+    color: #3B3C3E;
+    text-align: center;
+    font-family: Impact, Haettenschweiler, "Franklin Gothic Bold", Charcoal, "Helvetica Inserat", "Bitstream Vera Sans Bold", "Arial Black", sans serif;
+    font-size: 20px;
+}
+
+.pricingtable ul {
+    list-style-type: none;
+    font: 300 18px/2 Helvetica, Verdana, sans-serif;
+    margin: 20px 0 0 45px;
+}
+
+.pricingtable ul strong {
+    font-weight: bold;
+}
+
+.pricingtable hr {
+    border: 0;
+    background-color: #BCBEC0;
+    color: #BCBEC0;
+    height: 1px;
+    width: 130px;
+    margin: 5px 0 0 5px;
+}
+
+.pricingtable .balance {
+    text-align: center;
+    font: bold 25px/1 Helvetica, Verdana, sans-serif;
+    margin: 10px 0 0 0;
+    color: #E9772E;
+}
+
+.pricingtable p {
+    text-align: center;
+    font: 500 14px/1 Helvetica, Verdana, sans-serif;
+    color: #3B3C3E;
+    margin: 5px 0 0 0;
+}
+.second-caption{
+    text-align: center;
+    font-family: Impact, Haettenschweiler, "Franklin Gothic Bold", Charcoal, "Helvetica Inserat", "Bitstream Vera Sans Bold", "Arial Black", sans serif;
+    font-size: 20px;
+    color: #AAD53B;
+    background-color: #3B3C3E;
+    padding-right: 20px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+.second-caption a{
+    color: #AAD53B;
+    cursor: pointer;
+    padding-left: 10px
+;
+}
+.second-caption a:hover{
+    color: #ffffff;
+}
+.ripple-box{
+    background-color: #F2F3F5;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border: 1px solid #000000;
+    padding-bottom: 10px;
+    border-radius: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+.account-title{
+    text-align: center;
+}
+.configure-panel{
+    background-color: #AAD53B;
+}
+
+ .account-stat-group{
+     margin-left: 10px;
+     margin-right: 10px;
+     padding-top: 10px;
+     padding-bottom: 10px;
+ }
+
+ .stat-panel-configure{
+     padding: 4px;
+ }
+
+ .account-panel{
+     background-color: #ffffff;
+     -webkit-appearance:button;
+     -moz-appearance:button;
+     -o-appearance:button;
+     -ms-appearance:button;
+     border-radius: 5px;
+     margin-top: 20px;
+ }
+
+.account-caption{
+    text-align: center;
+    font-family: Impact, Haettenschweiler, "Franklin Gothic Bold", Charcoal, "Helvetica Inserat", "Bitstream Vera Sans Bold", "Arial Black", sans serif;
+    font-size: 30px;
+    color: #3B3C3E;
+    background-color: #F2F3F5;
+    border-bottom: 1px solid #3B3C3E;
+
+}
+.account-caption a{
+    margin-left: 8px;
+    margin-right: 8px;
+}
+.footer a{
+    color: #AAD53B;
+    font-family: "Calisto MT", "Bookman Old Style", Bookman, "Goudy Old Style", Garamond, "Hoefler Text", "Bitstream Charter", Georgia, serif;
+    font-size: 20px;
+}
+
+#account-title-text{
+    font-family: "Calisto MT", "Bookman Old Style", Bookman, "Goudy Old Style", Garamond, "Hoefler Text", "Bitstream Charter", Georgia, serif;
+    font-size: 40px;
+}
+/* for test */
+.border{
+    border: 1px solid #000000;
+}
+
+/* from login */
+/* BS3 using input group icons from Font-Awesome 3.2.1 */
+
+/* no need for any margin/padding for headings when using WELL */
+.well h3 {
+    padding-top: 0;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-family: Impact, Haettenschweiler, "Franklin Gothic Bold", Charcoal, "Helvetica Inserat", "Bitstream Vera Sans Bold", "Arial Black", sans serif;
+    color: #AAD53B;
+}
+.inputForm .input-group {
+    margin-bottom: 20px;
+}
+
+.settings{
+    margin-top : 10px;
+}
+
+/* get font-awesome to work with BS3 */
+.input-group-addon .icon-2x {
+    width: 28px;
+    min-width: 28px;
+    display: inline-block;
+}
+
+.inline-block > li {
+    position: relative;
+    display: inline-block;
+    margin: 0 10px 10px 0;
+}
+
+@media (max-width: 768px) {
+    #social-sign-in .icon-5x {
+        font-size: 7em;
+    }
+}
+@media (max-width: 480px) {
+    #social-sign-in .icon-5x {
+        font-size: 4.5em;
+    }
+}
+@media (min-width: 1199px) {
+    #social-sign-in .icon-5x {
+        font-size: 7em;
+    }
+}
+
+.hinder-font{
+    font: 1.5em "Open Sans",Helvetica,Arial,sans-serif;
+    font-style: italic;
+    font-weight: 300;
+}
+
+.help-inline{
+    color: #E9772E;
+}
+
+/* loading */
+.loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    margin: -12px 0 0 -12px;
+}
+
+.loading i {
+    position: absolute;
+    top: 24px; left: 24px;
+    display: block;
+    width: 24px;
+    height: 24px;
+    background: #3168A7;
+    border-radius: 24px;
+    -webkit-animation: spin2 1.5s ease-in-out infinite;
+}
+.loading i:first-child {
+    top: -24px; left: 0;
+    background: #3168A7;
+    -webkit-animation: spin 1.5s ease-in-out infinite;
+}
+.loading i:last-child {
+    top: 24px; left: -24px;
+    background: #3168A7;
+    -webkit-animation: spin3 1.5s ease-in-out infinite;
+}
+
+@-webkit-keyframes spin {
+    0% {
+        top: -24px;
+        left: 0;
+        -webkit-transform: scale(1);
+    }
+    17% {
+        -webkit-transform: scale(.5);
+    }
+    33% {
+        top: 24px;
+        left: 24px;
+        -webkit-transform: scale(1);
+    }
+    50% {
+        -webkit-transform: scale(.5);
+    }
+    66% {
+        top: 24px;
+        left: -24px;
+        -webkit-transform: scale(1);
+    }
+    83% {
+        -webkit-transform: scale(.5);
+    }
+    100% {
+        top: -24px;
+        left: 0;
+        -webkit-transform: scale(1);
+    }
+}
+@-webkit-keyframes spin2 {
+    0% {
+        top: 24px;
+        left: 24px;
+        -webkit-transform: scale(1);
+    }
+    17% {
+        -webkit-transform: scale(.5);
+    }
+    33% {
+        top: 24px;
+        left: -24px;
+        -webkit-transform: scale(1);
+    }
+    50% {
+        -webkit-transform: scale(.5);
+    }
+    66% {
+        top: -24px;
+        left: 0;
+        -webkit-transform: scale(1);
+    }
+    83% {
+        -webkit-transform: scale(.5);
+    }
+    100% {
+        top: 24px;
+        left: 24px;
+        -webkit-transform: scale(1);
+    }
+}
+@-webkit-keyframes spin3 {
+    0% {
+        top: 24px;
+        left: -24px;
+        -webkit-transform: scale(1);
+    }
+    17% {
+        -webkit-transform: scale(.5);
+    }
+    33% {
+        top: -24px;
+        left: 0;
+        -webkit-transform: scale(1);
+    }
+    50% {
+        -webkit-transform: scale(.5);
+    }
+    66% {
+        top: 24px;
+        left: 24px;
+        -webkit-transform: scale(1);
+    }
+    83% {
+        -webkit-transform: scale(.5);
+    }
+    100% {
+        top: 24px;
+        left: -24px;
+        -webkit-transform: scale(1);
+    }
+}
