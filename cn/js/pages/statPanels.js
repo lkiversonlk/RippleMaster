@@ -134,8 +134,8 @@ SellBuyPanel.prototype = {
         }else{
             amount = benefits = 0;
         }
-        $(strongs[4]).text(benefits);
-        $(strongs[5]).text(amount);
+        $(strongs[4]).text(benefits + data.refCurrency);
+        $(strongs[5]).text(amount + data.baseCurrency);
     }
 };
 
@@ -293,10 +293,10 @@ MoneyFlowPanel.prototype = {
     PaintData : function(data){
         var self = this;
         var chartData = [];
-        chartData.push({type:'send', value:data['send']});
-        chartData.push({type:'sell', value:data['sell']});
-        chartData.push({type:'receive', value:data['receive']});
-        chartData.push({type:'buy',value:data['buy']});
+        chartData.push({type:'发送', value:data['send']});
+        chartData.push({type:'出售', value:data['sell']});
+        chartData.push({type:'收到', value:data['receive']});
+        chartData.push({type:'购买',value:data['buy']});
         var outcome = [];
         for(var k in data.sellDetail){
             if(data.sellDetail.hasOwnProperty(k)){

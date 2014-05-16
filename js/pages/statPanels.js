@@ -134,8 +134,8 @@ SellBuyPanel.prototype = {
         }else{
             amount = benefits = 0;
         }
-        $(strongs[4]).text(benefits);
-        $(strongs[5]).text(amount);
+        $(strongs[4]).text(benefits + data.refCurrency);
+        $(strongs[5]).text(amount + data.baseCurrency);
     }
 };
 

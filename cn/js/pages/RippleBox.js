@@ -130,7 +130,7 @@ RippleBox.prototype = {
 
 RippleBox.OfferBox = function(root, rippleMaster, address){
     var option = {};
-    option[RippleBox.Keys.title] = "Current Offers";
+    option[RippleBox.Keys.title] = "目前挂单";
     option[RippleBox.Keys.progressBar] = true;
     option[RippleBox.Keys.buttons] = [{
         type : RippleBox.ButtonTypes.refresh
