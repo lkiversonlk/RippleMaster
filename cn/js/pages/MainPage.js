@@ -8,8 +8,8 @@ function MainPage(rippleMaster){
 }
 
 var addablePanels = [
-    {key : "Sell & Buy statistic", value : AccountPanelsControl.StructureKeys.SellBuy},
-    {key : "IOU flow statistic", value : AccountPanelsControl.StructureKeys.MoneyFlow}
+    {key : "买卖套利", value : AccountPanelsControl.StructureKeys.SellBuy},
+    {key : "IOU流向", value : AccountPanelsControl.StructureKeys.MoneyFlow}
 ];
 
 MainPage.EVENT = {

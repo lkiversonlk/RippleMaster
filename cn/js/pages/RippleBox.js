@@ -166,7 +166,7 @@ RippleBox.OfferBox = function(root, rippleMaster, address){
 
 RippleBox.AccountBox = function(root, rippleMaster, address){
     var option = {};
-    option[RippleBox.Keys.title] = "Account Balances";
+    option[RippleBox.Keys.title] = "账户现值";
     option[RippleBox.Keys.progressBar] = true;
     option[RippleBox.Keys.buttons] = [{
     }];
@@ -174,17 +174,17 @@ RippleBox.AccountBox = function(root, rippleMaster, address){
     ret.balancePanel = new BalancePanel(ret.content);
     $(ret.content).addClass("max-width");
     ret.refresh = function(){
-        ret.progressBar.SetProgress(40, "Loading account balances");
+        ret.progressBar.SetProgress(40, "加载账户信息中");
         ret.balancePanel.Clear();
         ret.rippleMaster.AccountInfoNoRefresh(ret.address, function(result, id){
             if(result === Consts.RESULT.SUCCESS){
-                ret.progressBar.SetProgress(100, "Account balances loaded");
+                ret.progressBar.SetProgress(100, "账户信息已加载");
                 ret.balancePanel.AddBalance(id.XRP());
                 ret.balancePanel.AddBalances(id.Balances());
             }else if(result === Consts.RESULT.FAIL_NETWORKERROR) {
-                ret.progressBar.SetProgress(100, "Fail, verify your network status");
+                ret.progressBar.SetProgress(100, "加载失败，请确认网络状况");
             }else {
-                ret.progressBar.SetProgress(100, "Fail to load account balances");
+                ret.progressBar.SetProgress(100, "加载失败");
             }
         })
     };
@@ -195,7 +195,7 @@ RippleBox.AccountBox = function(root, rippleMaster, address){
 
 RippleBox.TxBox = function(root, rippleMaster, address){
     var option = {};
-    option[RippleBox.Keys.title] = "Transactions History";
+    option[RippleBox.Keys.title] = "交易历史记录";
     option[RippleBox.Keys.progressBar] = true;
     option[RippleBox.Keys.buttons] = [{
     }];
@@ -204,8 +204,7 @@ RippleBox.TxBox = function(root, rippleMaster, address){
     $(ret.content).html(tableHtml);
     ret.table = new RippleTable(ret.content);
     ret.refresh = function(){
-        ret.progressBar.SetProgress(0, "");
-        ret.progressBar.SetProgress(30, "Loading account transactions");
+        ret.progressBar.SetProgress(30, "加载历史记录中");
         ret.table.Clear();
         ret.rippleMaster.ConsultTransactions(ret.address, function(result, isThereMore, addedTxes){
             if(result === Consts.RESULT.SUCCESS){
@@ -215,13 +214,13 @@ RippleBox.TxBox = function(root, rippleMaster, address){
                     ret.progressBar.SetProgress(100 * (1 - left * 0.8), null);
                     return true;
                 }else{
-                    ret.progressBar.SetProgress(100, "Account transactions loaded");
+                    ret.progressBar.SetProgress(100, "交易记录已加载");
                     return false;
                 }
             }else if(result === Consts.RESULT.FAIL_NETWORKERROR) {
-                ret.progressBar.SetProgress(100, "Fail, verify your network status");
+                ret.progressBar.SetProgress(100, "加载失败，请确认网络状况");
             }else {
-                ret.progressBar.SetProgress(100, "Fail to load transactions");
+                ret.progressBar.SetProgress(100, "加载失败");
                 return false;
             }
         });
@@ -231,7 +230,7 @@ RippleBox.TxBox = function(root, rippleMaster, address){
 
 RippleBox.SellBuyBox = function(root, rippleMaster, address){
     var option = {};
-    option[RippleBox.Keys.title] = "Sell & Buy Stats";
+    option[RippleBox.Keys.title] = "买卖套利";
     option[RippleBox.Keys.progressBar] = true;
     option[RippleBox.Keys.buttons] = [
         {type : RippleBox.ButtonTypes.ok},
@@ -240,17 +239,17 @@ RippleBox.SellBuyBox = function(root, rippleMaster, address){
     var ret = new RippleBox(root, rippleMaster, address, option);
     ret.sellBuyPanel = new SellBuyPanel(ret.content);
     ret.ok = function(){
-        ret.progressBar.SetProgress(40, "Loading transaction data");
+        ret.progressBar.SetProgress(40, "加载交易记录");
         var startTime = new Date($(ret.sellBuyPanel.datepickers[0]).data('date'));
         var endTime = new Date($(ret.sellBuyPanel.datepickers[1]).data('date'));
         if(startTime > endTime){
-            ret.progressBar.SetProgress(100, "Verify the time range");
+            ret.progressBar.SetProgress(100, "请重新选择时间范围");
             return;
         }
         var baseIOU = $(ret.sellBuyPanel.iouSelectors[0]).val();
         var refIOU = $(ret.sellBuyPanel.iouSelectors[1]).val();
         if(refIOU === baseIOU){
-            ret.progressBar.SetProgress(100, "Use different IOUs");
+            ret.progressBar.SetProgress(100, "请使用不同的IOU");
             return;
         }
         var dataCollections = ret.rippleMaster.QueryTransactions(ret.address, function(result, data){
@@ -261,22 +260,22 @@ RippleBox.SellBuyBox = function(root, rippleMaster, address){
                     refIOU,
                     data);
                 if(sellBuy === null){
-                    ret.progressBar.SetProgress(100, "No related transactions found");
+                    ret.progressBar.SetProgress(100, "没有交易记录");
                     return;
                 }
                 ret.sellBuyPanel.PaintData(sellBuy);
-                ret.progressBar.SetProgress(100, "Succeed");
+                ret.progressBar.SetProgress(100, "OK");
             }else if(result === Consts.RESULT.FAIL_NETWORKERROR) {
-                ret.progressBar.SetProgress(100, "Fail, verify your network status");
+                ret.progressBar.SetProgress(100, "加载失败，请确认网络状况");
             }else if(result === Consts.RESULT.FAIL_ACCOUNTNOTLOADED) {
-                ret.progressBar.SetProgress(100, "Fail, please load the account's transactions");
+                ret.progressBar.SetProgress(100, "加载失败，请先加载交易记录");
             }else {
-                    ret.progressBar.SetProgress(100, "Fail to load transaction data");
+                    ret.progressBar.SetProgress(100, "加载失败");
             }
         });
     };
     ret.refresh = function(){
-        ret.progressBar.SetProgress(40, "Loading account info");
+        ret.progressBar.SetProgress(40, "加载账户信息");
         ret.rippleMaster.AccountInfoNoRefresh(ret.address, function(result, id){
             var currencies = [id.XRP()].concat(id.Balances());
             if(result === Consts.RESULT.SUCCESS){
@@ -290,13 +289,13 @@ RippleBox.SellBuyBox = function(root, rippleMaster, address){
                     $(ret.sellBuyPanel.iouSelectors).append(opt);
                 });
                 $(ret.sellBuyPanel.iouSelectors).selectpicker('refresh');
-                ret.progressBar.SetProgress(100, "Succeed");
+                ret.progressBar.SetProgress(100, "OK");
             }else if(result === Consts.RESULT.FAIL_NETWORKERROR) {
-                ret.progressBar.SetProgress(100, "Fail, verify your network status");
+                ret.progressBar.SetProgress(100, "加载失败，请确认网络状况");
             }else if(result === Consts.RESULT.FAIL_ACCOUNTNOTLOADED){
-                ret.progressBar.SetProgress(100, "Fail, please reload the account's information");
+                ret.progressBar.SetProgress(100, "加载失败，请重新加载账户基本信息");
             }else {
-                ret.progressBar.SetProgress(50, "Fail to load account info");
+                ret.progressBar.SetProgress(50, "加载失败");
             }
         });
     }
@@ -308,7 +307,7 @@ RippleBox.SellBuyBox = function(root, rippleMaster, address){
 
 RippleBox.MoneyFlowBox = function(root, rippleMaster, address){
     var option = {};
-    option[RippleBox.Keys.title] = "Money Flow Stats";
+    option[RippleBox.Keys.title] = "IOU流向";
     option[RippleBox.Keys.progressBar] = true;
     option[RippleBox.Keys.buttons] = [
         {type : RippleBox.ButtonTypes.ok},
@@ -317,11 +316,11 @@ RippleBox.MoneyFlowBox = function(root, rippleMaster, address){
     var ret = new RippleBox(root, rippleMaster, address, option);
     ret.moneyFlowPanel = new MoneyFlowPanel(ret.content);
     ret.ok = function(){
-        ret.progressBar.SetProgress(40, "Loading transaction data");
+        ret.progressBar.SetProgress(40, "加载交易记录");
         var startTime = new Date($(ret.moneyFlowPanel.datepickers[0]).data('date'));
         var endTime = new Date($(ret.moneyFlowPanel.datepickers[1]).data('date'));
         if(startTime > endTime){
-            ret.progressBar.SetProgress(100, "Verify the time range");
+            ret.progressBar.SetProgress(100, "请重新选择时间范围");
             return;
         }
         var iou = $(ret.moneyFlowPanel.iouSelector).val();
@@ -332,22 +331,22 @@ RippleBox.MoneyFlowBox = function(root, rippleMaster, address){
                     iou,
                     data);
                 if(iouSummary === null){
-                    ret.progressBar.SetProgress(100, "No related transactions found");
+                    ret.progressBar.SetProgress(100, "没有交易记录");
                     return;
                 }
                 ret.moneyFlowPanel.PaintData(iouSummary);
-                ret.progressBar.SetProgress(100, "Succeed");
+                ret.progressBar.SetProgress(100, "OK");
             }else if(result === Consts.RESULT.FAIL_NETWORKERROR) {
-                ret.progressBar.SetProgress(100, "Fail, verify your network status");
+                ret.progressBar.SetProgress(100, "加载失败，请确认网络状况");
             }else if(result === Consts.RESULT.FAIL_ACCOUNTNOTLOADED) {
-                ret.progressBar.SetProgress(100, "Fail, please load the account's transactions");
+                ret.progressBar.SetProgress(100, "加载失败, 请先加载交易记录");
             }else {
-                ret.progressBar.SetProgress(100, "Fail to load transaction data");
+                ret.progressBar.SetProgress(100, "加载失败");
             }
         });
     };
     ret.refresh = function(){
-        ret.progressBar.SetProgress(40, "Loading account info");
+        ret.progressBar.SetProgress(40, "加载账户信息");
         ret.rippleMaster.AccountInfoNoRefresh(ret.address, function(result, id){
             if(result === Consts.RESULT.SUCCESS){
                 var currencies = [id.XRP()].concat(id.Balances());
@@ -361,13 +360,13 @@ RippleBox.MoneyFlowBox = function(root, rippleMaster, address){
                     $(ret.moneyFlowPanel.iouSelector).append(opt);
                 });
                 $(ret.moneyFlowPanel.iouSelector).selectpicker('refresh');
-                ret.progressBar.SetProgress(100, "Succeed");
+                ret.progressBar.SetProgress(100, "OK");
             }else if(result === Consts.RESULT.FAIL_NETWORKERROR) {
-                ret.progressBar.SetProgress(100, "Fail, verify your network status");
+                ret.progressBar.SetProgress(100, "加载失败，请确认网络状况");
             }else if(result === Consts.RESULT.FAIL_ACCOUNTNOTLOADED){
-                ret.progressBar.SetProgress(100, "Fail, please reload the account's information");
+                ret.progressBar.SetProgress(100, "加载失败，请重新加载账户基本信息");
             }else {
-                ret.progressBar.SetProgress(50, "Fail to load account info");
+                ret.progressBar.SetProgress(50, "加载失败");
             }
         });
     }

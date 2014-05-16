@@ -6,7 +6,7 @@ function SellBuyPanel(root){
 
 var dateSelectHtml = '<div class="form-group">' +
                         '<div class="col-md-2">' +
-                            '<label class="form-control">Start Time</label>' +
+                            '<label class="form-control">从</label>' +
                         '</div>' +
                         '<div class="col-md-4">' +
                             '<div class="input-group date">' +
@@ -14,7 +14,7 @@ var dateSelectHtml = '<div class="form-group">' +
                             '</div>' +
                         '</div>' +
                         '<div class="col-md-2">' +
-                            '<label class="form-control">End Time</label>' +
+                            '<label class="form-control">到</label>' +
                         '</div>' +
                         '<div class="col-md-4">' +
                             '<div class="input-group date">' +
@@ -30,13 +30,13 @@ SellBuyPanel.prototype = {
                                     dateSelectHtml +
                                     '<div class="form-group">' +
                                         '<div class="col-md-2">' +
-                                            '<label class="form-control">Currency1</label>' +
+                                            '<label class="form-control">交易IOU</label>' +
                                         '</div>' +
                                         '<div class="col-md-4">' +
                                             '<select class="selectpicker" data-width="auto"></select>' +
                                         '</div>' +
                                         '<div class="col-md-2">' +
-                                            '<label class="form-control">Currency2</span>' +
+                                            '<label class="form-control">获利IOU</span>' +
                                         '</div>' +
                                         '<div class="col-md-4">' +
                                             '<select class="selectpicker" data-width="auto"></select>' +
@@ -54,9 +54,9 @@ SellBuyPanel.prototype = {
         var contentHtml = '<div class="row">' +
                             '<div class="col-md-6 chart-area margin-top10" style="height: 300px"></div>' +
                             '<div class="col-md-4">' +
-                                '<p>You have bought <strong class="green-text"></strong> at price <strong class="green-text"></strong></p>' +
-                                '<p>You have sold <strong class="green-text"></strong> at price <strong class="green-text"></strong></p>' +
-                                '<p>You have get <strong class="green-text"></strong> in amount of <strong class="green-text"></strong>'
+                                '<p>你一共购买了<strong class="green-text"></strong>，平均价格为<strong class="green-text"></strong></p>' +
+                                '<p>你一共售出了<strong class="green-text"></strong>，平均价格为<strong class="green-text"></strong></p>' +
+                                '<p>其中，你一共获利<strong class="green-text"></strong>，基于交易<strong class="green-text"></strong>'
                             '</div>' +
                         '</div>';
         var contentDiv = $("<div />", {
@@ -152,7 +152,7 @@ MoneyFlowPanel.prototype = {
             dateSelectHtml +
             '<div class="form-group">' +
             '<div class="col-md-2">' +
-            '<label class="form-control">Currency</label>' +
+            '<label class="form-control">IOU</label>' +
             '</div>' +
             '<div class="col-md-4">' +
             '<select class="selectpicker" data-width="auto"></select>' +
@@ -254,7 +254,7 @@ MoneyFlowPanel.prototype = {
                 }
             },
             palette : Consts.Palette,
-            title : "Buy from"
+            title : "IOU购买来源分布"
         });
 
         $(self.outComeChart).dxPieChart({
@@ -286,7 +286,7 @@ MoneyFlowPanel.prototype = {
                 }
             },
             palette : Consts.ReversePalette,
-            title : "Sell for"
+            title : "IOU出售去向分布"
         });
     },
 

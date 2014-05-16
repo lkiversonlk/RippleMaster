@@ -11,14 +11,14 @@ Index.prototype = {
                 password_confirmation : {required : true, equalTo : "#password"}
             },
             messages :{
-                account : "Set an account",
+                account : "输入一个账户名",
                 password : {
-                    required : "Set your account password",
-                    minlength : "Password must be minimum 6 characters"
+                    required : "设置密码",
+                    minlength : "密码长度至少需要6位"
                 },
                 password_confirmation : {
-                    required : "Enter confirm password",
-                    equalTo : "Password and Confirm password must match"
+                    required : "重复密码",
+                    equalTo : "两次输入密码不一致"
                 }
             },
             errorClass: "help-inline",
