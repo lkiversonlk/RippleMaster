@@ -22,13 +22,19 @@ rippleServer.AddServer({
 
 Log.SetLevel(Log.DEBUG_LEVEL);
 
+var options = {
+    ledger_index_min:-1,
+    ledger_index_max:-1,
+    limit:30
+};
+
 rippleServer.Connect(function(result){
     if(result === RippleServer.RESULT.SUCC){
         console.log("Success");
-        var accountRequest = RippleRequest.AccountRequest(RippleRequest.RequestCMD.AccountInfo, "rB5r6M82VQqz8GnD4wfY4UTUikcEyox7mx", null, function(result, account){
-            console.log(account);
+        var acctxRequest = RippleRequest.AccountRequest(RippleRequest.RequestCMD.AccountTransactions, "r9zbt4tB2s3KsrmgE6r1KoZtVN4cNAsfxN", options, function(result, txes){
+
         });
-        rippleServer.Request(accountRequest);
+        rippleServer.Request(acctxRequest);
     }
 })
 

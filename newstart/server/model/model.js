@@ -14,13 +14,22 @@ var AccountTx = new Schema({
     name : String,
     transactions : [{
         type : String,
+        host : String,
+        dest : String,
         cost : Number,
         cost_cur : String,
         cost_iss : String,
         gain : Number,
         gain_cur : String,
-        gain_iss : String
-    }]
+        gain_iss : String,
+        date : Number,
+        ledger : Number,
+        sequence : Number
+    }],
+    startTime : Number,
+    maxLedger : Number,
+    endTime : Number,
+    minLedger : Number
 });
 
 exports.Account = mongoose.model('Account', Account);

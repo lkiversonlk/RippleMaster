@@ -5,6 +5,7 @@ var Log = require('log').log;
 var extend = require('extend');
 var RippleServer = require('./RippleServer').RippleServer;
 var Balance = require('./Model').Balance;
+var TransactionAnalyzer = require("./TransactionAnalyzer").TransactionAnalyzer;
 
 function RippleRequest(cmd, callback){
     this._callback = callback;

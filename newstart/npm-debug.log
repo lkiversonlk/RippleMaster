@@ -1,0 +1,211 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/bin/nodejs', '/usr/bin/npm', 'install' ]
+2 info using npm@1.3.10
+3 info using node@v0.10.25
+4 warn package.json ripplemaster@1.0.0 No description
+5 warn package.json ripplemaster@1.0.0 No repository field.
+6 warn package.json ripplemaster@1.0.0 No README data
+7 verbose readDependencies using package.json deps
+8 verbose install where, deps [ '/home/jerry/workspace/rp/newstart', [ 'ws', 'extend' ] ]
+9 info preinstall ripplemaster@1.0.0
+10 verbose readDependencies using package.json deps
+11 verbose cache add [ 'ws@*', null ]
+12 verbose cache add name=undefined spec="ws@*" args=["ws@*",null]
+13 verbose parsed url { protocol: null,
+13 verbose parsed url   slashes: null,
+13 verbose parsed url   auth: null,
+13 verbose parsed url   host: null,
+13 verbose parsed url   port: null,
+13 verbose parsed url   hostname: null,
+13 verbose parsed url   hash: null,
+13 verbose parsed url   search: null,
+13 verbose parsed url   query: null,
+13 verbose parsed url   pathname: 'ws@*',
+13 verbose parsed url   path: 'ws@*',
+13 verbose parsed url   href: 'ws@*' }
+14 verbose cache add name="ws" spec="*" args=["ws","*"]
+15 verbose parsed url { protocol: null,
+15 verbose parsed url   slashes: null,
+15 verbose parsed url   auth: null,
+15 verbose parsed url   host: null,
+15 verbose parsed url   port: null,
+15 verbose parsed url   hostname: null,
+15 verbose parsed url   hash: null,
+15 verbose parsed url   search: null,
+15 verbose parsed url   query: null,
+15 verbose parsed url   pathname: '*',
+15 verbose parsed url   path: '*',
+15 verbose parsed url   href: '*' }
+16 verbose addNamed [ 'ws', '*' ]
+17 verbose addNamed [ null, '*' ]
+18 verbose cache add [ 'extend@*', null ]
+19 verbose cache add name=undefined spec="extend@*" args=["extend@*",null]
+20 verbose parsed url { protocol: null,
+20 verbose parsed url   slashes: null,
+20 verbose parsed url   auth: null,
+20 verbose parsed url   host: null,
+20 verbose parsed url   port: null,
+20 verbose parsed url   hostname: null,
+20 verbose parsed url   hash: null,
+20 verbose parsed url   search: null,
+20 verbose parsed url   query: null,
+20 verbose parsed url   pathname: 'extend@*',
+20 verbose parsed url   path: 'extend@*',
+20 verbose parsed url   href: 'extend@*' }
+21 verbose cache add name="extend" spec="*" args=["extend","*"]
+22 verbose parsed url { protocol: null,
+22 verbose parsed url   slashes: null,
+22 verbose parsed url   auth: null,
+22 verbose parsed url   host: null,
+22 verbose parsed url   port: null,
+22 verbose parsed url   hostname: null,
+22 verbose parsed url   hash: null,
+22 verbose parsed url   search: null,
+22 verbose parsed url   query: null,
+22 verbose parsed url   pathname: '*',
+22 verbose parsed url   path: '*',
+22 verbose parsed url   href: '*' }
+23 verbose addNamed [ 'extend', '*' ]
+24 verbose addNamed [ null, '*' ]
+25 silly lockFile 67c4a837-ws ws@*
+26 verbose lock ws@* /home/jerry/.npm/67c4a837-ws.lock
+27 silly lockFile 8f4869eb-extend extend@*
+28 verbose lock extend@* /home/jerry/.npm/8f4869eb-extend.lock
+29 silly addNameRange { name: 'ws', range: '*', hasData: false }
+30 silly addNameRange { name: 'extend', range: '*', hasData: false }
+31 verbose url raw extend
+32 verbose url resolving [ 'https://registry.npmjs.org/', './extend' ]
+33 verbose url resolved https://registry.npmjs.org/extend
+34 info trying registry request attempt 1 at 10:18:49
+35 http GET https://registry.npmjs.org/extend
+36 verbose url raw ws
+37 verbose url resolving [ 'https://registry.npmjs.org/', './ws' ]
+38 verbose url resolved https://registry.npmjs.org/ws
+39 info trying registry request attempt 1 at 10:18:49
+40 verbose etag "B1E77VW6ZDLQJPMG8TP0BWUOH"
+41 http GET https://registry.npmjs.org/ws
+42 http 304 https://registry.npmjs.org/ws
+43 silly registry.get cb [ 304,
+43 silly registry.get   { date: 'Fri, 16 May 2014 17:18:49 GMT',
+43 silly registry.get     server: 'Apache',
+43 silly registry.get     via: '1.1 varnish',
+43 silly registry.get     'last-modified': 'Fri, 16 May 2014 17:18:49 GMT',
+43 silly registry.get     'cache-control': 'max-age=1',
+43 silly registry.get     etag: '"B1E77VW6ZDLQJPMG8TP0BWUOH"',
+43 silly registry.get     'x-served-by': 'cache-ty67-TYO',
+43 silly registry.get     'x-cache': 'HIT',
+43 silly registry.get     'x-cache-hits': '1',
+43 silly registry.get     'x-timer': 'S1400260729.564962626,VS0,VE171',
+43 silly registry.get     vary: 'Accept',
+43 silly registry.get     'content-length': '0',
+43 silly registry.get     'keep-alive': 'timeout=10, max=50',
+43 silly registry.get     connection: 'Keep-Alive' } ]
+44 verbose etag ws from cache
+45 silly addNameRange number 2 { name: 'ws', range: '*', hasData: true }
+46 silly addNameRange versions [ 'ws',
+46 silly addNameRange   [ '0.2.6',
+46 silly addNameRange     '0.2.8',
+46 silly addNameRange     '0.2.9',
+46 silly addNameRange     '0.3.0',
+46 silly addNameRange     '0.3.1',
+46 silly addNameRange     '0.3.2',
+46 silly addNameRange     '0.3.3',
+46 silly addNameRange     '0.3.4',
+46 silly addNameRange     '0.3.4-2',
+46 silly addNameRange     '0.3.5',
+46 silly addNameRange     '0.3.5-2',
+46 silly addNameRange     '0.3.5-3',
+46 silly addNameRange     '0.3.5-4',
+46 silly addNameRange     '0.3.6',
+46 silly addNameRange     '0.3.7',
+46 silly addNameRange     '0.3.8',
+46 silly addNameRange     '0.3.9',
+46 silly addNameRange     '0.4.0',
+46 silly addNameRange     '0.4.1',
+46 silly addNameRange     '0.4.2',
+46 silly addNameRange     '0.4.3',
+46 silly addNameRange     '0.4.5',
+46 silly addNameRange     '0.4.6',
+46 silly addNameRange     '0.4.7',
+46 silly addNameRange     '0.4.8',
+46 silly addNameRange     '0.4.9',
+46 silly addNameRange     '0.4.10',
+46 silly addNameRange     '0.4.11',
+46 silly addNameRange     '0.4.12',
+46 silly addNameRange     '0.4.13',
+46 silly addNameRange     '0.4.14',
+46 silly addNameRange     '0.4.15',
+46 silly addNameRange     '0.4.16',
+46 silly addNameRange     '0.4.17',
+46 silly addNameRange     '0.4.18',
+46 silly addNameRange     '0.4.19',
+46 silly addNameRange     '0.4.20',
+46 silly addNameRange     '0.4.21',
+46 silly addNameRange     '0.4.22',
+46 silly addNameRange     '0.4.23',
+46 silly addNameRange     '0.4.24',
+46 silly addNameRange     '0.4.25',
+46 silly addNameRange     '0.4.27',
+46 silly addNameRange     '0.4.28',
+46 silly addNameRange     '0.4.29',
+46 silly addNameRange     '0.4.30',
+46 silly addNameRange     '0.4.31' ] ]
+47 verbose addNamed [ 'ws', '0.4.31' ]
+48 verbose addNamed [ '0.4.31', '0.4.31' ]
+49 silly lockFile 53e67403-ws-0-4-31 ws@0.4.31
+50 verbose lock ws@0.4.31 /home/jerry/.npm/53e67403-ws-0-4-31.lock
+51 silly lockFile 53e67403-ws-0-4-31 ws@0.4.31
+52 silly lockFile 53e67403-ws-0-4-31 ws@0.4.31
+53 silly lockFile 67c4a837-ws ws@*
+54 silly lockFile 67c4a837-ws ws@*
+55 http 200 https://registry.npmjs.org/extend
+56 silly registry.get cb [ 200,
+56 silly registry.get   { date: 'Fri, 16 May 2014 17:18:49 GMT',
+56 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R14B04)',
+56 silly registry.get     etag: '"9FW2TNZ7WMHOMXG5JAA3Y8DV2"',
+56 silly registry.get     'content-type': 'application/json',
+56 silly registry.get     via: '1.1 varnish',
+56 silly registry.get     'cache-control': 'max-age=1',
+56 silly registry.get     'content-length': '15506',
+56 silly registry.get     'accept-ranges': 'bytes',
+56 silly registry.get     age: '19',
+56 silly registry.get     'x-served-by': 'cache-v36-ASH, cache-ty66-TYO',
+56 silly registry.get     'x-cache': 'HIT, MISS',
+56 silly registry.get     'x-cache-hits': '1, 0',
+56 silly registry.get     'x-timer': 'S1400260729.567224264,VS0,VS80,VE180,VE262',
+56 silly registry.get     vary: 'Accept',
+56 silly registry.get     'keep-alive': 'timeout=10, max=50',
+56 silly registry.get     connection: 'Keep-Alive' } ]
+57 silly addNameRange number 2 { name: 'extend', range: '*', hasData: true }
+58 silly addNameRange versions [ 'extend',
+58 silly addNameRange   [ '1.0.0', '1.1.0', '1.1.1', '1.1.3', '1.2.0', '1.2.1' ] ]
+59 verbose addNamed [ 'extend', '1.2.1' ]
+60 verbose addNamed [ '1.2.1', '1.2.1' ]
+61 silly lockFile a211e042-extend-1-2-1 extend@1.2.1
+62 verbose lock extend@1.2.1 /home/jerry/.npm/a211e042-extend-1-2-1.lock
+63 silly lockFile 6bf38195-pmjs-org-extend-extend-1-2-1-tgz https://registry.npmjs.org/extend/-/extend-1.2.1.tgz
+64 verbose lock https://registry.npmjs.org/extend/-/extend-1.2.1.tgz /home/jerry/.npm/6bf38195-pmjs-org-extend-extend-1-2-1-tgz.lock
+65 verbose addRemoteTarball [ 'https://registry.npmjs.org/extend/-/extend-1.2.1.tgz',
+65 verbose addRemoteTarball   'a0f5fd6cfc83a5fe49ef698d60ec8a624dd4576c' ]
+66 silly lockFile 6bf38195-pmjs-org-extend-extend-1-2-1-tgz https://registry.npmjs.org/extend/-/extend-1.2.1.tgz
+67 silly lockFile 6bf38195-pmjs-org-extend-extend-1-2-1-tgz https://registry.npmjs.org/extend/-/extend-1.2.1.tgz
+68 silly lockFile a211e042-extend-1-2-1 extend@1.2.1
+69 silly lockFile a211e042-extend-1-2-1 extend@1.2.1
+70 silly lockFile 8f4869eb-extend extend@*
+71 silly lockFile 8f4869eb-extend extend@*
+72 error Error: EACCES, mkdir '/home/jerry/tmp/npm-3944-G8ChGQZh'
+72 error  { [Error: EACCES, mkdir '/home/jerry/tmp/npm-3944-G8ChGQZh']
+72 error   errno: 3,
+72 error   code: 'EACCES',
+72 error   path: '/home/jerry/tmp/npm-3944-G8ChGQZh' }
+73 error Please try running this command again as root/Administrator.
+74 error System Linux 3.13.0-24-generic
+75 error command "/usr/bin/nodejs" "/usr/bin/npm" "install"
+76 error cwd /home/jerry/workspace/rp/newstart
+77 error node -v v0.10.25
+78 error npm -v 1.3.10
+79 error path /home/jerry/tmp/npm-3944-G8ChGQZh
+80 error code EACCES
+81 error errno 3
+82 error stack Error: EACCES, mkdir '/home/jerry/tmp/npm-3944-G8ChGQZh'
+83 verbose exit [ 3, true ]

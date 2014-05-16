@@ -1,14 +1,16 @@
+var Balance = require('./Model').Balance;
+
 function Transaction(){
     this.type = null;
     this.date = null;
     this.host = null;
     this.dest = null;
-    this.amount = 0;
-    this.cost = 0;
-    this.fee = 0;
+    this.amount = null;
+    this.cost = null;
     this.date = null;
     this.ledger = 0;
     this.sequence = 0;
+    this.fee = null;
 };
 
 Transaction.Type = {
@@ -27,3 +29,5 @@ Transaction.LEDGER_ENTRY_TYPE = {
     RIPPLE_STATE : "RippleState",
     ACCOUNT_ROOT : "AccountRoot"
 };
+
+exports.Transaction = Transaction;
