@@ -72,12 +72,16 @@ RippleServer.prototype.Request = function(request){
     self.RequestN(request, server_id);
 };
 
+RippleServer.prototype.RequestFixed = function(request){
+//
+};
+
 RippleServer.prototype.RequestN  = function(request, n){
     var self = this;
     request.message.id = self._id;
     this._requests[self._id] = request;
     this._id ++;
-    self._logger.log(Log.WORK_LEVEL, " request==> id: " + request.message.id + " ## command: " + request.message.command);
+    self._logger.log(Log.WORK_LEVEL, " request==> id: " + request.message.id + " ## command: " + request.message.command + " in server " + n);
     request.cur_server = n;
     if((n + 1) % (self._servers.length) == request.start_server){
         self._servers[n].SendMessage(request.message, function(result){
@@ -124,6 +128,10 @@ RippleServer.prototype.HandleMessage = function(message){
             break;
         default :
     }
-}
+};
+
+RippleServer.prototype.Disconnect = function(){
+
+};
 
 exports.RippleServer = RippleServer;

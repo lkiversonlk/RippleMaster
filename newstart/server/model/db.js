@@ -4,6 +4,13 @@ var model = require("./model.js");
 var Account = model.Account;
 var AccountTx = model.AccountTx;
 
+db.RESULT = {
+    SUCC : 0,
+    FAIL : 1,
+    NOT_EXISIT : 2,
+    EXIST : 3
+}
+
 function db(connectionStr, username, passwd) {
     var self = this;
 
@@ -11,12 +18,6 @@ function db(connectionStr, username, passwd) {
         mongoose.connect(connectionStr);
     };
 
-    self.RESULT = {
-        SUCC : 0,
-        FAIL : 1,
-        NOT_EXISIT : 2,
-        EXIST : 3
-    };
     self.matchAccount = function(account, password, callback){
         Account.findOne({name : account, password : password}, function(err, doc){
             if(err){

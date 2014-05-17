@@ -34,32 +34,27 @@ TransactionAnalyzer.prototype = {
             switch (transaction.type){
                 case Transaction.Type.Send:
                     if(transaction.cost){
-                        logger.log(Log.DEBUG_LEVEL, " send " + transaction.cost.Money() + " " + transaction.cost.Currency() + " to " + transaction.dest);
                         ret.push(transaction);
                     }else{
-                        logger.log(Log.DEBUG_LEVEL, "error:" + transactions[i]);
                     }
                     break;
                 case Transaction.Type.Receive:
                     if(transaction.amount){
-                        logger.log(Log.DEBUG_LEVEL, " receive " + transaction.amount.Money() + " " + transaction.amount.Currency() + " from " + transaction.host);
                         ret.push(transaction);
                     }else{
-                        logger.log(Log.DEBUG_LEVEL, "error:" + transactions[i]);
                     }
                     break;
                 case Transaction.Type.Trade :
                     if(transaction.cost && transaction.amount){
-                        logger.log(Log.DEBUG_LEVEL, " trade " + transaction.cost.Money() + " " + transaction.cost.Currency() + " to " + transaction.amount.Money() + " " + transaction.amount.Currency());
                         ret.push(transaction);
                     }else{
-                        logger.log(Log.DEBUG_LEVEL, "error:" + transactions[i]);
                     }
                     break;
                 case Transaction.Type.ERROR   :
                     logger.log(Log.DEBUG_LEVEL, " ");
                     break;
             }
+            logger.log(Log.WORK_LEVEL, "time" + transaction.date);
         };
         return ret;
     },
