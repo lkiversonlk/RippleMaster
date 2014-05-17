@@ -29,7 +29,7 @@ RippleMaster.prototype.SetState = function(state){
 };
 
 
-RippleMaster.prototype.Start = function(options){
+RippleMaster.prototype.Start = function(options, callback){
     var self = this;
     for(var i in options) {
         self._rippleServer.AddServer(options[i]);
@@ -38,6 +38,7 @@ RippleMaster.prototype.Start = function(options){
         switch (result){
             case RippleServer.RESULT.SUCC:
                 self.SetState(RippleMaster.STATE.ON);
+                callback();
                 break;
         }
     });

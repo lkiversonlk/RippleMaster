@@ -56,8 +56,8 @@ Server.prototype.Connect = function(){
     ws.onclose = function(){
         logger.log(Log.WORK_LEVEL, "connection to " + self._url + " closed");
         self.emit("close");
-        this._state = Server.Disconnected;
-        this._handleClose();
+        self._state = Server.Disconnected;
+        self._handleClose();
     }
 
     ws.onmessage = function(msg){

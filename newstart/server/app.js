@@ -23,6 +23,7 @@ options.servers = [
         secure : true
     }
 ];
+options.debugging = true;
 
 options.db = "mongodb://localhost/ripplemaster";
 
@@ -30,6 +31,7 @@ var host = new Host();
 
 host.Work(options, function(){
     host.InitRippleTx("r9zbt4tB2s3KsrmgE6r1KoZtVN4cNAsfxN")
+    //host.FetchRippleTx("r9zbt4tB2s3KsrmgE6r1KoZtVN4cNAsfxN");
 });
 
 

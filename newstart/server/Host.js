@@ -10,14 +10,14 @@ function Host(){
 Host.prototype.Work = function(options, callback){
     var self = this;
     self.db = new db(options.db, null, null);
-    self.db.start();
+    self.db.start(options.debugging);
     self.rpMaster = new RippleMaster();
     self.rpMaster.on(RippleMaster.EVENT.ST, function(){
         self.running = true;
         callback();
     });
 
-    self.rpMaster.Start(options.servers);
+    self.rpMaster.Start(options.servers, callback);
 };
 
 Host.prototype.InitRippleTx = function(account){
@@ -26,7 +26,7 @@ Host.prototype.InitRippleTx = function(account){
         for(var i in transactions){
             var txRp = transactions[i];
             var txDb = {};
-            txDb.type = txRp.type;
+            txDb.transactiontype = txRp.type;
             txDb.host = txRp.host;
             txDb.dest = txRp.dest;
             txDb.cost = txRp.cost ? txRp.cost.Money() : 0;
@@ -85,6 +85,24 @@ Host.prototype.InitRippleTx = function(account){
         })
     }
 };
+
+Host.prototype.FetchRippleTx = function(account){
+    var self = this;
+    if(self.running){
+        AccountTx.findOne({name : account}, function(err, doc){
+            if(err){
+
+            }else{
+                if(doc){
+                    var test = doc.toObject();
+                    var transactions = doc.transactions;
+                }else{
+
+                }
+            }
+        })
+    }
+}
 
 
 exports.Host = Host;

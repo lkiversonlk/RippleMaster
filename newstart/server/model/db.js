@@ -14,7 +14,8 @@ db.RESULT = {
 function db(connectionStr, username, passwd) {
     var self = this;
 
-    self.start = function(){
+    self.start = function(debugging){
+        mongoose.set('debug', debugging);
         mongoose.connect(connectionStr);
     };
 

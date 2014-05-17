@@ -13,7 +13,7 @@ var Account = new Schema({
 var AccountTx = new Schema({
     name : String,
     transactions : [{
-        type : String,
+        transactiontype : Number,
         host : String,
         dest : String,
         cost : Number,
