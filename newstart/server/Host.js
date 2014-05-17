@@ -13,8 +13,7 @@ Host.prototype.Work = function(options, callback){
     self.db.start(options.debugging);
     self.rpMaster = new RippleMaster();
     self.rpMaster.on(RippleMaster.EVENT.ST, function(){
-        self.running = true;
-        callback();
+        self.running = (self.rpMaster.state == RippleMaster.STATE.ON);
     });
 
     self.rpMaster.Start(options.servers, callback);
@@ -22,7 +21,6 @@ Host.prototype.Work = function(options, callback){
 
 Host.prototype.InitRippleTx = function(account){
     var handle = function(transactions, accountTx){
-        accountTx.transactions = [];
         for(var i in transactions){
             var txRp = transactions[i];
             var txDb = {};
@@ -38,50 +36,33 @@ Host.prototype.InitRippleTx = function(account){
             txDb.date = txRp.date;
             txDb.ledger = txRp.ledger;
             txDb.sequence = txRp.sequence;
-
-            if(!accountTx.startTime){
-                accountTx.startTime = accountTx.endTime = txDb.date;
-                accountTx.maxLedger = accountTx.minLedger = txDb.ledger;
-            }else{
-                if(txDb.ledger <= accountTx.minLedger){
-                    if(txDb.ledger < accountTx.minLedger){
-                        accountTx.minLedger = txDb.ledger;
-                        accountTx.startTime = txDb.date;
-                    }else{
-                        if(txDb.date <= accountTx.startTime){
-                            accountTx.startTime = txDb.date;
-                        }
-                    }
-                }else if(txDb.ledger >= accountTx.maxLedger){
-                    if(txDb.ledger > accountTx.maxLedger){
-                        accountTx.maxLedger = txDb.ledger;
-                        accountTx.endTime = txDb.endTime;
-                    }else{
-                        if(txDb.date >= accountTx.endTime){
-                            accountTx.endTime = txDb.date;
-                        }
-                    }
-                }
-            }
             accountTx.transactions.push(txDb);
         }
     };
 
     var self = this;
     if(self.running){
-        self.db.fetchTx(account, function(result, transactions){
-            if(result === db.RESULT.SUCC){
-
-            }else{
-                self.rpMaster.ConsultTransactions(account, function(more, transactions){
-                    var save = new AccountTx({
-                        name : account
-                    });
-                    handle(transactions, save);
-                    save.save();
-                })
+        var first = true;
+        var save = new AccountTx({
+            name : account,
+            transactions : []
+        });
+        self.rpMaster.ConsultTransactions(account, function(more, transactions){
+            handle(transactions, save);
+            if(first){
+                if(transactions.length > 0){
+                    save.endTime = transactions[0].date;
+                    save.maxLedger = transactions[0].ledger;
+                }
             }
-            return false;
+            if(!more){
+                if(transactions.length > 0){
+                    save.startTime = transactions[transactions.length - 1].date;
+                    save.minLedger = transactions[transactions.length - 1].ledger;
+                }
+                save.save();
+            }
+            return true;
         })
     }
 };

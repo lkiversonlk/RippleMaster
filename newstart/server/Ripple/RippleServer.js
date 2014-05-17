@@ -66,6 +66,8 @@ RippleServer.prototype.Connect = function(callback){
 
 RippleServer.prototype.Request = function(request){
     var self = this;
+    self._logger.log(Log.DEBUG_LEVEL, "calling Request");
+
     var server_id = this._server_id;
     request.start_server = server_id;
     this._server_id = (this._server_id + 1)%(this._servers.length);
@@ -92,6 +94,7 @@ RippleServer.prototype.RequestN  = function(request, n){
     }else{
         self._servers[n].SendMessage(request.message, function(result){
             if(result != Server.RESULT.SUCC){
+                self._logger.log(Log.DEBUG_LEVEL, "SendMessage fail, use server" + (n+1));
                 var next_server = (n + 1) % self._servers.length;
                 self.RequestN(request, next_server);
             }

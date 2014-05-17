@@ -16,10 +16,7 @@ TransactionAnalyzer.TransactionType = {
 }
 
 TransactionAnalyzer.prototype = {
-
     /**
-
-
      * @param transactions
      * @returns {Array}
      * @constructor
@@ -30,22 +27,24 @@ TransactionAnalyzer.prototype = {
         for(var i in transactions){
             var transaction = self.ParseTransaction(transactions[i]);
             var logger = self._logger;
-            logger.log(Log.DEBUG_LEVEL, transaction.date);
             switch (transaction.type){
                 case Transaction.Type.Send:
                     if(transaction.cost){
                         ret.push(transaction);
+                        logger.log(Log.DEBUG_LEVEL, " send " + transaction.cost.Money() + " " + transaction.cost.Currency() + " to " + transaction.dest);
                     }else{
                     }
                     break;
                 case Transaction.Type.Receive:
                     if(transaction.amount){
                         ret.push(transaction);
+                        logger.log(Log.DEBUG_LEVEL, " receive " + transaction.amount.Money() + " " + transaction.amount.Currency() + " from " + transaction.host);
                     }else{
                     }
                     break;
                 case Transaction.Type.Trade :
                     if(transaction.cost && transaction.amount){
+                        logger.log(Log.DEBUG_LEVEL, " trade " + transaction.cost.Money() + " " + transaction.cost.Currency() + " to " + transaction.amount.Money() + " " + transaction.amount.Currency());
                         ret.push(transaction);
                     }else{
                     }
@@ -54,11 +53,9 @@ TransactionAnalyzer.prototype = {
                     logger.log(Log.DEBUG_LEVEL, " ");
                     break;
             }
-            logger.log(Log.WORK_LEVEL, "time" + transaction.date);
         };
         return ret;
     },
-
     /*
      *
      meta: Object
@@ -81,7 +78,6 @@ TransactionAnalyzer.prototype = {
      validated: true
      __proto__: Object
      */
-
     ParseTransaction : function(transaction){
         var self = this;
         var ret = new Transaction();
@@ -231,5 +227,4 @@ TransactionAnalyzer.prototype = {
         }
     }
 };
-
 exports.TransactionAnalyzer = TransactionAnalyzer;
