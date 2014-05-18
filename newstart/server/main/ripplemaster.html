@@ -19,40 +19,84 @@
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 </head>
-<body class="gray-background">
+<body class="white-background">
 <div >
     <div class="navbar black-background ripplemaster-nav" role="navigation">
         <div class="container">
             <div class="havbar-header green-text">
-                <div class="navbar-brand ripplemaster-nav-font margin-top20 font-size40" >Ripple Master</div>
+                <div class="navbar-brand ripplemaster-nav-font font-size40" >Ripple Master</div>
             </div>
-            <div id="function-panel" class="collapse navbar-collapse">
-                <ul class="nav navbar-nav navbar-right panel-font text-center">
-                    <li class="active">
-                        <a href="#account"  data-toggle="tab">
-                            <span class="glyphicon glyphicon-user"></span>
-                            <div>Account<br>Information</div>
+
+            <div id="netstat" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right green-text">
+                    <li style="display: none">
+                        <a>
+                            <span class="glyphicon glyphicon-record"></span>&nbsp;OnLine
                         </a>
                     </li>
                     <li>
-                        <a href="#arbitrage" data-toggle="tab">
-                            <span class="glyphicon glyphicon-search"></span>
-                            <div>Arbitrage<br>Analyze</div>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#settings" data-toggle="tab">
-                            <span class="glyphicon glyphicon-cog"></span>
-                            <div>Settings<br>&nbsp; </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a id="logout">
-                            <span class="glyphicon glyphicon-log-out"></span>
-                            <div>Logout<br>&nbsp; </div>
+                        <a>
+                            <span class="glyphicon glyphicon-refresh"></span>&nbsp;Connecting...
                         </a>
                     </li>
                 </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="function-panel">
+        <div class="container">
+            <div class="row">
+                <div id="user-panel" class="col-md-6 col-xs-6">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <img src="images/ripple.png" class="max-width" style="display: none">
+                                <div class="loading" style="margin-top: 30px">
+                                    <i></i>
+                                    <i></i>
+                                    <i></i>
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-md-offset-1">
+                                <div id="account-title-text">
+                                    Loading...
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xs-6">
+                    <ul class="nav nav-pills nav-justified panel-font">
+                        <li class="active">
+                            <a href="#account"  data-toggle="tab">
+                                <span class="glyphicon glyphicon-user"></span>
+                                <div>Account<br>Information</div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#arbitrage" data-toggle="tab">
+                                <span class="glyphicon glyphicon-search"></span>
+                                <div>Arbitrage<br>Analyze</div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#settings" data-toggle="tab">
+                                <span class="glyphicon glyphicon-cog"></span>
+                                <div>Settings<br>&nbsp; </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a id="logout">
+                                <span class="glyphicon glyphicon-log-out"></span>
+                                <div>Logout<br>&nbsp; </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -130,24 +174,7 @@
                 <h4 class="modal-title">Add RippleAddress</h4>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" role="form">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label class="form-control">Address</label>
-                        </div>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label class="form-control">Nickname</label>
-                        </div>
-                        <div class="col-md-9">
-                            <input type="text" class="form-control">
-                        </div>
-                    </div>
-                </form>
+                <div class="input-group date"><input type="text" class="form-control"><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -217,13 +244,13 @@
 <script src="js/Ripple/TransactionAnalyzer.js"></script>
 <script src="js/managers/TxManagement.js"></script>
 <script src="js/Ripple/Util.js"></script>
-<script src="js/ClientMaster.js"></script>
+<script src="js/RippleMaster.js"></script>
 <script>
     $(document).ready(function(){
         Log.SetLevel(Log.DEBUG_LEVEL);
         var img = $("#user-panel").find("img");
         var load = $("#user-panel").find("div.loading");
-        var main = new ClientMaster();
+        var main = new RippleMaster();
 
         main.Start(function(){
             var mainPage = new MainPage(main);
