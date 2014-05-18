@@ -58,12 +58,12 @@ Balance.prototype = {
     }
 }
 
-function Offer(sell, want){
+function Offers(sell, want){
     this._sell = sell;
     this._want = want;
 };
 
-Offer.prototype = {
+Offers.prototype = {
     Sell : function(){
         return this._sell;
     },
@@ -72,20 +72,3 @@ Offer.prototype = {
         return this._want;
     }
 }
-
-function Address(address){
-    this.address = address;
-    this.balances = [];
-    this.xrp = null;
-};
-
-Address.prototype = {
-    SetBalance : function(xrp, balances){
-        this.xrp = xrp;
-        this.balances = balances;
-    }
-};
-
-exports.Balance = Balance;
-exports.Offer = Offer;
-exports.Address = Address;

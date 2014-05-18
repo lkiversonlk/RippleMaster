@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ripple Master</title>
+
+    <!-- Bootstrap -->
+    <link href="lib/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="css/ripplemaster.css" rel="stylesheet">
+    <link href="lib/footable/footable.core.css" rel="stylesheet">
+    <link href="lib/bootstrap-datepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <link href="lib/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="white-background">
+<div class="">
+    <div class="navbar black-background ripplemaster-nav" role="navigation">
+        <div class="container">
+            <div class="havbar-header green-text">
+                <div class="navbar-brand ripplemaster-nav-font font-size40" >Ripple Master</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="function-panel">
+        <div class="container">
+            <div class="row">
+                <div id="user-panel" class="col-md-4 col-xs-5">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <img src="images/ripple.png" class="max-width">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-5 col-md-offset-2 col-xs-offset-1 col-xs-5">
+                    <ul class="nav nav-pills nav-justified panel-font">
+                        <li class="active">
+                            <a>
+                                <span class="glyphicon glyphicon-user"></span>
+                                <div>Account<br>Information</div>
+                            </a>
+                        </li>
+                        <li>
+                            <a>
+                                <span class="glyphicon glyphicon-search"></span>
+                                <div>Arbitrage<br>Analyze</div>
+                            </a>
+                        </li>
+                        <li>
+                            <a>
+                                <span class="glyphicon glyphicon-cog"></span>
+                                <div>Settings<br>&nbsp; </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="shadow margin-top10"></div>
+
+    <div class="green-background">
+        <div class="container">
+            <div class="row margin-top20">
+                <section class="col-lg-10 col-lg-offset-1 col-md-12 col-xs-12 col-sm-offset-0">
+                    <div class="well well-lg">
+                        <div class="row">
+                            <div class="col-sm-6 col-xs-12">
+                                <div class="row">
+                                    <div class="col-xs-12"><h3 class="font-size60">Welcome to <br> RippleMaster</h3></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12 hinder-font"><p>Help you better know your ripple account</p></div>
+                                </div>
+
+                                <div class="row">
+
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-xs-12">
+                                <div class="row">
+                                    <div class="col-xs-12"><h3>Log in RippleMaster</h3></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <form id="loginForm" class="inputForm" method="POST" action="/login" accept-charset="UTF-8">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="icon-envelope icon-2x"></i></span>
+                                                <input id="account" class="form-control input-lg" placeholder="Account" required="required" maxlength="100" type="text" name="account" value="">
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="icon-asterisk icon-2x"></i></span>
+                                                <input id="password" class="form-control input-lg" placeholder="Password" required="required" maxlength="60" type="password" name="password">
+                                            </div>
+                                            <div class="form-group">
+                                                <button type="submit" id="btn-login" class="btn btn-block btn-primary btn-lg">Log in</button>
+                                            </div>
+                                        </form>
+                                        <div class="form-group">
+                                            <div class="topCushion">Not a member yet? <a href="/signup.html">SignUp</a></div>
+                                        </div>
+                                    </div><!-- end of column -->
+                                </div><!-- end of row -->
+                            </div><!-- end of column 2 -->
+                        </div><!-- end of well row -->
+                    </div><!-- end of well -->
+                </section>
+            </div><!-- end of row -->
+        </div>
+    </div>
+</div>
+
+</div>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="lib/jquery/jquery.js"></script>
+<script src="lib/jquery/jquery.validate.min.js"></script>
+<script src="lib/utils/moment.js"></script>
+<script src="lib/bootstrap/bootstrap.min.js"></script>
+<script src="lib/bootstrap-datepicker/js/bootstrap-datetimepicker.min.js"></script>
+<script src="lib/bootstrap-select/bootstrap-select.min.js"></script>
+<script src="lib/footable/footable.js"></script>
+<script src="lib/footable/footable.sort.js"></script>
+<script src="lib/footable/footable.paginate.min.js"></script>
+<script src="lib/footable/footable.filter.min.js"></script>
+<script src="lib/charts/globalize.min.js"></script>
+<script src="lib/charts/dx.chartjs.js"></script>
+<script src="js/pages/NavigationBar.js"></script>
+<script src="js/pages/RippleTable.js"></script>
+<script src="js/pages/BalancePanel.js"></script>
+<script src="js/pages/ProgressBar.js"></script>
+<script src="js/pages/RippleBox.js"></script>
+<script src="js/pages/statPanels.js"></script>
+<script src="js/pages/AccountPanel.js"></script>
+<script src="js/pages/AccountPanelController.js"></script>
+<script src="js/Ripple/Model.js"></script>
+<script src="js/Ripple/Server.js"></script>
+<script src="js/Ripple/Common.js"></script>
+<script src="js/Ripple/Stat.js"></script>
+<script src="js/Ripple/DataCollection.js"></script>
+<script src="js/Ripple/RippleRequest.js"></script>
+<script src="js/Ripple/RippleServer.js"></script>
+<script src="js/Ripple/Transaction.js"></script>
+<script src="js/Ripple/TransactionAnalyzer.js"></script>
+<script src="js/managers/TxManagement.js"></script>
+<script src="js/Ripple/Util.js"></script>
+<script src="js/RippleMaster.js"></script>
+<script>
+    $(document).ready(function(){
+    });
+</script>
+</body>
+</html>

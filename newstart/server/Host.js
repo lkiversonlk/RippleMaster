@@ -1,25 +1,33 @@
 var db = require('./model/db').db;
+var Account = require('./model/model').Account;
 var AccountTx = require('./model/model').AccountTx;
 var RippleMaster = require("./Ripple/RippleMaster").RippleMaster;
 var Transaction = require("./Ripple/Transaction").Transaction;
+var Consts = require("./Ripple/Common").Consts;
+var crypto = require('crypto');
 
-function Host(){
-    this.running = false;
+function Host(options){
+    var self = this;
+    self.options = options;
+    self.running = false;
+    self.db = new db(self.options.db, null, null);
+    self.rpMaster = new RippleMaster();
+    self.cipher = crypto.createCipher(self.options.algorithm, self.options.key);
 };
 
-Host.prototype.Work = function(options, callback){
+Host.prototype.Work = function(callback){
     var self = this;
-    self.db = new db(options.db, null, null);
-    self.db.start(options.debugging);
-    self.rpMaster = new RippleMaster();
+    self.db.start(self.options.debugging);
     self.rpMaster.on(RippleMaster.EVENT.ST, function(){
         self.running = (self.rpMaster.state == RippleMaster.STATE.ON);
     });
 
-    self.rpMaster.Start(options.servers, callback);
+    self.rpMaster.Start(self.options.servers, callback);
 };
 
-Host.prototype.InitRippleTx = function(account){
+Host.prototype.InitRippleTx = function(account, callback){
+    var self = this;
+
     var handle = function(transactions, accountTx){
         for(var i in transactions){
             var txRp = transactions[i];
@@ -40,50 +48,135 @@ Host.prototype.InitRippleTx = function(account){
         }
     };
 
-    var self = this;
-    if(self.running){
-        var first = true;
-        var save = new AccountTx({
-            name : account,
-            transactions : []
-        });
-        self.rpMaster.ConsultTransactions(account, function(more, transactions){
-            handle(transactions, save);
-            if(first){
-                if(transactions.length > 0){
-                    save.endTime = transactions[0].date;
-                    save.maxLedger = transactions[0].ledger;
+    AccountTx.findOne({name : account}, function(err, doc){
+        if(doc){
+            if(callback){callback(Consts.RESULT.FAIL_ACCOUNT, doc.toObject().transactions);}
+        }else{
+            var first = true;
+            var save = new AccountTx({
+                name : account,
+                transactions : []
+            });
+            self.rpMaster.ConsultTransactions(account, null, function(result, more, transactions){
+                if(result != Consts.RESULT.SUCC){
+                    return false;
+                }else{
+                    handle(transactions, save);
+                    if(first){
+                        if(transactions.length > 0){
+                            save.endTime = transactions[0].date;
+                            save.maxLedger = transactions[0].ledger;
+                        }
+                    }
+                    if(!more){
+                        if(transactions.length > 0){
+                            save.startTime = transactions[transactions.length - 1].date;
+                            save.minLedger = transactions[transactions.length - 1].ledger;
+                        }
+                        save.save();
+                        if(callback) {callback(Consts.RESULT.SUCC, save.toObject().transactions);}
+                    }
                 }
-            }
-            if(!more){
-                if(transactions.length > 0){
-                    save.startTime = transactions[transactions.length - 1].date;
-                    save.minLedger = transactions[transactions.length - 1].ledger;
-                }
-                save.save();
-            }
-            return true;
-        })
-    }
+                return true;
+            })
+        }
+    });
 };
 
-Host.prototype.FetchRippleTx = function(account){
+Host.prototype.InitAccount = function(account, password, email, callback){
     var self = this;
-    if(self.running){
-        AccountTx.findOne({name : account}, function(err, doc){
-            if(err){
+    Account.findOne({name : account}, function(err, doc){
+        if(err){
+            callback(Consts.RESULT.FAIL);
+        }else if(doc){
+            callback(Consts.RESULT.FAIL_ACCOUNT);
+        }else{
+            //var encryptpassword = self.cipher.update(password, 'utf8', 'hex') + self.cipher.final('hex');
 
-            }else{
-                if(doc){
-                    var test = doc.toObject();
-                    var transactions = doc.transactions;
-                }else{
-
-                }
-            }
-        })
-    }
+            var save = new Account({
+                name : account,
+                password : password,
+                email : email,
+                rippleAddress : []
+            });
+            save.save();
+            callback(Consts.RESULT.SUCC);
+        }
+    })
 }
+
+Host.prototype.LoginAccount = function(account, password, callback){
+    var self = this;
+    Account.findOne({name : account}, function(err, doc){
+        if(err){
+            callback(Consts.RESULT.FAIL);
+        }else if(doc){
+            var correct = doc.password;
+            var encryptpassword = password;//.cipher.update(password, 'utf8', 'hex') + self.cipher.final('hex');
+
+            if(correct == encryptpassword){
+                callback(Consts.RESULT.SUCC);
+            }else{
+                callback(Consts.RESULT.FAIL_ACCOUNT);
+            }
+        }else{
+            callback(Consts.RESULT.FAIL_ACCOUNT);
+        }
+    })
+}
+
+Host.prototype.AddressInfo = function(address, callback){
+    this.rpMaster.AddressInfo(address, callback);
+};
+
+Host.prototype.AccountInfo = function(account, callback){
+    var self = this;
+    Account.findOne({name : account}, function(err, doc){
+        if(err){
+            callback(Consts.RESULT.FAIL);
+        }else if(doc){
+            callback(Consts.RESULT.SUCC, doc.toObject());
+        }else{
+            callback(Consts.RESULT.FAIL_ACCOUNT);
+        }
+    })
+};
+
+
+Host.prototype.UpdateAccountInfo = function(accountInfo, callback){
+    var self = this;
+    Account.findOne({name : accountInfo.name}, function(err, doc){
+        if(err){
+            callback(Consts.RESULT.FAIL);
+        }else if(doc){
+            if(accountInfo.email){
+                doc.email = accountInfo.email;
+            }
+            if(accountInfo.rippleAddress){
+                doc.rippleAddress = accountInfo.rippleAddress;
+            }
+            doc.save();
+            callback(Consts.RESULT.SUCC);
+        }else{
+            callback(Consts.RESULT.FAIL_ACCOUNT);
+        }
+    })
+}
+/*
+ Host.prototype.UpdateAccountTx = function(account, callback){
+ var self = this;
+ AccountTx.findOne({name : account}, function(err, doc){
+ if(err || !doc){
+ self.InitRippleTx(account, callback);
+ }else{
+ var minLedger = doc.minLedger;
+ var maxLedger = doc.maxLedger;
+
+
+ }
+ })
+ }
+ */
 
 
 exports.Host = Host;

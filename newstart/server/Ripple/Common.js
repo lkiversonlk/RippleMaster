@@ -3,22 +3,12 @@
 function Consts(){}
 
 Consts.RESULT = {
-    SUCCESS : 'success',
-    FAIL_NETWORKERROR : 'fail_network',
-    FAIL_MESSAGEFORMAT : 'fail_message_format',
-    FAIL_ACCOUNTNOTLOADED : 'fail_account_not_loaded',
-    FAIL_LOGINFIRST : 'fail_loginfirst',
-    FAIL : 'fail'
-};
-
-Consts.COOKIE = {
-    ADDRESS : 'address'
-};
-
-Consts.SERVER_MESSAGE_TYPE = {
-    LEDGER_CLOSED : "ledgerClosed",
-    RESPONSE : "response",
-    PATH_FIND : "path_find"
+    SUCC : 0,
+    FAIL_NETWORK : 1,
+    FAIL_MESSAGE : 2,
+    FAIL_ACCOUNT : 3,
+    FAIL_LOGIN : 4,
+    FAIL : 5
 };
 
 Consts.GatewayMapping = {
@@ -31,65 +21,27 @@ Consts.GatewayMapping = {
 
 };
 
-Consts.GetGatewayNick = function(address){
-    if(typeof Consts.GatewayMapping[address] !== 'undefined'){
-        return Consts.GatewayMapping[address];
+Consts.RP_SERVERS = [
+    {
+        domain : "s1.ripple.com",
+        port : 443,
+        secure : true
+    },
+    {
+        domain : "s-west.ripple.com",
+        port : 443,
+        secure : true
+    },
+    {
+        domain : "s-east.ripple.com",
+        port : 443,
+        secure : true
     }
-    return address;
-}
-
-Consts.EVENT = {
-    STATE_CHANGE : 'state',
-    BALANCE_LOADED : 'balance_loaded',
-    TRANSACTION_LOADED : 'transaction_loaded'
-};
-
-Consts.PageParam = {
-    PRICING_WIDTH : 170
-};
-
-Consts.DefaultNetConfig = {
-    domain : "s1.ripple.com",
-    port    : 443,
-    secure   : true
-};
-
-Consts.BATCH_SIZE = 40;
-
-Consts.DateToNumber = function(month, year){
-    return ((year - 2000) * 12 + month);
-};
-
-Consts.STATE = {
-    OFFLINE : 0,
-    ONLINE : 1
-};
+];
 
 Consts.pad = function(num, size){
     var s = "000000" + num;
     return s.substr(s.length - size);
-};
-
-Consts.FormatDate = function(date){
-    var year = date.getFullYear() - 2000;
-    var month = Consts.pad((date.getMonth() + 1), 2);
-    var day = Consts.pad((date.getDate()), 2);
-    var hour = Consts.pad((date.getHours() + 1), 2);
-    var minute = Consts.pad((date.getMinutes()), 2);
-    return year + "-" + month + "-" + day + " " + hour + ":" + minute;
-}
-//Here we use month [1-12]
-Consts.NumberToDate = function(number){
-    var year = Math.floor(number / 12);
-    var month = number - year * 12;
-    year += 2000;
-    return {year : year, month : month};
-};
-
-/* page satus */
-var mainPageParam = {
-    ONLINE : 0,
-    CONNECTING : 1
 };
 
 Consts.Palette = [
@@ -105,3 +57,5 @@ Consts.ReversePalette = [
     "#CFE1A9",
     "#C0C0C0"
 ];
+
+exports.Consts = Consts;
