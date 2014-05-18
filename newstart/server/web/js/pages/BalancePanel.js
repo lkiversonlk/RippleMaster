@@ -18,11 +18,19 @@ BalancePanel.prototype = {
     },
 
     AddBalance : function(line){
-        var div = $('<div class="pricingtable">' +
-            this.assembleTop(line) + '</div>');
-        $(this._root).append(div);
-        var origin = $(this._root).width();
-        $(this._root).width(origin + 170);
+        var self = this;
+        var div = $("<div />", {
+            class : "pricingtable col-md-2"
+        });
+        div.append(self.assembleTop(line));
+        var inner = $("<div />", {
+            class : "pure-white-background"
+        });
+        inner.append(self.assembleIssuer(line));
+        inner.append("<hr />");
+        inner.append(self.assembleBalance(line));
+        div.append(inner);
+        $(self._root).append(div);
     },
 
     Clear : function(){
@@ -30,19 +38,15 @@ BalancePanel.prototype = {
     },
 
     assembleTop : function(line){
-        var currency = line.Currency();
-        var issuer = line.Issuer();
-        var balance = new Number(line.Money());
-
-        return '<div class="pricingtable-top"><div class="currency">' + currency + '</div>' + this.assembleIssuer(issuer) + "<hr>" + this.assembleBalance(balance) + "</div>";
+        return '<div class="pricingtable-top"><div class="currency">' + line.Currency() + '</div></div>';
     },
 
-    assembleIssuer : function(issuer){
-        var gateway = Consts.GetGatewayNick(issuer);
-        return '<p>' + gateway + '</p>';
+    assembleIssuer : function(line){
+        var gateway = Consts.GetGatewayNick(line.Issuer());
+        return '<div class="pure-white-background"><p>' + gateway + '</p></div>';
     },
 
-    assembleBalance : function(balance){
-        return '<div class="balance">' + balance.toFixed(2) + '</div>'
+    assembleBalance : function(line){
+        return '<div class="balance pure-white-background">' + line.Money().toFixed(2) + '</div>'
     }
 };

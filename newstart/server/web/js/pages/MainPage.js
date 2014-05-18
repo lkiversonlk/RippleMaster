@@ -64,6 +64,23 @@ MainPage.EVENT = {
                 self.postMasterAccountAndSettings();
             });
 
+            var setGatewayNicksInput = $("#setGatewayNickname input");
+            $("#set-gatewayname-ok").click(function(){
+                var address = $(setGatewayNicksInput[0]).val();
+                var nickname = $(setGatewayNicksInput[1]).val();
+                if(Consts.GatewayMapping[address]){
+                    alert("Please remove the current nickname");
+                }else{
+                    Consts.GatewayMapping[address] = nickname;
+                    self.addGatewayNicknameToConfigPanel(address, nickname);
+                    $("#setGatewayNickname").modal('hide');
+                    self.postMasterAccountAndSettings();
+                    $.each(self.accountPanelControls, function(i){
+                        self.accountPanelControls[i].balanceWidgets.refresh();
+                    })
+                }
+            });
+
             setInterval(self.postMasterAccountAndSettings.bind(self), 60 * 1000);
         },
 
@@ -131,6 +148,11 @@ MainPage.EVENT = {
             $.each(self.accountPanelControls, function(i){
                 settings.push(self.accountPanelControls[i].Settings());
             });
+            $.each(Consts.GatewayMapping, function(key){
+                if(Consts.GatewayMapping.hasOwnProperty(key)){
+                    settings.push({address:key, addressType : 1, nickname : Consts.GatewayMapping[key], configure : []});
+                }
+            })
             $.ajax(
                 {
                     url : "masteraccount",
@@ -159,9 +181,20 @@ MainPage.EVENT = {
             $("#account-title-text").text(account);
             $("#configure-account").text(account);
             $.each(settings, function(i){
+                var address = settings[i].address;
+                var nickname = settings[i].nickname;
+                if(settings[i].addressType == 1){
+                    Consts.GatewayMapping[address] = nickname;
+                    self.addGatewayNicknameToConfigPanel(address, nickname);
+                }
+            });
+
+            $.each(settings, function(i){
+                var address = settings[i].address;
+                var nickname = settings[i].nickname;
                 if(settings[i].addressType == 0){
-                    self.addRippleAddress(settings[i].address, settings[i].nickname, settings[i].configure);
-                    self.addRippleAddressToConfigurePanel(settings[i].address, settings[i].nickname);
+                    self.addRippleAddress(address, nickname, settings[i].configure);
+                    self.addRippleAddressToConfigurePanel(address, nickname);
                 }
             })
         },
@@ -180,5 +213,38 @@ MainPage.EVENT = {
                 $(div).remove();
                 self.removeAddress(address);
             });
+        },
+
+        addGatewayNickname : function(address, nickname){
+
+        },
+
+        addGatewayNicknameToConfigPanel : function(address, nickname){
+            Consts.GatewayMapping[address] = nickname;
+            var self = this;
+            var addListDiv = $("#configure-gateway-nicks").find("form");
+            var addressRowHtml = '<div class="col-sm-5"><label class="form-control">' + address + '</label></div><div class="col-sm-5"><label class="form-control">' + nickname + '</label></div><div class="col-sm-2"><button type="button" class="btn btn-danger">Delete</button></div>';
+            var div = $("<div />",{
+                class : "form-group"
+            });
+            $(div).html(addressRowHtml);
+            $(addListDiv).append(div);
+            var buttons = $(div).find("button");
+            $(buttons[0]).click(function(){
+                $(div).remove();
+                self.removeGatewayNick(address);
+            });
+        },
+
+        removeGatewayNick : function(address){
+            var self = this;
+            if(Consts.GatewayMapping[address]){
+                delete Consts.GatewayMapping[address];
+                self.postMasterAccountAndSettings();
+                $.each(self.accountPanelControls, function(i){
+                    self.accountPanelControls[i].balanceWidgets.refresh();
+                })
+            }
         }
+
     };

@@ -10,7 +10,7 @@ function AccountPanel(root, address, nickname, rippleMaster){
     self.clientMaster = rippleMaster;
     self.address = address;
     var ele = $("<div />", {
-        class : "account-panel container-fluid"
+        class : "account-panel"
     });
     var caption = $("<div />", {
         class : "account-caption row",
@@ -18,13 +18,13 @@ function AccountPanel(root, address, nickname, rippleMaster){
     });
 
     var fold = $("<a />", {
-        class : "left"
+        class : "left cursor-pointer"
     });
     fold.append($("<span />",{
         class : "glyphicon glyphicon-pushpin"
     }))
     var load = $("<a />", {
-        class : "right"
+        class : "right cursor-pointer"
     });
     load.append($("<span />", {
         class : "glyphicon glyphicon-refresh"
@@ -32,11 +32,9 @@ function AccountPanel(root, address, nickname, rippleMaster){
     $(caption).append(fold);
     $(caption).append(load);
     $(ele).append(caption);
-    $(ele).append($("<div />", {
-        class : "shadow"
-    }));
+
     self.panel = $("<div />",{
-        class : "row account-stat-group"
+        class : "account-stat-group row"
     });
 
     $(ele).append(self.panel);
@@ -79,33 +77,33 @@ function ArbitragePanel(root, address, nickname, rippleMaster){
     self.clientMaster = rippleMaster;
     self.address = address;
     var ele = $("<div />", {
-        class : "account-panel container-fluid"
+        class : "account-panel"
     });
     var caption = $("<div />", {
         class : "account-caption row",
         text : nickname
     });
     var fold = $("<a />", {
-        class : "left"
+        class : "left cursor-pointer"
     });
     fold.append($("<span />",{
         class : "glyphicon glyphicon-pushpin"
     }))
 
     var load = $("<a />", {
-        class : "right"
+        class : "right cursor-pointer"
     });
     load.append($("<span />", {
         class : "glyphicon glyphicon-refresh"
     }));
     var ldTx = $("<a />", {
-        class : "right"
+        class : "right cursor-pointer"
     });
     ldTx.append($("<span />", {
         class : "glyphicon glyphicon-search"
     }));
     var add = $("<a />",{
-        class : "right"
+        class : "right cursor-pointer"
     });
     add.append($("<span />", {
         class : "glyphicon glyphicon-plus"
@@ -115,14 +113,9 @@ function ArbitragePanel(root, address, nickname, rippleMaster){
     $(caption).append(ldTx);
     $(caption).append(add);
     $(ele).append(caption);
-    $(ele).append($("<div />", {
-        class : "shadow"
-    }));
-    var statgroup = $("<div />",{
-        class : "row account-stat-group"
-    });
+
     self.panel = $("<div />",{
-        class : "row account-stat-group"
+        class : "account-stat-group"
     });
 
     $(ele).append(self.panel);

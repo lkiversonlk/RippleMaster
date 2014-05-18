@@ -73,6 +73,17 @@ app.post('/login',
     }
 );
 
+app.get('/login',
+    passport.authenticate('local'),
+    function(req,res){
+        if(req.user){
+            res.sendfile("./main/ripplemaster.html");
+        }else{
+            res.redirect("/index.html");
+        }
+    }
+);
+
 app.post('/register', function(req, res) {
     var account = req.body.account;
     var password = req.body.password;
@@ -103,6 +114,13 @@ app.get('/masteraccount', function(req, res){
             }
         });
     }
+});
+
+app.get('/logout', function(req, res){
+    if(req.user){
+        req.logout();
+    };
+    res.redirect('/');
 });
 
 app.post('/masteraccount', function(req, res){

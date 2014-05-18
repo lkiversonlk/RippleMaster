@@ -47,6 +47,9 @@
     -o-appearance:button;
     -ms-appearance:button;
 }
+.cursor-pointer{
+    cursor: pointer;
+}
 /* this is for the basic fonts, colors */
 .darkgray-background {
     background-color: #C0C0C0;
@@ -60,7 +63,7 @@
 .white-background{
     background-color: #F2F3F5;
 }
-.purewhite-background{
+.pure-white-background{
     background-color: #ffffff;
 }
 .gray-background{
@@ -165,30 +168,13 @@ html, body{
 
 /* for holds display */
 .pricingtable{
-    height: 100px;
-    width:  150px;
-    margin: 3px;
-    opacity: 0.9;
-    position: relative;
-    display: inline-block;
-    background-color: #D3D5D7;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
-    overflow: hidden;
-}
-
-.pricingtable-height{
-    height: 100px;
-}
-
-.pricingtable-width{
-    width:  170px;
+    margin-top : 10px;
 }
 
 .pricingtable-top{
-    position: absolute;
-    width: 150px; height: 30px;
     background: #428BCA;
     -webkit-border-radius: 5px 5px 0 0;
     -moz-border-radius: 5px 5px 0 0;
@@ -217,14 +203,12 @@ html, body{
     background-color: #BCBEC0;
     color: #BCBEC0;
     height: 1px;
-    width: 130px;
     margin: 5px 0 0 5px;
 }
 
 .pricingtable .balance {
     text-align: center;
     font: bold 25px/1 Helvetica, Verdana, sans-serif;
-    margin: 10px 0 0 0;
     color: #E9772E;
 }
 
@@ -241,8 +225,6 @@ html, body{
     color: #AAD53B;
     background-color: #3B3C3E;
     padding-right: 20px;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
 }
 .second-caption a{
     color: #AAD53B;
@@ -255,13 +237,7 @@ html, body{
 }
 .ripple-box{
     background-color: #F2F3F5;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    border: 1px solid #000000;
     padding-bottom: 10px;
-    border-radius: 10px;
-    margin-left: 10px;
-    margin-right: 10px;
     margin-bottom: 10px;
 }
 .account-title{
@@ -283,10 +259,7 @@ html, body{
      color: #3B3C3E;
  }
  .account-stat-group{
-     margin-left: 10px;
-     margin-right: 10px;
-     padding-top: 10px;
-     padding-bottom: 10px;
+
  }
 
  .stat-panel-configure{
@@ -295,11 +268,6 @@ html, body{
 
  .account-panel{
      background-color: #ffffff;
-     -webkit-appearance:button;
-     -moz-appearance:button;
-     -o-appearance:button;
-     -ms-appearance:button;
-     border-radius: 5px;
  }
 
 .account-caption{
@@ -307,10 +275,6 @@ html, body{
     font-family: Impact, Haettenschweiler, "Franklin Gothic Bold", Charcoal, "Helvetica Inserat", "Bitstream Vera Sans Bold", "Arial Black", sans serif;
     font-size: 30px;
     color: #3B3C3E;
-    background-color: #F2F3F5;
-    margin-top: 30px;
-    border-bottom: 1px solid #3B3C3E;
-
 }
 .footer a{
     color: #AAD53B;

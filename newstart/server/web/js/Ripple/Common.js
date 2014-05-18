@@ -42,13 +42,6 @@ Consts.SERVER_MESSAGE_TYPE = {
 };
 
 Consts.GatewayMapping = {
-    'ruazs5h1qEsqpke88pcqnaseXdm6od2xc'  : 'GKO Gateway',
-    'rHZP1pA3THovFqvwgtM2tnJWrS54hSrDiG' : 'CTC Gateway',
-    'rNKXT1p7jpt5WxSRSzmUV6ZB6kY7jdqHmx' : 'WCG',
-    'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B'  : 'Bitstamp',
-    'rnuF96W4SZoCJmbHYBFoJZpR8eCaxNvekK' : 'RippleCN',
-    'razqQKzJRdB4UxFPWf5NEpEG3WMkmwgcXA' : 'RippleChina'
-
 };
 
 Consts.GetGatewayNick = function(address){
@@ -125,3 +118,4 @@ Consts.ReversePalette = [
     "#CFE1A9",
     "#C0C0C0"
 ];
+

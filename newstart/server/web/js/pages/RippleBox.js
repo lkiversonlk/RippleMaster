@@ -1,6 +1,6 @@
 function RippleBox(root, rippleMaster, address, options){
     var div = $("<div />", {
-        class : "ripple-box"
+        class : "ripple-box col-md-12"
     });
     $(root).append(div);
     this.root = div;
@@ -48,7 +48,7 @@ RippleBox.prototype = {
     initialLayout : function(options){
         var self = this;
         var title = $("<div />", {
-            class : "second-caption",
+            class : "second-caption row",
             text : options[RippleBox.Keys.title]
         });
 
@@ -93,7 +93,7 @@ RippleBox.prototype = {
 
         if(options[RippleBox.Keys.progressBar]){
             var progress = $("<div />", {
-                class : "progress"
+                class : "progress row"
             });
             var progressText = $("<span />", {
                 class : 'text'
@@ -116,7 +116,9 @@ RippleBox.prototype = {
 
         }
 
-        var content = $("<div />");
+        var content = $("<div />", {
+            class : "row"
+        });
         $(self.root).append(content);
         self.content = content;
         $(fold).click(function(){
@@ -133,7 +135,6 @@ RippleBox.OfferBox = function(root, rippleMaster, address){
     option[RippleBox.Keys.title] = "Current Offers";
     option[RippleBox.Keys.progressBar] = true;
     option[RippleBox.Keys.buttons] = [{
-        type : RippleBox.ButtonTypes.refresh
     }];
     var ret = new RippleBox(root, rippleMaster, address, option);
     var tableHtml = '<table class="footable table" data-page-size="10">' +
@@ -159,7 +160,6 @@ RippleBox.OfferBox = function(root, rippleMaster, address){
         });
     };
     ret.initialCallback = ret.refresh;
-    $(ret.buttons[0]).click(ret.refresh);
     ret.startHooks.push(ret.refresh.bind(ret));
     return ret;
 };
@@ -172,7 +172,6 @@ RippleBox.AccountBox = function(root, rippleMaster, address){
     }];
     var ret = new RippleBox(root, rippleMaster, address, option);
     ret.balancePanel = new BalancePanel(ret.content);
-    $(ret.content).addClass("max-width");
     ret.refresh = function(){
         ret.progressBar.SetProgress(40, "Loading account balances");
         ret.balancePanel.Clear();

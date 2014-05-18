@@ -17,11 +17,11 @@ function Balance(json){
             /* amount */
             this._currency = json.currency;
             this._issuer = json.issuer;
-            this._money = json.value;
+            this._money = new Number(json.value);
         }else{
             /* line */
             this._currency = json.currency;
-            this._money = json.balance;
+            this._money = new Number(json.balance);
             this._issuer = json.account;
             this._limit = json.limit;
         }

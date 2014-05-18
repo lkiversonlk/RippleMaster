@@ -54,8 +54,8 @@ SellBuyPanel.prototype = {
         var contentHtml = '<div class="row">' +
                             '<div class="col-md-6 chart-area margin-top10" style="height: 300px"></div>' +
                             '<div class="col-md-4">' +
-                                '<p>You have bought <strong class="green-text"></strong> at price <strong class="green-text"></strong></p>' +
-                                '<p>You have sold <strong class="green-text"></strong> at price <strong class="green-text"></strong></p>' +
+                                '<p>You have bought <strong class="green-text"></strong> at an average price of <strong class="green-text"></strong></p>' +
+                                '<p>You have sold <strong class="green-text"></strong> at an average price of <strong class="green-text"></strong></p>' +
                                 '<p>You have get <strong class="green-text"></strong> in amount of <strong class="green-text"></strong>'
                             '</div>' +
                         '</div>';
