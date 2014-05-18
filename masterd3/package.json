@@ -1,0 +1,12 @@
+{
+	"name":"ripplemaster",
+	"version":"1.0.0",
+	"dependencies":{
+		"ws":"*",
+		"extend":"*",
+		"express":"3.x",
+		"passport":"*",
+		"passport-local":"*",
+		"connect-flash":"*"
+	}
+}
