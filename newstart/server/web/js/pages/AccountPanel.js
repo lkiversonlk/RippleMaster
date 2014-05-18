@@ -4,17 +4,17 @@ var AccountEvent = {
     addMod : "adMod"
 };
 
-function AccountPanel(root, address, rippleMaster){
+function AccountPanel(root, address, nickname, rippleMaster){
     /* append a account panel uner root */
     var self = this;
-    self.rippleMaster = rippleMaster;
+    self.clientMaster = rippleMaster;
     self.address = address;
     var ele = $("<div />", {
         class : "account-panel container-fluid"
     });
     var caption = $("<div />", {
         class : "account-caption row",
-        text : address
+        text : nickname
     });
 
     var fold = $("<a />", {
@@ -50,7 +50,7 @@ function AccountPanel(root, address, rippleMaster){
         //var progressBar = new ProgressBar($("#loading"), "Loading " + self.address);
         //progressBar.Show();
         //progressBar.SetProgress(30, "Loading address balances");
-        self.rippleMaster.AccountInfo(self.address, function(result, id){
+        self.clientMaster.AccountInfo(self.address, function(result, id){
             //progressBar.SetProgress(60, "Loading address balances");
             if(result === Consts.RESULT.SUCCESS){
                 //progressBar.SetProgress(100, "success");
@@ -74,16 +74,16 @@ function AccountPanel(root, address, rippleMaster){
     $(load).click(self.refresh.bind(self));
 };
 
-function ArbitragePanel(root, address, rippleMaster){
+function ArbitragePanel(root, address, nickname, rippleMaster){
     var self = this;
-    self.rippleMaster = rippleMaster;
+    self.clientMaster = rippleMaster;
     self.address = address;
     var ele = $("<div />", {
         class : "account-panel container-fluid"
     });
     var caption = $("<div />", {
         class : "account-caption row",
-        text : address
+        text : nickname
     });
     var fold = $("<a />", {
         class : "left"
@@ -136,7 +136,7 @@ function ArbitragePanel(root, address, rippleMaster){
         //var progressBar = new ProgressBar($("#loading"), "Loading " + self.address);
         //progressBar.Show();
         //progressBar.SetProgress(30, "Loading address balances");
-        self.rippleMaster.AccountInfo(self.address, function(result, id){
+        self.clientMaster.AccountInfo(self.address, function(result, id){
             //progressBar.SetProgress(60, "Loading address balances");
             if(result === Consts.RESULT.SUCCESS){
                 //progressBar.SetProgress(100, "success, will start to load transaction history");

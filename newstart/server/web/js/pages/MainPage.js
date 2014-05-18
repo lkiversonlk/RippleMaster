@@ -1,6 +1,6 @@
-function MainPage(rippleMaster){
+function MainPage(clientMaster){
     var self = this;
-    self.rippleMaster = rippleMaster;
+    self.clientMaster = clientMaster;
     self.accountPanelControls = [];
     self.account = "";
     self.initPage();
@@ -25,7 +25,7 @@ MainPage.EVENT = {
                     type : "GET",
                     dataType : "json",
                     success : function(json){
-                        self.setMasterAccountAndSettings(json.account, json.settings);
+                        self.setMasterAccountAndSettings(json.name, json.rippleAddress);
                     },
                     error : function(xhr, status, errThrown){
 
@@ -56,9 +56,10 @@ MainPage.EVENT = {
 
             var addressPanelAccountInput = $("#addRippleAccountPanel input");
             $("#add-rippleaddress-ok").click(function(){
-                var address = $(addressPanelAccountInput).val();
-                self.addRippleAddress(address, []);
-                self.addRippleAddressToConfigurePanel(address);
+                var address = $(addressPanelAccountInput[0]).val();
+                var nickname = $(addressPanelAccountInput[1]).val();
+                self.addRippleAddress(address, nickname, []);
+                self.addRippleAddressToConfigurePanel(address, nickname);
                 $("#addRippleAccountPanel").modal('hide');
                 self.postMasterAccountAndSettings();
             });
@@ -79,7 +80,7 @@ MainPage.EVENT = {
             $(self.modulePanelAccountPicker).selectpicker('refresh');
         },
 
-        addRippleAddress : function(rippleAddress, configure){
+        addRippleAddress : function(rippleAddress, nickname, configure){
             var self = this;
             var found = false;
             var accountPanel;
@@ -94,7 +95,7 @@ MainPage.EVENT = {
                 };
             });
             if(!found) {
-                accountPanel = new AccountPanelsControl($("#account-content"), $("#arbitrage-content"), rippleAddress, configure, self.rippleMaster);
+                accountPanel = new AccountPanelsControl($("#account-content"), $("#arbitrage-content"), rippleAddress, nickname, configure, self.clientMaster);
                 self.accountPanelControls.push(accountPanel);
                 $(self).trigger(MainPage.EVENT.updateRippleAddress);
             }
@@ -134,7 +135,7 @@ MainPage.EVENT = {
                 {
                     url : "masteraccount",
                     type : "POST",
-                    data : {account : self.account, settings : settings},
+                    data : {accountInfo : {name : self.account, rippleAddress : settings}},
                     dataType : "json"
                 }
             )
@@ -158,15 +159,17 @@ MainPage.EVENT = {
             $("#account-title-text").text(account);
             $("#configure-account").text(account);
             $.each(settings, function(i){
-                self.addRippleAddress(settings[i].address, settings[i].configure);
-                self.addRippleAddressToConfigurePanel(settings[i].address);
+                if(settings[i].addressType == 0){
+                    self.addRippleAddress(settings[i].address, settings[i].nickname, settings[i].configure);
+                    self.addRippleAddressToConfigurePanel(settings[i].address, settings[i].nickname);
+                }
             })
         },
 
-        addRippleAddressToConfigurePanel : function(address){
+        addRippleAddressToConfigurePanel : function(address, nickname){
             var self = this;
             var addListDiv = $("#configure-ripple-address").find("form");
-            var addressRowHtml = '<div class="col-sm-10"><label class="form-control">' + address + '</label></div><div class="col-sm-2"><button type="button" class="btn btn-danger">Delete</button></div>';
+            var addressRowHtml = '<div class="col-sm-5"><label class="form-control">' + address + '</label></div><div class="col-sm-5"><label class="form-control">' + nickname + '</label></div><div class="col-sm-2"><button type="button" class="btn btn-danger">Delete</button></div>';
             var div = $("<div />",{
                 class : "form-group"
             });

@@ -11,12 +11,13 @@ $("#cancel-loading").click(function(e){
 var lkAccount = "r9zbt4tB2s3KsrmgE6r1KoZtVN4cNAsfxN";
 var dyAccount = "rUsVKNn7zX315wzdLjarsrU8jJQ67vpK1g";
 
-function AccountPanelsControl(accountRoot, arbitrageRoot, address, extral, rippleMaster){
+function AccountPanelsControl(accountRoot, arbitrageRoot, address, nickname, extral, rippleMaster){
     var self = this;
     self.address = address;
-    self.rippleMaster = rippleMaster;
-    self.accountPanel = new AccountPanel(accountRoot, address, rippleMaster);
-    self.arbitragePanel = new ArbitragePanel(arbitrageRoot, address, rippleMaster);
+    self.nickname = nickname;
+    self.clientMaster = rippleMaster;
+    self.accountPanel = new AccountPanel(accountRoot, address, nickname, rippleMaster);
+    self.arbitragePanel = new ArbitragePanel(arbitrageRoot, address, nickname, rippleMaster);
     self.initCommonWidgets();
     self.extralWidgetKeys = [];
     self.extralWidgets = [];
@@ -101,7 +102,7 @@ AccountPanelsControl.prototype = {
         var self = this;
         self.balanceWidgets = RippleBox.AccountBox(
             self.accountPanel.panel,
-            self.rippleMaster,
+            self.clientMaster,
             self.address
         );
         $(self.accountPanel).bind(AccountEvent.ldAcc, self.balanceWidgets.refresh.bind(self.balanceWidgets));
@@ -114,7 +115,7 @@ AccountPanelsControl.prototype = {
         var self = this;
         self.ordersWidgets = RippleBox.OfferBox(
             self.accountPanel.panel,
-            self.rippleMaster,
+            self.clientMaster,
             self.address
         );
         $(self.accountPanel).bind(AccountEvent.ldAcc, self.ordersWidgets.refresh.bind(self.ordersWidgets));
@@ -127,7 +128,7 @@ AccountPanelsControl.prototype = {
         var self = this;
         self.txHistoryWidgets = RippleBox.TxBox(
             self.arbitragePanel.panel,
-            self.rippleMaster,
+            self.clientMaster,
             self.address
         );
 
@@ -142,7 +143,7 @@ AccountPanelsControl.prototype = {
 
         var panel = RippleBox.SellBuyBox(
             self.arbitragePanel.panel,
-            self.rippleMaster,
+            self.clientMaster,
             self.address
         );
 
@@ -157,7 +158,7 @@ AccountPanelsControl.prototype = {
         var self = this;
         var panel = RippleBox.MoneyFlowBox(
             self.arbitragePanel.panel,
-            self.rippleMaster,
+            self.clientMaster,
             self.address
         );
 
@@ -180,6 +181,8 @@ AccountPanelsControl.prototype = {
             }
         });
         ret['configure'] = settings;
+        ret['nickname'] = self.nickname;
+        ret['addressType'] = 0;
         return ret;
     },
 

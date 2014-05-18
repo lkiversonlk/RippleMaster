@@ -4,7 +4,7 @@ function RippleBox(root, rippleMaster, address, options){
     });
     $(root).append(div);
     this.root = div;
-    this.rippleMaster = rippleMaster;
+    this.clientMaster = rippleMaster;
     this.buttons = [];
     this.SetAddress(address);
     this.initialLayout(options);
@@ -147,7 +147,7 @@ RippleBox.OfferBox = function(root, rippleMaster, address){
     ret.refresh = function(){
         ret.progressBar.SetProgress(30, "Loading account offers");
         ret.table.Clear();
-        ret.rippleMaster.ConsultOffers(ret.address, function(result, offers) {
+        ret.clientMaster.ConsultOffers(ret.address, function(result, offers) {
             if (result === Consts.RESULT.SUCCESS) {
                 ret.progressBar.SetProgress(100, "Offers loaded");
                 ret.table.AddOffers(offers);
@@ -176,7 +176,7 @@ RippleBox.AccountBox = function(root, rippleMaster, address){
     ret.refresh = function(){
         ret.progressBar.SetProgress(40, "Loading account balances");
         ret.balancePanel.Clear();
-        ret.rippleMaster.AccountInfoNoRefresh(ret.address, function(result, id){
+        ret.clientMaster.AccountInfoNoRefresh(ret.address, function(result, id){
             if(result === Consts.RESULT.SUCCESS){
                 ret.progressBar.SetProgress(100, "Account balances loaded");
                 ret.balancePanel.AddBalance(id.XRP());
@@ -207,7 +207,7 @@ RippleBox.TxBox = function(root, rippleMaster, address){
         ret.progressBar.SetProgress(0, "");
         ret.progressBar.SetProgress(30, "Loading account transactions");
         ret.table.Clear();
-        ret.rippleMaster.ConsultTransactions(ret.address, function(result, isThereMore, addedTxes){
+        ret.clientMaster.ConsultTransactions(ret.address, function(result, isThereMore, addedTxes){
             if(result === Consts.RESULT.SUCCESS){
                 ret.table.AddTxes(addedTxes);
                 if(isThereMore){
@@ -253,7 +253,7 @@ RippleBox.SellBuyBox = function(root, rippleMaster, address){
             ret.progressBar.SetProgress(100, "Use different IOUs");
             return;
         }
-        var dataCollections = ret.rippleMaster.QueryTransactions(ret.address, function(result, data){
+        var dataCollections = ret.clientMaster.QueryTransactions(ret.address, function(result, data){
             if(result === Consts.RESULT.SUCCESS){
                 var sellBuy = Stat.CalIOUBuySell(startTime,
                     endTime,
@@ -277,7 +277,7 @@ RippleBox.SellBuyBox = function(root, rippleMaster, address){
     };
     ret.refresh = function(){
         ret.progressBar.SetProgress(40, "Loading account info");
-        ret.rippleMaster.AccountInfoNoRefresh(ret.address, function(result, id){
+        ret.clientMaster.AccountInfoNoRefresh(ret.address, function(result, id){
             var currencies = [id.XRP()].concat(id.Balances());
             if(result === Consts.RESULT.SUCCESS){
                 $(ret.sellBuyPanel.iouSelectors).empty();
@@ -325,7 +325,7 @@ RippleBox.MoneyFlowBox = function(root, rippleMaster, address){
             return;
         }
         var iou = $(ret.moneyFlowPanel.iouSelector).val();
-        var dataCollections = ret.rippleMaster.QueryTransactions(ret.address, function(result, data){
+        var dataCollections = ret.clientMaster.QueryTransactions(ret.address, function(result, data){
             if(result === Consts.RESULT.SUCCESS){
                 var iouSummary = Stat.CalIOUSummary(startTime,
                     endTime,
@@ -348,7 +348,7 @@ RippleBox.MoneyFlowBox = function(root, rippleMaster, address){
     };
     ret.refresh = function(){
         ret.progressBar.SetProgress(40, "Loading account info");
-        ret.rippleMaster.AccountInfoNoRefresh(ret.address, function(result, id){
+        ret.clientMaster.AccountInfoNoRefresh(ret.address, function(result, id){
             if(result === Consts.RESULT.SUCCESS){
                 var currencies = [id.XRP()].concat(id.Balances());
                 $(ret.moneyFlowPanel.iouSelector).empty();

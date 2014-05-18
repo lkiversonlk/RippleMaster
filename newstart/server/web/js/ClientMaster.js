@@ -1,11 +1,11 @@
-function RippleMaster(){
+function ClientMaster(){
     var self = this;
     self.initializeComponents();
     self.initializeBindings();
     self.SetState(Consts.STATE.OFFLINE);
 };
 
-RippleMaster.prototype = {
+ClientMaster.prototype = {
     SetState : function(state){
         this._state = state;
         $(this).trigger(Consts.EVENT.STATE_CHANGE);

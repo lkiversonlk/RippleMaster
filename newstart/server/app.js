@@ -56,7 +56,7 @@ app.use(flash());
 
 app.get("/", function(req, res){
     if(req.user){
-        res.redirect("/ripplemaster.html");
+        res.sendfile("./main/ripplemaster.html");
     }else{
         res.redirect("/index.html");
     }
@@ -66,7 +66,7 @@ app.post('/login',
     passport.authenticate('local'),
     function(req,res){
         if(req.user){
-            res.redirect("/ripplemaster.html");
+            res.sendfile("./main/ripplemaster.html");
         }else{
             res.redirect("/index.html");
         }
@@ -83,13 +83,41 @@ app.post('/register', function(req, res) {
                 if(err){
                     res.redirect("/signup.html");
                 }else{
-                    res.redirect("/ripplemaster.html");
+                    res.sendfile("./main/ripplemaster.html");
                 }
             });
         } else {
             res.redirect("/signup.html");
         }
     });
+});
+
+app.get('/masteraccount', function(req, res){
+    if(req.user){
+        var user = req.user;
+        host.AccountInfo(user, function(result, account){
+            if(result == Consts.RESULT.SUCC, account){
+                res.json(account);
+            }else{
+                res.json({fail:"true"});
+            }
+        });
+    }
+});
+
+app.post('/masteraccount', function(req, res){
+    if(req.user){
+        var accountInfo = req.body.accountInfo;
+        if(accountInfo){
+            host.UpdateAccountInfo(accountInfo, function(result){
+                if(result == Consts.RESULT.SUCC){
+                    res.json({success:"true"});
+                }else{
+                    res.json({fail:"true"});
+                }
+            })
+        }
+    }
 });
 
 /*
@@ -109,38 +137,6 @@ app.get('/ripplemaster', function(req, res){
         res.redirect('/');
     }
 })
-
-app.get('/masteraccount', function(req, res){
-    if(req.user){
-        var user = req.user;
-        Account.findOne({name : user}, function(err, doc){
-            if(err){
-                res.json(null);
-            }else{
-                if(doc){
-                    res.json({account : doc.name, settings : doc.settings});
-                }else{
-                    res.json(null);
-                }
-            }
-        });
-    }
-});
-
-app.post('/masteraccount', function(req, res){
-    if(req.user){
-        var settings = req.body.settings;
-        Account.findOne({name : req.user}, function(err, doc){
-            if(err){
-            }else{
-                if(doc){
-                    doc.settings = settings;
-                    doc.save();
-                }
-            }
-        });
-    }
-});
 */
 host.Work(function(){
     app.listen(80);

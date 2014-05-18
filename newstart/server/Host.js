@@ -135,7 +135,9 @@ Host.prototype.AccountInfo = function(account, callback){
         if(err){
             callback(Consts.RESULT.FAIL);
         }else if(doc){
-            callback(Consts.RESULT.SUCC, doc.toObject());
+            var ret = doc.toObject();
+            delete ret['password'];
+            callback(Consts.RESULT.SUCC, ret);
         }else{
             callback(Consts.RESULT.FAIL_ACCOUNT);
         }

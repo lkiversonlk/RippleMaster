@@ -1,11 +1,12 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+//addressType : 0 watchAddress, 1 Gateway
 var Account = new Schema({
     name : String,
     password : String,
     email : String,
-    rippleAddress : [{address : String, nickname : String, type:Number, config: [String]}]
+    rippleAddress : [{address : String, nickname : String, addressType:Number, configure: [String]}]
 });
 
 
