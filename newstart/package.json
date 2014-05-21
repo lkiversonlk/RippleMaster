@@ -3,6 +3,11 @@
 	"version":"1.0.0",
 	"dependencies":{
 		"ws":"*",
-		"extend":"*"
+		"extend":"*",
+		"express":"3.x",
+		"passport":"*",
+		"passport-local":"*",
+		"connect-flash":"*",
+		"mongoose":"*"
 	}
 }

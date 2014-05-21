@@ -57,7 +57,7 @@ RippleRequest.TransactionRequest = function(hash, ledger_hash, callback){
 
 /****
  *
- * AccountInfo:
+ * AddrBalance:
  *     account{address : value, xrp : value}
  *
  */
@@ -72,7 +72,7 @@ RippleRequest.AccountRequest = function(type, account, options, callback){
             RippleRequest.Logger.log(Log.DEBUG_LEVEL, type + " request succeed");
             var ret;
             switch (type){
-                case RippleRequest.RequestCMD.AccountInfo:
+                case RippleRequest.RequestCMD.AddrBalance:
                     ret = {
                         address : msg.result.account_data.Account,
                         xrp : new Balance(msg.result.account_data.Balance)

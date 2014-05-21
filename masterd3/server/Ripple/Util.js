@@ -4,7 +4,7 @@ Util.toTimestamp = function(rpepoch){
     return new Date((rpepoch + 0x386D4380) * 1000);
 };
 
-Util.FromTimestamp = function(timestamp){
+Util.fromTimestamp = function(timestamp){
     if (timestamp instanceof Date) {
         timestamp = timestamp.getTime();
     }

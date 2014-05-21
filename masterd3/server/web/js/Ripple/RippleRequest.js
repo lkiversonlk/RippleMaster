@@ -47,7 +47,7 @@ RippleRequest.TransactionRequest = function(hash, ledger_hash, callback){
 
 /****
  *
- * AccountInfo:
+ * AddrBalance:
  *     account{address : value, xrp : value}
  *
  */
@@ -70,25 +70,32 @@ RippleRequest.AccountRequest = function(type, account, options, callback){
                     break;
                 case RippleRequest.RequestCMD.AccountLines:
                     var lines = msg.result.lines;
-                    ret = new Array();
+                    ret = {
+                        address : msg.result.account,
+                        lines : []
+                    }
                     $.each(lines, function(i){
                         var balance = new Balance(lines[i]);
-                        ret.push(balance);
+                        ret.lines.push(balance);
                     });
                     break;
                 case RippleRequest.RequestCMD.AccountOffers:
                     var offers = msg.result.offers;
-                    ret = new Array();
+                    ret = {
+                        address : msg.result.account,
+                        offers : []
+                        };
                     $.each(offers, function(i){
                         var sell = new Balance(offers[i].taker_gets);
                         var  want = new Balance(offers[i].taker_pays);
-                        ret.push(new Offers(sell, want));
+                        ret.offers.push(new Offers(sell, want));
                     });
                     break;
                 case RippleRequest.RequestCMD.AccountTransactions:
                     var analyzer = new TransactionAnalyzer(msg.result.account);
                     var transactions = analyzer.AnalyzeTransactions(msg.result.transactions);
                     var ret = {
+                        address : msg.result.account,
                         transactions : transactions,
                         marker : msg.result.marker
                     }

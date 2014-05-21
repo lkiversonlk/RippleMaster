@@ -3,7 +3,8 @@
         rules : {
             account : "required",
             password : {required : true, minlength : 6},
-            password_confirm : {required : true, equalTo : "#password"}
+            password_confirm : {required : true, equalTo : "#password"},
+            recaptcha_response_field : {required : true}
         },
         messages :{
             account : "Set an account",
@@ -14,6 +15,9 @@
             password_confirm : {
                 required : "Enter confirm password",
                 equalTo : "Password and Confirm password must match"
+            },
+            recaptcha_response_field : {
+                required : "Enter the recaptcha code"
             }
         },
         errorClass: "help-inline",

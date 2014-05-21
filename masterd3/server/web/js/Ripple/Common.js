@@ -45,8 +45,8 @@ Consts.GatewayMapping = {
 };
 
 Consts.GetGatewayNick = function(address){
-    if(typeof Consts.GatewayMapping[address] !== 'undefined'){
-        return Consts.GatewayMapping[address];
+    if(typeof Balance.Mapper[address] !== 'undefined'){
+        return Balance.Mapper[address];
     }
     return address;
 }
@@ -67,7 +67,7 @@ Consts.DefaultNetConfig = {
     secure   : true
 };
 
-Consts.BATCH_SIZE = 40;
+Consts.BATCH_SIZE = 30;
 
 Consts.DateToNumber = function(month, year){
     return ((year - 2000) * 12 + month);
@@ -112,6 +112,10 @@ Consts.Palette = [
     "#CFE1A9"
 ];
 
+Consts.BLACKGREE_PALETTE = [
+    "#3B3C3E",
+    "#AAD53B"
+]
 Consts.ReversePalette = [
     "#E9772E",
     "#AAD53B",

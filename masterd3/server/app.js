@@ -5,6 +5,9 @@ var flash = require('connect-flash');
 var Host = require("./Host").Host;
 var Log = require('log').log;
 var Consts = require('./Ripple/Common').Consts;
+var http = require('http');
+var querystring = require('querystring');
+var MemoryStore = express.session.MemoryStore;
 
 Log.SetLevel(Log.DEBUG_LEVEL);
 
@@ -12,7 +15,7 @@ var options = {};
 options.servers = Consts.RP_SERVERS;
 options.debugging = true;
 options.algorithm = 'aes-256-cbc';
-options.key = "justatest#@";
+options.dbKey = "37712CCD76BA9C1E232D1394F74AF";
 options.sessionKey = "a234fa@#NF";
 options.db = "mongodb://localhost/ripplemaster";
 
@@ -48,7 +51,7 @@ var app = express();
 app.use(express.static(__dirname + '/web'));
 app.use(express.bodyParser());
 app.use(express.cookieParser());
-app.use(express.session({secret:options.sessionKey}));
+app.use(express.session({secret:options.sessionKey, store : new MemoryStore()}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(app.router);
@@ -73,6 +76,50 @@ app.post('/login',
     }
 );
 
+function verify(ip, chanllenge, response, callback){
+    var data = {
+        remoteip : ip,
+        challenge : chanllenge,
+        response : response,
+        privatekey : '6LenxfMSAAAAAPghVZnriCOIkp1HmdNNYgsis33Q'
+    };
+    var data_send = querystring.stringify(data);
+    var req_opt = {
+        host : 'www.google.com',
+        path : '/recaptcha/api/verify',
+        port : 80,
+        method : "POST",
+        headers : {
+            'Content-Type' : 'application/x-www-form-urlencoded',
+            'Content-Length' : data_send.length
+        }
+    };
+
+    var request = http.request(req_opt, function(httpRes){
+        var body = '';
+        httpRes.on('error', function(err){
+            callback(false);
+        });
+        httpRes.on('data', function(chunk){
+            body += chunk;
+        });
+        httpRes.on('end', function(){
+            var success, error_code, parts;
+
+            parts = body.split('\n');
+            success = parts[0];
+
+            if(success !== 'true'){
+                callback(false);
+            }else{
+                callback(true);
+            }
+        })
+    });
+    request.write(data_send, "utf8");
+    request.end();
+}
+
 app.get('/login',
     passport.authenticate('local'),
     function(req,res){
@@ -88,19 +135,28 @@ app.post('/register', function(req, res) {
     var account = req.body.account;
     var password = req.body.password;
     var email = req.body.email;
-    host.InitAccount(account, password, email, function (result) {
-        if (result === Consts.RESULT.SUCC) {
+    host.InitAccount(account, password, email, function(result){
+        if(result === Consts.RESULT.SUCC){
             req.login(account, function(err){
-                if(err){
-                    res.redirect("/signup.html");
-                }else{
-                    res.sendfile("./main/ripplemaster.html");
-                }
+                res.sendfile("./main/ripplemaster.html");
             });
-        } else {
+        }else{
             res.redirect("/signup.html");
         }
     });
+    //verify the recaptcha:
+    /*
+    verify(req.connection.remoteAddress,
+           req.body.recaptcha_challenge_field,
+           req.body.recaptcha_response_field,
+           function(result){
+               if(result){
+                   res.redirect("/signup.html");
+               }else{
+                   res.sendfile("./main/ripplemaster.html");
+               }
+           });
+    */
 });
 
 app.get('/masteraccount', function(req, res){

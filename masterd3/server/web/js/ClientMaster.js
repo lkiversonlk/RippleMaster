@@ -30,16 +30,7 @@ ClientMaster.prototype = {
         });
     },
 
-    AccountInfoNoRefresh : function(address, callback){
-        var self = this;
-        if(!self.ids[address]){
-            self.AccountInfo(address, callback);
-        }else{
-            callback(Consts.RESULT.SUCCESS, self.ids[address]);
-        }
-    },
-
-    AccountInfo : function(address, callback){
+    AddrBalance : function(address, callback){
         var self = this;
         if(self.State() == Consts.STATE.OFFLINE){
             callback(Consts.RESULT.FAIL_NETWORKERROR);
@@ -48,13 +39,40 @@ ClientMaster.prototype = {
                 if(result != Consts.RESULT.SUCCESS){
                     callback(result);
                 }else{
-                    var id = new ID();
+                    var ret = new AddrBal(address);
                     var xrp = data.xrp;
                     var request = RippleRequest.AccountRequest(RippleRequest.RequestCMD.AccountLines, address, null, function(result, data){
                         if(result === Consts.RESULT.SUCCESS){
-                            id.SetBalance(xrp, data);
-                            self.ids[address] = id;
-                            callback(Consts.RESULT.SUCCESS, id);
+                            ret.SetBalance(xrp, data.lines);
+                            callback(Consts.RESULT.SUCCESS, ret);
+                            //self.LoadAllTransactions(address);
+                        }else{
+                            callback(result);
+                        }
+                    });
+                    self._rippleServer.Request(request);
+                }
+
+            });
+            self._rippleServer.Request(request);
+        }
+    },
+
+    AddrBalanceInLedger : function(address, ledger, callback){
+        var self = this;
+        if(self.State() == Consts.STATE.OFFLINE){
+            callback(Consts.RESULT.FAIL_NETWORKERROR);
+        }else{
+            var request = RippleRequest.AccountRequest(RippleRequest.RequestCMD.AccountInfo, address, {ledger_index : ledger}, function(result, data){
+                if(result != Consts.RESULT.SUCCESS){
+                    callback(result);
+                }else{
+                    var ret = new AddrBal(address);
+                    var xrp = data.xrp;
+                    var request = RippleRequest.AccountRequest(RippleRequest.RequestCMD.AccountLines, address, {ledger_index : ledger}, function(result, data){
+                        if(result === Consts.RESULT.SUCCESS){
+                            ret.SetBalance(xrp, data.lines);
+                            callback(Consts.RESULT.SUCCESS, ret);
                             //self.LoadAllTransactions(address);
                         }else{
                             callback(result);
@@ -88,21 +106,18 @@ ClientMaster.prototype = {
      * @param callback
      * @constructor
      */
-    ConsultTransactions: function(address, callback){
+    ConsultTransactions: function(address, marker, callback){
         var self = this;
         if(self.State() === Consts.STATE.OFFLINE){
             callback(Consts.RESULT.FAIL_NETWORKERROR);
-        }
-        if(self._txManager.Flag(address) && self._txManager.Flag(address).finished === true){
-            callback(Consts.RESULT.SUCCESS, false, []);  //bug fix
         }
         var options = {
             ledger_index_min:-1,
             ledger_index_max:-1,
             limit:Consts.BATCH_SIZE
         };
-        if(self._txManager.Flag(address) && self._txManager.Flag(address).marker){
-            options.marker = self._txManager.Flag(address).marker;
+        if(marker){
+            options.marker = marker;
         }
         var accountTxRequest = RippleRequest.AccountRequest(
             RippleRequest.RequestCMD.AccountTransactions,
@@ -110,14 +125,15 @@ ClientMaster.prototype = {
             options,
             function(result, data){
                 if(result === Consts.RESULT.SUCCESS){
-                    self._txManager.AddAddressTransactions(address, data.transactions, data.marker);
                     if(data.marker){
-                        var goOn = callback(Consts.RESULT.SUCCESS, true, data.transactions);
+                        var marker = data.marker;
+                        var goOn = callback(Consts.RESULT.SUCCESS, marker, data.transactions);
                         if(goOn){
-                            self.ConsultTransactions(address, callback);
+                            self.ConsultTransactions(address, marker, callback);
+                        }else{
                         }
                     }else{
-                        callback(Consts.RESULT.SUCCESS, false, data.transactions);
+                        callback(Consts.RESULT.SUCCESS, null, data.transactions);
                     }
                 }else{
                     callback(result);
@@ -143,16 +159,7 @@ ClientMaster.prototype = {
     initializeComponents : function(){
         this.ids = {};
         this._rippleServer = new RippleServer();
-        this._navigationBar = new NavigationBar($("div[role='navigation']"), this);
-        this._offer = RippleBox.OfferBox($("#offers"), this, "r9zbt4tB2s3KsrmgE6r1KoZtVN4cNAsfxN");
-        this._tx = RippleBox.TxBox($("#transactions"), this, "r9zbt4tB2s3KsrmgE6r1KoZtVN4cNAsfxN");
-        this._accountBalance = RippleBox.AccountBox($("#holds"), this, "r9zbt4tB2s3KsrmgE6r1KoZtVN4cNAsfxN")
-        this._txManager = new TxManager();
-        this._sellBuyPanel = RippleBox.SellBuyBox($("#test"), this , "r9zbt4tB2s3KsrmgE6r1KoZtVN4cNAsfxN");
-    /*
-        $('.selectpicker').selectpicker();
-        $(".date").datetimepicker();
-        */
+        this.markers = {};
     },
 
     initializeBindings : function(){
@@ -160,34 +167,14 @@ ClientMaster.prototype = {
     }
 };
 
-function ID(){
-    this._address = null;
-    this._nickname = null;
-    this._balances = new Array();
-    this._xrp = null;
-    this._logger = new Log("ID");
+function AddrBal(address){
+    this.address = address;
+    this.balances = new Array();
+    this._logger = new Log("AddrBal");
 };
 
-ID.prototype = {
-    Address : function(){return this._address;},
-    Nickname : function(){return this._nickname;},
-    Balances : function(){return this._balances;},
-
+AddrBal.prototype = {
     SetBalance : function(xrp, balances){
-        this._xrp = xrp;
-        this._balances = balances;
-    },
-
-    SetAccount : function(address, nickname){
-        this._address = address;
-        this._nickname = nickname;
-    },
-
-
-    XRP : function(){return this._xrp;},
-
-    Clear : function(){
-        this._address = this._nickname = this._xrp = null;
-        this.SetBalance(0, new Array());
+        this.balances = balances.concat([xrp]);
     }
 };

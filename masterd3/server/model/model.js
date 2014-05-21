@@ -6,7 +6,7 @@ var Account = new Schema({
     name : String,
     password : String,
     email : String,
-    rippleAddress : [{address : String, nickname : String, addressType:Number, configure: [String]}]
+    rippleAddress : [{address : String, nickname : String, addressType:Number}]
 });
 
 

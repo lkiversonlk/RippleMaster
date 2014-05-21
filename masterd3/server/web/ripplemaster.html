@@ -12,6 +12,7 @@
     <link href="lib/footable/footable.core.css" rel="stylesheet">
     <link href="lib/bootstrap-datepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
     <link href="lib/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
+    <link href="lib/d3/d3.nv/nv.d3.min.css" rel="stylesheet">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -101,29 +102,30 @@
         </div>
     </div>
 
-    <div class="green-background button-look margin-top10" style="height: 40px">
+    <div class="green-background margin-top10" style="height: 40px">
     </div>
 
     <div style="min-height: 200px">
         <div class="tab-content pure-white-background">
             <div class="tab-pane active fade in" id="account">
-                <div id="account-content" class="container">
+                <div id="account-content" class="container-fluid gray-background">
                 </div>
 
             </div>
             <div class="tab-pane fade" id="arbitrage">
-                <div id="arbitrage-content" class="container">
+                <div id="trade-content" class="container-fluid gray-background">
                 </div>
             </div>
             <div class="tab-pane fade" id="settings">
                 <div class="container settings">
                     <div class="row">
                         <div class="col-md-3">
-                            <a href="#configure-account-basic" class="list-group-item">Account Basic</a>
-                            <a href="#configure-ripple-address" class="list-group-item">Ripple Addresses</a>
+                            <a href="#conf-acc" class="list-group-item">Account Basic</a>
+                            <a href="#conf-rp" class="list-group-item">Ripple Addresses</a>
+                            <a href="#conf-gt" class="list-group-item">Gateway Nickname</a>
                         </div>
                         <div class="col-md-9">
-                            <div id="configure-account-basic">
+                            <div id="conf-acc">
                                 <h2>Account Basic</h2>
                                 <hr>
                                 <form class="form-horizontal" role="form">
@@ -135,7 +137,7 @@
                                     </div>
                                 </form>
                             </div>
-                            <div id="configure-ripple-address">
+                            <div id="conf-rp">
                                 <h2>
                                     Ripple Addresses
                                     <span class="glyphicon glyphicon-plus green-text right" onclick="{$('#addRippleAccountPanel').modal('show');}"></span>
@@ -145,7 +147,7 @@
                                 <form class="form-horizontal" role="form">
                                 </form>
                             </div>
-                            <div id="configure-gateway-nicks">
+                            <div id="conf-gt">
                                 <h2>
                                     Gateway Nickname
                                     <span class="glyphicon glyphicon-plus green-text right" onclick="{$('#setGatewayNickname').modal('show');}"></span>
@@ -285,15 +287,14 @@
 <script src="lib/footable/footable.filter.min.js"></script>
 <script src="lib/charts/globalize.min.js"></script>
 <script src="lib/charts/dx.chartjs.debug.js"></script>
-<script src="js/managers/AccountManager.js"></script>
-<script src="js/pages/NavigationBar.js"></script>
+<script src="js/protocol.js"></script>
+<script src="js/managers/AccMgr.js"></script>
 <script src="js/pages/RippleTable.js"></script>
-<script src="js/pages/BalancePanel.js"></script>
 <script src="js/pages/ProgressBar.js"></script>
 <script src="js/pages/RippleBox.js"></script>
 <script src="js/pages/statPanels.js"></script>
-<script src="js/pages/AccountPanel.js"></script>
-<script src="js/pages/AccountPanelController.js"></script>
+<script src="js/pages/addrPanel.js"></script>
+<script src="js/pages/ConfigPanel.js"></script>
 <script src="js/pages/MainPage.js"></script>
 <script src="js/Ripple/Model.js"></script>
 <script src="js/Ripple/Server.js"></script>
@@ -312,13 +313,12 @@
         Log.SetLevel(Log.DEBUG_LEVEL);
         var img = $("#user-panel").find("img");
         var load = $("#user-panel").find("div.loading");
-        var main = new ClientMaster();
-
-        var mainPage = new MainPage(main);
-
-        main.Start(function(){
-            $(load).remove();
-            $(img).show()
+        var client = new ClientMaster();
+        client.Start(function(){
+            var mainPage = new MainPage(client, function(){
+                $(load).remove();
+                $(img).show()
+            });
         });
     });
 </script>

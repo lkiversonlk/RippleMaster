@@ -1,5 +1,5 @@
 function SellBuyPanel(root){
-    this._root = root;
+    this.root = root;
     this.initialLayout();
     this.parseLayout();
 };
@@ -21,10 +21,42 @@ var dateSelectHtml = '<div class="form-group">' +
                                 '<input type="text" class="form-control"><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>' +
                             '</div>' +
                         '</div>' +
-                    '</div> '
+                    '</div>'
 
 SellBuyPanel.prototype = {
     initialLayout : function(){
+        var self = this;
+
+        var sellBuyConfHtml = '<form class="form-horizontal" role="form">' +
+            '<label class="form-control text-center green-background">Sell&Buy Stat</label>' +
+            '<div class="form-group">' +
+            '<div class="col-md-2">' +
+            '<label class="form-control">Currency</label>' +
+            '</div>' +
+            '<div class="col-md-8">' +
+            '<select class="selectpicker" data-width="auto"></select>' +
+            '</div>' +
+            '</div>' +
+            '<div class="form-group">' +
+            '<div class="col-md-2">' +
+            '<label class="form-control">Currency</label>' +
+            '</div>' +
+            '<div class="col-md-8">' +
+            '<select class="selectpicker" data-width="auto"></select>' +
+            '</div>' +
+            '<div class="col-md-2">' +
+            '<button type="button" class="btn btn-primary form-control">OK</button>' +
+            '</div>' +
+            '</div>' +
+            '</form>';
+        $(self.root).html(sellBuyConfHtml);
+        self.sellBuyChart = $("<div />", {
+            class : "sellbuy chart"
+        });
+        $(self.root).append(self.sellBuyChart);
+
+        self.sellbuyIouSelectors = $(sellBuyDiv).find(".selectpicker");
+        return sellBuyDiv;
         var self = this;
         var configureTableHtml = '<form class="form-horizontal" role="form">' +
                                     dateSelectHtml +
@@ -51,14 +83,7 @@ SellBuyPanel.prototype = {
         $(self._root).append($("<div />", {
             class : "shadow"
         }));
-        var contentHtml = '<div class="row">' +
-                            '<div class="col-md-6 chart-area margin-top10" style="height: 300px"></div>' +
-                            '<div class="col-md-4">' +
-                                '<p>You have bought <strong class="green-text"></strong> at an average price of <strong class="green-text"></strong></p>' +
-                                '<p>You have sold <strong class="green-text"></strong> at an average price of <strong class="green-text"></strong></p>' +
-                                '<p>You have get <strong class="green-text"></strong> in amount of <strong class="green-text"></strong>'
-                            '</div>' +
-                        '</div>';
+
         var contentDiv = $("<div />", {
             class : "container-fluid"
         });
@@ -70,9 +95,7 @@ SellBuyPanel.prototype = {
     parseLayout : function(){
         var self = this;
         var datepickers = $(self._root).find(".date");
-        $(datepickers).datetimepicker({
-            pickTime : false
-        });
+        $(datepickers).datetimepicker();
         self.datepickers = datepickers;
         var iouSelectors = $(self._root).find(".selectpicker");
         $(iouSelectors).selectpicker();
@@ -182,9 +205,7 @@ MoneyFlowPanel.prototype = {
     parseLayout : function(){
         var self = this;
         var datepickers = $(self._root).find(".date");
-        $(datepickers).datetimepicker({
-            pickTime : false
-        });
+        $(datepickers).datetimepicker();
         self.datepickers = datepickers;
         var iouSelector = $(self._root).find(".selectpicker");
         $(iouSelector).selectpicker();
@@ -324,4 +345,69 @@ MoneyFlowPanel.prototype = {
         });
 
     }
+};
+
+function BalancePanel(){
+};
+
+BalancePanel.Init = function(ele){
+    var root = $("<div />", {
+        class : "row"
+    });
+    $(ele).append(root);
+};
+
+BalancePanel.PaintBalances = function(ele, balances){
+    var root = $(ele).find("div.row");
+    $(root).empty();
+    for(i in balances){
+        $(root).append(BalancePanel.PaintBalance(balances[i]));
+    }
+};
+
+BalancePanel.PaintBalance = function(balance){
+    var div = $("<div />", {
+        class : "pricingtable col-md-3"
+    });
+    div.append(BalancePanel.assembleTop(balance));
+    var inner = $("<div />", {
+        class : "pure-white-background"
+    });
+    inner.append(BalancePanel.assembleIssuer(balance));
+    inner.append("<hr />");
+    inner.append(BalancePanel.assembleBalance(balance));
+    div.append(inner);
+    return div;
+};
+
+BalancePanel.assembleTop = function(line){
+    return '<div class="pricingtable-top"><div class="currency">' + line.Currency() + '</div></div>';
+};
+
+BalancePanel.assembleIssuer = function(line){
+    var gateway = Consts.GetGatewayNick(line.Issuer());
+    return '<div class="pure-white-background"><p>' + gateway + '</p></div>';
+};
+
+BalancePanel.assembleBalance = function(line){
+    return '<div class="balance pure-white-background">' + line.Money().toFixed(2) + '</div>'
+};
+
+function OfferPanel(){
+
+};
+
+OfferPanel.ShowTx = function(root, offers){
+    $(root).empty();
+    var tableHtml = '' +
+        '<table class="footable table" data-page-size="10">' +
+        '<thead>' +
+        '<tr><th>Sell</th><th>Issuer</th><th>Amount</th><th>Want</th><th>Issuer</th><th>Amount</th><th>Rate</th></tr></thead>' +
+        '<tbody>' +
+        '</tbody>' +
+        '</table>';
+    $(root).html(tableHtml);
+    var table = new RippleTable(root);
+    table.AddOffers(offers);
 }
+

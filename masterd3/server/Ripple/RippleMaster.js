@@ -56,7 +56,7 @@ RippleMaster.prototype.AddressInfo = function(address, callback) {
     if (self.state == RippleMaster.STATE.OFF) {
         callback(Consts.RESULT.FAIL_NETWORK);
     } else {
-        var request = RippleRequest.AccountRequest(RippleRequest.RequestCMD.AccountInfo, address, null, function (result, data) {
+        var request = RippleRequest.AccountRequest(RippleRequest.RequestCMD.AddrBalance, address, null, function (result, data) {
             if (result != Consts.RESULT.SUCC) {
                 callback(result);
             } else {

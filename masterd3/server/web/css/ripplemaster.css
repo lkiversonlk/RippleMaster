@@ -119,6 +119,16 @@ html, body{
     height: 100px;
 }
 /* for specific part */
+.offers table{
+    background-color: #ffffff;
+}
+.offers table thead{
+    background-color: #AAD53B;
+}
+.havbar-header a:hover,
+.havbar-header a:focus{
+    color: #AAD53B;
+}
 #function-panel{
     font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
     color: #3B3C3E;
@@ -175,14 +185,14 @@ html, body{
 }
 
 .pricingtable-top{
-    background: #428BCA;
+    background: #3B3C3E;
     -webkit-border-radius: 5px 5px 0 0;
     -moz-border-radius: 5px 5px 0 0;
     border-radius: 5px 5px 0 0;
 }
 
 .pricingtable-top .currency {
-    color: #3B3C3E;
+    color: #AAD53B;
     text-align: center;
     font-family: Impact, Haettenschweiler, "Franklin Gothic Bold", Charcoal, "Helvetica Inserat", "Bitstream Vera Sans Bold", "Arial Black", sans serif;
     font-size: 20px;
@@ -216,7 +226,7 @@ html, body{
     text-align: center;
     font: 500 14px/1 Helvetica, Verdana, sans-serif;
     color: #3B3C3E;
-    margin: 5px 0 0 0;
+    margin: 0px 0 0 0;
 }
 .second-caption{
     text-align: center;
@@ -258,7 +268,7 @@ html, body{
  .configure-panel a:focus{
      color: #3B3C3E;
  }
- .account-stat-group{
+ .addr-st-gp{
 
  }
 
@@ -266,8 +276,7 @@ html, body{
      padding: 4px;
  }
 
- .account-panel{
-     background-color: #ffffff;
+ .address-panel{
  }
 
 .account-caption{

@@ -28,8 +28,10 @@ function Balance(json){
     }
 };
 
+
 Balance.prototype = {
     Issuer : function() {
+        if(Balance.Mapper && Balance.Mapper[this._issuer]) return Balance.Mapper[this._issuer];
         return this._issuer;
     },
 

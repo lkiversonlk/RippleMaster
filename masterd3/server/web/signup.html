@@ -51,6 +51,12 @@
 
     <div class="shadow margin-top10"></div>
 
+    <script type="text/javascript">
+        var RecaptchaOptions = {
+            theme : 'white'
+        };
+    </script>
+
     <div class="green-background">
         <div class="container">
             <div class="row margin-top20">
@@ -81,6 +87,10 @@
                                                 <input id="account" class="form-control input-lg" placeholder="Account" required="required" maxlength="100" type="text" name="account" value="">
                                             </div>
                                             <div class="input-group">
+                                                <span class="input-group-addon"><i class="icon-envelope icon-2x"></i></span>
+                                                <input id="email" class="form-control input-lg" placeholder="Email" required="required" maxlength="100" type="text" name="email" value="">
+                                            </div>
+                                            <div class="input-group">
                                                 <span class="input-group-addon"><i class="icon-asterisk icon-2x"></i></span>
                                                 <input id="password" class="form-control input-lg" placeholder="Password" required="required" maxlength="60" type="password" name="password">
                                             </div>
@@ -88,6 +98,20 @@
                                                 <span class="input-group-addon"><i class="icon-asterisk icon-2x"></i></span>
                                                 <input id="password_confirm" class="form-control input-lg" placeholder="Password Confirm" required="required" maxlength="60" type="password" name="password_confirm">
                                             </div>
+                                            <!--
+                                            <script type="text/javascript"
+                                                    src="http://www.google.com/recaptcha/api/challenge?k=6LenxfMSAAAAAHQ0Qf6M3ApT5i7l2BwDz0vt-1mc">
+                                            </script>
+                                            <noscript>
+                                                <iframe src="http://www.google.com/recaptcha/api/noscript?k=6LenxfMSAAAAAHQ0Qf6M3ApT5i7l2BwDz0vt-1mc"
+                                                        height="300" width="500" frameborder="0"></iframe><br>
+                                                <textarea name="recaptcha_challenge_field" rows="3" cols="40">
+                                                </textarea>
+                                                <input type="hidden" name="recaptcha_response_field"
+                                                       value="manual_challenge">
+                                            </noscript>
+                                            -->
+                                            <div style="height: 20px"></div>
                                             <div class="form-group">
                                                 <button type="submit" id="btn-login" class="btn btn-block btn-primary btn-lg">Sign up</button>
                                             </div>

@@ -12,7 +12,6 @@ function Host(options){
     self.running = false;
     self.db = new db(self.options.db, null, null);
     self.rpMaster = new RippleMaster();
-    self.cipher = crypto.createCipher(self.options.algorithm, self.options.key);
 };
 
 Host.prototype.Work = function(callback){
@@ -91,11 +90,14 @@ Host.prototype.InitAccount = function(account, password, email, callback){
         }else if(doc){
             callback(Consts.RESULT.FAIL_ACCOUNT);
         }else{
-            //var encryptpassword = self.cipher.update(password, 'utf8', 'hex') + self.cipher.final('hex');
+            var cipher = crypto.createCipher('aes-256-cbc', self.options.dbKey);
+            var crypted = cipher.update(password, 'utf-8', 'hex');
+            crypted += cipher.final('hex');
+
 
             var save = new Account({
                 name : account,
-                password : password,
+                password : crypted,
                 email : email,
                 rippleAddress : []
             });
@@ -112,9 +114,12 @@ Host.prototype.LoginAccount = function(account, password, callback){
             callback(Consts.RESULT.FAIL);
         }else if(doc){
             var correct = doc.password;
-            var encryptpassword = password;//.cipher.update(password, 'utf8', 'hex') + self.cipher.final('hex');
 
-            if(correct == encryptpassword){
+            var cipher = crypto.createCipher('aes-256-cbc', self.options.dbKey);
+            var crypted = cipher.update(password, 'utf-8', 'hex');
+            crypted += cipher.final('hex');
+
+            if(correct == crypted){
                 callback(Consts.RESULT.SUCC);
             }else{
                 callback(Consts.RESULT.FAIL_ACCOUNT);

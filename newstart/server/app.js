@@ -12,7 +12,7 @@ var options = {};
 options.servers = Consts.RP_SERVERS;
 options.debugging = true;
 options.algorithm = 'aes-256-cbc';
-options.key = "justatest#@";
+options.dbKey = "justatest#@";
 options.sessionKey = "a234fa@#NF";
 options.db = "mongodb://localhost/ripplemaster";
 

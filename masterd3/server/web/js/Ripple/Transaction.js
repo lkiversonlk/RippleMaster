@@ -1,6 +1,14 @@
 function Transaction(){
-    this._type = null;
-    this._date = null;
+    this.type = null;
+    this.date = null;
+    this.host = null;
+    this.dest = null;
+    this.amount = null;
+    this.cost = null;
+    this.date = null;
+    this.ledger = 0;
+    this.sequence = 0;
+    this.fee = null;
 };
 
 Transaction.Type = {
@@ -20,60 +28,3 @@ Transaction.LEDGER_ENTRY_TYPE = {
     ACCOUNT_ROOT : "AccountRoot"
 };
 
-Transaction.prototype = {
-    SetHost : function(address){
-        this._host = address;
-    },
-
-    Host : function(){
-        return this._host;
-    },
-
-    SetDest : function(address){
-        this._dest = address;
-    },
-
-    Dest : function(){
-        return this._dest;
-    },
-
-    SetType : function(type){
-        this._type = type;
-    },
-
-    Type : function(){
-        return this._type;
-    },
-
-    SetAmount : function(amount){
-        this._amount = amount;
-    },
-
-    Amount : function(){
-        return this._amount;
-    },
-
-    SetCost : function(cost){
-        this._cost = cost;
-    },
-
-    Cost : function(){
-        return this._cost;
-    },
-
-    SetFee : function(fee){
-        this._fee = fee;
-    },
-
-    Fee : function(){
-        return this._fee;
-    },
-
-    Date : function(){
-        return this._date;
-    },
-
-    SetDate : function(date){
-        this._date = date;
-    }
-}
