@@ -31,25 +31,25 @@ Stat.CalIOUSummary = function(start, end, iou, dataCollection){
         if(proceed != 0) {
             switch (tx.Type()){
                 case Transaction.Type.Send:
-                    ret['send'] += tx.cost.Money();
+                    ret['send'] += tx.cost.Value();
                     break;
                 case Transaction.Type.Receive:
-                    ret['receive'] += tx.amount.Money();
+                    ret['receive'] += tx.amount.Value();
                     break;
                 case Transaction.Type.Trade :
                     if(proceed == 1){
-                        ret['sell'] += tx.cost.Money();
+                        ret['sell'] += tx.cost.Value();
                         if(ret.sellDetail[tx.amount.Currency()]){
-                            ret.sellDetail[tx.amount.Currency()] += tx.cost.Money();
+                            ret.sellDetail[tx.amount.Currency()] += tx.cost.Value();
                         }else{
-                            ret.sellDetail[tx.amount.Currency()] = tx.cost.Money();
+                            ret.sellDetail[tx.amount.Currency()] = tx.cost.Value();
                         }
                     }else{
-                        ret['buy'] += tx.amount.Money();
+                        ret['buy'] += tx.amount.Value();
                         if(ret.buyDetail[tx.cost.Currency()]){
-                            ret.buyDetail[tx.cost.Currency()] += tx.amount.Money();
+                            ret.buyDetail[tx.cost.Currency()] += tx.amount.Value();
                         }else{
-                            ret.buyDetail[tx.cost.Currency()] = tx.amount.Money();
+                            ret.buyDetail[tx.cost.Currency()] = tx.amount.Value();
                         }
                     }
                     break;
@@ -80,9 +80,9 @@ Stat.CalIOUBuySell = function(baseIOU, refIOU, txes){
         var tx = txes[i];
         if(tx.type === Transaction.Type.Trade){
             var sellIOU = tx.cost.Currency() + tx.cost.Issuer();
-            var sellAmount = tx.cost.Money();
+            var sellAmount = tx.cost.Value();
             var buyIOU = tx.amount.Currency() + tx.amount.Issuer();
-            var buyAmount = tx.amount.Money();
+            var buyAmount = tx.amount.Value();
 
             if(sellIOU == baseIOU && buyIOU == refIOU){
                 //sell
@@ -233,11 +233,11 @@ Stat.CalSummary = function(txes){
             case Transaction.Type.Receive:
                 var iou = tx.amount.Currency() + tx.amount.Issuer();
                 if(!ret[iou]) ret[iou] = {receive:0, send:0};
-                ret[iou].receive += tx.amount.Money();
+                ret[iou].receive += tx.amount.Value();
             case Transaction.Type.Send:
                 var iou = tx.cost.Currency() + tx.cost.Issuer();
                 if(!ret[iou]) ret[iou] = {receive:0, send:0};
-                ret[iou].send += tx.cost.Money();
+                ret[iou].send += tx.cost.Value();
         }
     }
     return ret;

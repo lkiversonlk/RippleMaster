@@ -453,15 +453,6 @@ AnalyzeBox.prototype.ComposeConf = function(){
 
 AnalyzeBox.prototype.Initial = function(balances){
     var self = this;
-    $(self.iouSelector).empty();
-    $.each(balances, function(i){
-        var balance = balances[i];
-        var opt = $("<option />", {
-            value : balance.Currency()+balance.Issuer(),
-            text : balance.Currency() + " " + Consts.GetGatewayNick(balance.Issuer())
-        });
-        $(self.iouSelector).append(opt);
-    });
     self.sellBuyBox.SetConfig(balances);
 };
 
@@ -590,7 +581,9 @@ function BalanceChangeBox(root){
     });
     $(label).text("Balance Change");
     $(this.root).append(label);
-    var chart = $("<div />");
+    var chart = $("<div />", {
+        style : "min-height : 300px"
+    });
     this.chart = chart;
     $(this.root).append(chart);
     $(this.chart).dxChart({
@@ -677,28 +670,18 @@ function SellBuyBox(root){
     var sellBuyConfHtml = '<form class="form-horizontal" role="form">' +
         '<label class="form-control text-center green-background">Sell&Buy Stat</label>' +
         '<div class="form-group">' +
-        '<div class="col-md-2">' +
-        '<label class="form-control">Currency</label>' +
+        '<div class="col-md-6">' +
+            '<select class="selectpicker" data-width="auto"></select>' +
         '</div>' +
-        '<div class="col-md-8">' +
-        '<select class="selectpicker" data-width="auto"></select>' +
-        '</div>' +
-        '</div>' +
-        '<div class="form-group">' +
-        '<div class="col-md-2">' +
-        '<label class="form-control">Currency</label>' +
-        '</div>' +
-        '<div class="col-md-8">' +
-        '<select class="selectpicker" data-width="auto"></select>' +
-        '</div>' +
-        '<div class="col-md-2">' +
-        '<button type="button" class="btn btn-primary form-control">OK</button>' +
+        '<div class="col-md-6">' +
+            '<select class="selectpicker" data-width="auto"></select>' +
         '</div>' +
         '</div>' +
         '</form>';
     $(root).html(sellBuyConfHtml);
     var chart = $("<div />", {
-        class : "sellbuy chart"
+        class : "sellbuy chart",
+        style : "min-height : 300px"
     });
     $(root).append(chart);
     var conclusion = $("<div />",{
@@ -713,6 +696,7 @@ function SellBuyBox(root){
     );
     $(root).append(conclusion);
     this.sellbuyIouSelectors = $(root).find(".selectpicker");
+    $(this.sellbuyIouSelectors).on('change', this.PaintData.bind(this));
     this.chart = chart;
     $(chart).dxChart({
         commonSeriesSettings : {
@@ -759,6 +743,57 @@ SellBuyBox.prototype.SetConfig = function(balances){
         $(self.sellbuyIouSelectors).append(opt);
     });
     $(self.sellbuyIouSelectors).selectpicker('refresh');
+};
+SellBuyBox.prototype.PaintData = function(){
+    var self = this;
+    var chart = $(self.chart).dxChart("instance");
+    var strongs = $(self.root).find("strong");
+
+    if(!self.txes || self.txes.length == 0){
+        chart.option({
+            dataSource : []
+        });
+        $(strongs[0]).text("");
+        $(strongs[1]).text("");
+        $(strongs[2]).text("");
+        $(strongs[3]).text("");
+        $(strongs[4]).text("");
+        $(strongs[5]).text("");
+        return;
+    }
+    var baseIOU = $(self.sellbuyIouSelectors[0]).val();
+    var refIOU = $(self.sellbuyIouSelectors[1]).val();
+    if(baseIOU !== refIOU){
+        var after = Stat.CalIOUBuySell(baseIOU, refIOU, self.txes);
+        chart.option({
+            dataSource : after.records,
+            argumentAxis:{
+                argumentType : 'numeric',
+                label : {
+                    visible : true,
+                    format : 'fixedPoint',
+                    precision : 3
+                },
+                max : after.highestRatio,
+                min : after.lowestRatio
+            }
+        });
+        $(strongs[0]).text((after.buyBase? after.buyBase.toFixed(3) : "0.000") + after.baseCurrency);
+        $(strongs[1]).text((after.buyBase? after.buyRatio.toFixed(3) : "0.00") + after.refCurrency);
+        $(strongs[2]).text((after.sellBase? after.sellBase.toFixed(3) : "0.000") + after.baseCurrency);
+        $(strongs[3]).text((after.sellBase? after.sellRatio.toFixed(3) : "0.00") + after.refCurrency);
+
+
+        var amount, benefits;
+        if(after.sellBase && after.buyBase){
+            amount = after.sellBase < after.buyBase ? after.sellBase : after.buyBase;
+            benefits = (after.sellRatio - after.buyRatio) * amount;
+        }else{
+            amount = benefits = 0;
+        }
+        $(strongs[4]).text(benefits.toFixed(3) + after.refCurrency);
+        $(strongs[5]).text(amount.toFixed(3) + after.baseCurrency);
+    }
 }
 
 function BalancePanel(){
