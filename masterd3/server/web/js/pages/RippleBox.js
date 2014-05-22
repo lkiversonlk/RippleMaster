@@ -581,9 +581,7 @@ function BalanceChangeBox(root){
     });
     $(label).text("Balance Change");
     $(this.root).append(label);
-    var chart = $("<div />", {
-        style : "min-height : 300px"
-    });
+    var chart = $("<div />");
     this.chart = chart;
     $(this.root).append(chart);
     $(this.chart).dxChart({
@@ -680,8 +678,7 @@ function SellBuyBox(root){
         '</form>';
     $(root).html(sellBuyConfHtml);
     var chart = $("<div />", {
-        class : "sellbuy chart",
-        style : "min-height : 300px"
+        class : "sellbuy chart"
     });
     $(root).append(chart);
     var conclusion = $("<div />",{
