@@ -158,6 +158,17 @@ app.post('/register', function(req, res) {
            });
     */
 });
+app.get("/rpstatus", function(req, res){
+    if(req.user){
+        host.RpStatus(function(result, status){
+            if(result == Common.RESULT.SUCC){
+                res.json(status);
+            }else{
+                res.json({fail:"true"});
+            }
+        })
+    }
+});
 
 app.get('/masteraccount', function(req, res){
     if(req.user){

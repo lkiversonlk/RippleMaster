@@ -113,6 +113,11 @@ MainPage.prototype = {
 
     init : function(callback){
         var self = this;
+        self.accMgr.RpStatus(function(status){
+            var lis = $("#RpStatus").find('ul li');
+            var userCnt = $(lis[0]).find("strong");
+            $(userCnt).text(status.users);
+        });
         self.accMgr.GetAccInfo(callback);
     },
 

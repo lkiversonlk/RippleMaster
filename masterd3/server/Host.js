@@ -167,6 +167,17 @@ Host.prototype.UpdateAccountInfo = function(accountInfo, callback){
     })
 }
 
+Host.prototype.RpStatus = function(callback){
+    var ret = {};
+    Account.count({}, function(err, count){
+        if(err){
+            callback(Common.RESULT.FAIL);
+        }else{
+            ret['users'] = count;
+            callback(Common.RESULT.SUCC, ret);
+        }
+    })
+}
 /*
  Host.prototype.UpdateAccountTx = function(account, callback){
  var self = this;

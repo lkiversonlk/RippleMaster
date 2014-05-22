@@ -148,7 +148,7 @@ AccMgr.prototype.GetRpBalance = function(address){
 
 AccMgr.prototype.GetRpBalanceInLedger = function(address, ledger, callback){
     this.rpMaster.AddrBalanceInLedger(address, ledger, callback);
-}
+};
 
 AccMgr.prototype.GetTransaction = function(address, startTime, endTime, callback){
     var start = Util.fromTimestamp(startTime);
@@ -211,7 +211,7 @@ AccMgr.prototype.GetTransaction = function(address, startTime, endTime, callback
             callback(Consts.RESULT.SUCCESS, filter(self.txes[address].txes, start, end));
         }
     }
-}
+};
 
 AccMgr.prototype.PushSync = function(){
     var self = this;
@@ -224,4 +224,19 @@ AccMgr.prototype.PushSync = function(){
             success : function(){}
         }
     );
+};
+
+AccMgr.prototype.RpStatus = function(callback){
+    var self = this;
+    $.ajax(
+        {
+            url : "rpstatus",
+            type : "GET",
+            dataType : "json",
+            success : function(status){
+                callback(status);
+            },
+            error : function(){}
+        }
+    )
 }
