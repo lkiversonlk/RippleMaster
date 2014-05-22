@@ -1,19 +1,11 @@
 var Log = require('log').log;
-var Transaction = require("./Transaction").Transaction;
-var Balance = require("./Model").Balance;
+var Transaction = require("./Share").Transaction;
+var Balance = require("./Share").Balance;
 
 function TransactionAnalyzer(address){
     this._logger = new Log("TransactionAnalyzer");
     this._address = address;
 };
-
-TransactionAnalyzer.TransactionType = {
-    Send : 1,
-    Receive : 2,
-    Convert : 3,
-    Buy     : 4,
-    Sell    : 5
-}
 
 TransactionAnalyzer.prototype = {
     /**

@@ -2,7 +2,7 @@
  * complex data structure
  *
  * [address, addressType, nickname]
- * {address: address balances[], offers[]}
+ * {address: [Address]}
  * {address: start, end, marker, txes[]}
  * @constructor
  */
@@ -13,6 +13,7 @@ function AccMgr(ClMaster){
     this.mapper = {};
     var self = this;
     $(this).bind(AccMgr.EVENT.ACC_INFO, function(){
+        self.mapper = {};
         for(i in self.accInfo.rippleAddress){
             self.mapper[self.accInfo.rippleAddress[i].address] = self.accInfo.rippleAddress[i].nickname;
         }
@@ -37,6 +38,7 @@ AccMgr.prototype.GetAccInfo = function(callback){
                 self.accInfo = json;
                 $(self).trigger(AccMgr.EVENT.ACC_INFO, self.accInfo);
                 callback(true);
+                self.GetRpBalance();
             },
 
             error : function(xhr, status, errThrown){
@@ -68,6 +70,7 @@ AccMgr.prototype.AddRpAddress = function(address, nickname){
     }
     self.PushSync();
     $(self).trigger(AccMgr.EVENT.ACC_INFO, self.accInfo);
+    self.GetRpBalance();
 };
 
 AccMgr.prototype.AddGtNick = function(address, nickname){
@@ -85,6 +88,7 @@ AccMgr.prototype.AddGtNick = function(address, nickname){
     }
     self.PushSync();
     $(self).trigger(AccMgr.EVENT.ACC_INFO, self.accInfo);
+    self.GetRpBalance();
 };
 
 AccMgr.prototype.RemoveRpAddress = function(address){
@@ -96,7 +100,9 @@ AccMgr.prototype.RemoveRpAddress = function(address){
         }
     }
     if(remove != -1) self.accInfo.rippleAddress.splice(remove,1);
+    self.PushSync();
     $(self).trigger(AccMgr.EVENT.ACC_INFO, self.accInfo);
+    self.GetRpBalance();
 };
 
 AccMgr.prototype.RemoveGateNick = function(address){
@@ -106,46 +112,33 @@ AccMgr.prototype.RemoveGateNick = function(address){
             self.accInfo.rippleAddress.splice(i,1);
         }
     }
+    self.PushSync();
     $(self).trigger(AccMgr.EVENT.ACC_INFO, self.accInfo);
+    self.GetRpBalance();
 };
 
 AccMgr.prototype.GetRpBalance = function(address){
     var self = this;
     if(address){
-        for(i in self.accInfo.rippleAddress){
+        for(var i in self.accInfo.rippleAddress){
             if(self.accInfo.rippleAddress[i].addressType == 0){
                 var addr = self.accInfo.rippleAddress[i].address;
                 if(addr === address){
                     self.balancesInfo[addr] = {address:addr};
                     self.rpMaster.AddrBalance(addr, function(result, addrBal){
-                        if(result === Consts.RESULT.SUCCESS){
-                            self.balancesInfo[addrBal.address]['balances'] = addrBal.balances;
-                            self.rpMaster.ConsultOffers(addrBal.address, function(result, offers){
-                                if(result === Consts.RESULT.SUCCESS){
-                                    self.balancesInfo[offers.address]['offers'] = offers.offers;
-                                    $(self).trigger(AccMgr.EVENT.ACC_BASIC, self.balancesInfo[offers.address]);
-                                }
-                            });
-                        }
+                        $(self).trigger(AccMgr.EVENT.ACC_BASIC, addrBal);
                     });
                     break;
                 }
             }
         }
     }else{
-        for(i in self.accInfo.rippleAddress){
+        for(var i in self.accInfo.rippleAddress){
             if(self.accInfo.rippleAddress[i].addressType == 0){
                 var addr = self.accInfo.rippleAddress[i].address;
-                self.balancesInfo[addr] = {address:addr};
                 self.rpMaster.AddrBalance(addr, function(result, addrBal){
                     if(result === Consts.RESULT.SUCCESS){
-                        self.balancesInfo[addrBal.address]['balances'] = addrBal.balances;
-                        self.rpMaster.ConsultOffers(addrBal.address, function(result, offers){
-                            if(result === Consts.RESULT.SUCCESS){
-                                self.balancesInfo[offers.address]['offers'] = offers.offers;
-                                $(self).trigger(AccMgr.EVENT.ACC_BASIC, self.balancesInfo[offers.address]);
-                            }
-                        });
+                        $(self).trigger(AccMgr.EVENT.ACC_BASIC, addrBal);
                     }
                 });
             }
@@ -156,12 +149,6 @@ AccMgr.prototype.GetRpBalance = function(address){
 AccMgr.prototype.GetRpBalanceInLedger = function(address, ledger, callback){
     this.rpMaster.AddrBalanceInLedger(address, ledger, callback);
 }
-
-var TxState = {
-    Finish : 0,
-    Proceeding : 1,
-    Partial : 2
-};
 
 AccMgr.prototype.GetTransaction = function(address, startTime, endTime, callback){
     var start = Util.fromTimestamp(startTime);

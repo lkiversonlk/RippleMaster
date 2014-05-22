@@ -4,7 +4,7 @@ var passport = require('passport')
 var flash = require('connect-flash');
 var Host = require("./Host").Host;
 var Log = require('log').log;
-var Consts = require('./Ripple/Common').Consts;
+var Common = require('./Ripple/Share').Common;
 var http = require('http');
 var querystring = require('querystring');
 var MemoryStore = express.session.MemoryStore;
@@ -12,7 +12,7 @@ var MemoryStore = express.session.MemoryStore;
 Log.SetLevel(Log.DEBUG_LEVEL);
 
 var options = {};
-options.servers = Consts.RP_SERVERS;
+options.servers = Common.RP_SERVERS;
 options.debugging = true;
 options.algorithm = 'aes-256-cbc';
 options.dbKey = "37712CCD76BA9C1E232D1394F74AF";
@@ -29,7 +29,7 @@ passport.use(new LocalStrategy
         },
         function(user, passwd, done){
             host.LoginAccount(user, passwd, function(result){
-                if(result === Consts.RESULT.SUCC){
+                if(result === Common.RESULT.SUCC){
                     return done(null, user);
                 }else{
                     return done(null, false, {message : "fail"});
@@ -136,7 +136,7 @@ app.post('/register', function(req, res) {
     var password = req.body.password;
     var email = req.body.email;
     host.InitAccount(account, password, email, function(result){
-        if(result === Consts.RESULT.SUCC){
+        if(result === Common.RESULT.SUCC){
             req.login(account, function(err){
                 res.sendfile("./main/ripplemaster.html");
             });
@@ -163,7 +163,7 @@ app.get('/masteraccount', function(req, res){
     if(req.user){
         var user = req.user;
         host.AccountInfo(user, function(result, account){
-            if(result == Consts.RESULT.SUCC, account){
+            if(result == Common.RESULT.SUCC, account){
                 res.json(account);
             }else{
                 res.json({fail:"true"});
@@ -184,7 +184,7 @@ app.post('/masteraccount', function(req, res){
         var accountInfo = req.body.accountInfo;
         if(accountInfo){
             host.UpdateAccountInfo(accountInfo, function(result){
-                if(result == Consts.RESULT.SUCC){
+                if(result == Common.RESULT.SUCC){
                     res.json({success:"true"});
                 }else{
                     res.json({fail:"true"});
@@ -194,6 +194,26 @@ app.post('/masteraccount', function(req, res){
     }
 });
 
+app.get("/addressinfo", function(req, res){
+    if(req.user){
+        var address = req.query.address;
+        var ledger = req.query.ledger;
+        if(!address || ! ledger){
+            req.pause();
+            res.status = 400;
+            res.end("format error");
+        }
+        host.AddressInfo(address, ledger, function(result, addresInfo){
+            if(result != Common.RESULT.SUCC){
+                req.pause();
+                res.status = 400;
+                res.end("account not exists");
+            }else{
+                res.json(addresInfo);
+            }
+        })
+    }
+});
 /*
 
 

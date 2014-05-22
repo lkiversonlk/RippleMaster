@@ -1,10 +1,10 @@
 var RippleServer = require('./RippleServer').RippleServer;
 var RippleRequest = require('./RippleRequest').RippleRequest;
-var Transaction = require("./Transaction").Transaction;
+var Transaction = require("./Share").Transaction;
 var EventEmitter = require('events').EventEmitter;
 var util = require('util');
-var Consts = require('./Common').Consts;
-var Address = require("./Model").Address;
+var Common = require('./Share').Common;
+var Address = require("./Share").Address;
 
 function RippleMaster(){
     var self = this;
@@ -38,7 +38,7 @@ RippleMaster.prototype.Start = function(options, callback){
     }
     self._rippleServer.Connect(function(result){
         switch (result){
-            case Consts.RESULT.SUCC:
+            case Common.RESULT.SUCC:
                 self.SetState(RippleMaster.STATE.ON);
                 callback();
                 break;
@@ -51,22 +51,33 @@ RippleMaster.prototype.Stop = function(){
     this._rippleServer.Disconnect();
 }
 
-RippleMaster.prototype.AddressInfo = function(address, callback) {
+RippleMaster.prototype.AddressInfo = function(address, ledger, callback) {
     var self = this;
     if (self.state == RippleMaster.STATE.OFF) {
-        callback(Consts.RESULT.FAIL_NETWORK);
+        callback(Common.RESULT.FAIL_NETWORK);
     } else {
-        var request = RippleRequest.AccountRequest(RippleRequest.RequestCMD.AddrBalance, address, null, function (result, data) {
-            if (result != Consts.RESULT.SUCC) {
+        var option = null;
+        if(ledger != -1){
+            option = {ledger_index : new Number(ledger)};
+        }
+        var request = RippleRequest.AccountRequest(RippleRequest.RequestCMD.AccountInfo, address, option, function (result, data) {
+            if (result != Common.RESULT.SUCC) {
                 callback(result);
             } else {
                 var xrp = data.xrp;
-                var request = RippleRequest.AccountRequest(RippleRequest.RequestCMD.AccountLines, address, null, function (result, data) {
-                    if (result === Consts.RESULT.SUCC) {
+                var request = RippleRequest.AccountRequest(RippleRequest.RequestCMD.AccountLines, address, option, function (result, data) {
+                    if (result === Common.RESULT.SUCC) {
                         var ret = new Address(address);
-                        ret.SetBalance(xrp, data);
-                        callback(Consts.RESULT.SUCC, ret);
-                        //self.LoadAllTransactions(address);
+                        ret.SetBalance(data.concat([xrp]));
+                        var request = RippleRequest.AccountRequest(RippleRequest.RequestCMD.AccountOffers, address, option, function (result, data){
+                            if(result === Common.RESULT.SUCC){
+                                ret.SetOffers(data);
+                                callback(Common.RESULT.SUCC, ret);
+                            }else{
+                                callback(result);
+                            }
+                        });
+                        self._rippleServer.Request(request);
                     } else {
                         callback(result);
                     }
@@ -96,7 +107,7 @@ RippleMaster.prototype.ConsultOffers = function(address, callback){
         });
         self._rippleServer.Request(request);
     }else{
-        callback(Consts.RESULT.FAIL_ACCOUNT);
+        callback(Common.RESULT.FAIL_ACCOUNT);
     }
 };
 
@@ -108,7 +119,7 @@ RippleMaster.prototype.ConsultOffers = function(address, callback){
 RippleMaster.prototype.ConsultTransactions = function(address, options, callback){
     var self = this;
     if(self.state === RippleMaster.STATE.OFF){
-        callback(Consts.RESULT.FAIL_NETWORK, false, null);
+        callback(Common.RESULT.FAIL_NETWORK, false, null);
     }
     if(!options){
         options = {
@@ -126,15 +137,15 @@ RippleMaster.prototype.ConsultTransactions = function(address, options, callback
                 //self._txManager.AddAddressTransactions(address, data.transactions, data.marker);
                 if(data.marker){
                     options.marker = data.marker;
-                    var goOn = callback(Consts.RESULT.SUCC, true, data.transactions);
+                    var goOn = callback(Common.RESULT.SUCC, true, data.transactions);
                     if(goOn){
                         self.ConsultTransactions(address, options, callback);
                     }
                 }else{
-                    callback(Consts.RESULT.SUCC,false, data.transactions);
+                    callback(Common.RESULT.SUCC,false, data.transactions);
                 }
             }else{
-                callback(Consts.RESULT.FAIL, false, null);
+                callback(Common.RESULT.FAIL, false, null);
             }
         }
     );

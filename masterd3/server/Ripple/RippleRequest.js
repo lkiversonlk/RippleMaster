@@ -4,11 +4,11 @@
 var Log = require('log').log;
 var extend = require('extend');
 var RippleServer = require('./RippleServer').RippleServer;
-var Balance = require('./Model').Balance;
-var Offer = require('./Model').Offer;
-var Address = require("./Model").Address;
+var Balance = require('./Share').Balance;
+var Offer = require('./Share').Offer;
+var Address = require("./Share").Address;
 var TransactionAnalyzer = require("./TransactionAnalyzer").TransactionAnalyzer;
-var Consts = require('./Common').Consts;
+var Common = require('./Share').Common;
 
 function RippleRequest(cmd, callback){
     this._callback = callback;
@@ -65,14 +65,14 @@ RippleRequest.AccountRequest = function(type, account, options, callback){
     RippleRequest.Logger.log(Log.DebugLevel, "find " + type + " of account: " + account);
     var request = new RippleRequest(type, function(result, msg){
         RippleRequest.Logger.log(Log.DEBUG_LEVEL, JSON.stringify(msg));
-        if(result !== Consts.RESULT.SUCC){
+        if(result !== Common.RESULT.SUCC){
             RippleRequest.Logger.log(Log.DEBUG_LEVEL, type + " request failed, error " + msg);
             callback(result, msg);
         }else{
             RippleRequest.Logger.log(Log.DEBUG_LEVEL, type + " request succeed");
             var ret;
             switch (type){
-                case RippleRequest.RequestCMD.AddrBalance:
+                case RippleRequest.RequestCMD.AccountInfo:
                     ret = {
                         address : msg.result.account_data.Account,
                         xrp : new Balance(msg.result.account_data.Balance)

@@ -1,9 +1,9 @@
-var db = require('./model/db').db;
-var Account = require('./model/model').Account;
-var AccountTx = require('./model/model').AccountTx;
+var db = require('./DB/db').db;
+var Account = require('./DB/model').Account;
+var AccountTx = require('./DB/model').AccountTx;
 var RippleMaster = require("./Ripple/RippleMaster").RippleMaster;
-var Transaction = require("./Ripple/Transaction").Transaction;
-var Consts = require("./Ripple/Common").Consts;
+var Transaction = require("./Ripple/Share").Transaction;
+var Common = require("./Ripple/Share").Common;
 var crypto = require('crypto');
 
 function Host(options){
@@ -57,7 +57,7 @@ Host.prototype.InitRippleTx = function(account, callback){
                 transactions : []
             });
             self.rpMaster.ConsultTransactions(account, null, function(result, more, transactions){
-                if(result != Consts.RESULT.SUCC){
+                if(result != Common.RESULT.SUCC){
                     return false;
                 }else{
                     handle(transactions, save);
@@ -73,7 +73,7 @@ Host.prototype.InitRippleTx = function(account, callback){
                             save.minLedger = transactions[transactions.length - 1].ledger;
                         }
                         save.save();
-                        if(callback) {callback(Consts.RESULT.SUCC, save.toObject().transactions);}
+                        if(callback) {callback(Common.RESULT.SUCC, save.toObject().transactions);}
                     }
                 }
                 return true;
@@ -86,9 +86,9 @@ Host.prototype.InitAccount = function(account, password, email, callback){
     var self = this;
     Account.findOne({name : account}, function(err, doc){
         if(err){
-            callback(Consts.RESULT.FAIL);
+            callback(Common.RESULT.FAIL);
         }else if(doc){
-            callback(Consts.RESULT.FAIL_ACCOUNT);
+            callback(Common.RESULT.FAIL_ACCOUNT);
         }else{
             var cipher = crypto.createCipher('aes-256-cbc', self.options.dbKey);
             var crypted = cipher.update(password, 'utf-8', 'hex');
@@ -101,7 +101,7 @@ Host.prototype.InitAccount = function(account, password, email, callback){
                 rippleAddress : []
             });
             save.save();
-            callback(Consts.RESULT.SUCC);
+            callback(Common.RESULT.SUCC);
         }
     })
 }
@@ -110,7 +110,7 @@ Host.prototype.LoginAccount = function(account, password, callback){
     var self = this;
     Account.findOne({name : account}, function(err, doc){
         if(err){
-            callback(Consts.RESULT.FAIL);
+            callback(Common.RESULT.FAIL);
         }else if(doc){
             var correct = doc.password;
             var cipher = crypto.createCipher('aes-256-cbc', self.options.dbKey);
@@ -118,41 +118,40 @@ Host.prototype.LoginAccount = function(account, password, callback){
             crypted += cipher.final('hex');
 
             if(correct == crypted){
-                callback(Consts.RESULT.SUCC);
+                callback(Common.RESULT.SUCC);
             }else{
-                callback(Consts.RESULT.FAIL_ACCOUNT);
+                callback(Common.RESULT.FAIL_ACCOUNT);
             }
         }else{
-            callback(Consts.RESULT.FAIL_ACCOUNT);
+            callback(Common.RESULT.FAIL_ACCOUNT);
         }
     })
 }
 
-Host.prototype.AddressInfo = function(address, callback){
-    this.rpMaster.AddressInfo(address, callback);
+Host.prototype.AddressInfo = function(address, ledger, callback){
+    this.rpMaster.AddressInfo(address, ledger, callback);
 };
 
 Host.prototype.AccountInfo = function(account, callback){
     var self = this;
     Account.findOne({name : account}, function(err, doc){
         if(err){
-            callback(Consts.RESULT.FAIL);
+            callback(Common.RESULT.FAIL);
         }else if(doc){
             var ret = doc.toObject();
             delete ret['password'];
-            callback(Consts.RESULT.SUCC, ret);
+            callback(Common.RESULT.SUCC, ret);
         }else{
-            callback(Consts.RESULT.FAIL_ACCOUNT);
+            callback(Common.RESULT.FAIL_ACCOUNT);
         }
     })
 };
-
 
 Host.prototype.UpdateAccountInfo = function(accountInfo, callback){
     var self = this;
     Account.findOne({name : accountInfo.name}, function(err, doc){
         if(err){
-            callback(Consts.RESULT.FAIL);
+            callback(Common.RESULT.FAIL);
         }else if(doc){
             if(accountInfo.email){
                 doc.email = accountInfo.email;
@@ -161,9 +160,9 @@ Host.prototype.UpdateAccountInfo = function(accountInfo, callback){
                 doc.rippleAddress = accountInfo.rippleAddress;
             }
             doc.save();
-            callback(Consts.RESULT.SUCC);
+            callback(Common.RESULT.SUCC);
         }else{
-            callback(Consts.RESULT.FAIL_ACCOUNT);
+            callback(Common.RESULT.FAIL_ACCOUNT);
         }
     })
 }
@@ -184,7 +183,9 @@ Host.prototype.UpdateAccountInfo = function(accountInfo, callback){
  }
  */
 
+Host.prototype.FetchAccountTx = function(address, startTime, endTime){
 
+}
 exports.Host = Host;
 
 

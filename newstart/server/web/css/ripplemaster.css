@@ -119,6 +119,11 @@ html, body{
     height: 100px;
 }
 /* for specific part */
+.havbar-header a:hover,
+.havbar-header a:focus{
+    color: #AAD53B;
+}
+
 #function-panel{
     font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
     color: #3B3C3E;
