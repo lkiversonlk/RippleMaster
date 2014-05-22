@@ -25,7 +25,7 @@
     <div class="navbar black-background ripplemaster-nav" role="navigation">
         <div class="container">
             <div class="havbar-header">
-                <a class="navbar-brand ripplemaster-nav-font font-size40 green-text" data-toggle="tab" href="#account">Ripple Master</a>
+                <a class="navbar-brand ripplemaster-nav-font font-size40 green-text" data-toggle="tab" href="#account">RP Master</a>
             </div>
 
             <div id="netstat" class="collapse navbar-collapse">
@@ -85,6 +85,12 @@
                             </a>
                         </li>
                         <li>
+                            <a href="#rpMaster" data-toggle="tab">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <div>RP<br>Master</div>
+                            </a>
+                        </li>
+                        <li>
                             <a href="#settings" data-toggle="tab">
                                 <span class="glyphicon glyphicon-cog"></span>
                                 <div>Settings<br>&nbsp; </div>
@@ -114,6 +120,51 @@
             </div>
             <div class="tab-pane fade" id="arbitrage">
                 <div id="trade-content" class="container-fluid gray-background">
+                </div>
+            </div>
+            <div class="tab-pane fade" id="rpMaster">
+                <div class="container settings">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <a href="#conf-acc" class="list-group-item">Account Basic</a>
+                            <a href="#conf-rp" class="list-group-item">Ripple Addresses</a>
+                            <a href="#conf-gt" class="list-group-item">Gateway Nickname</a>
+                        </div>
+                        <div class="col-md-9">
+                            <div id="conf-acc">
+                                <h2>Account Basic</h2>
+                                <hr>
+                                <form class="form-horizontal" role="form">
+                                    <div class="form-group">
+                                        <label for="configure-account" class="col-sm-2 control-label">Account Name</label>
+                                        <div class="col-sm-10">
+                                            <label id="configure-account" class="form-control"></label>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div id="conf-rp">
+                                <h2>
+                                    Ripple Addresses
+                                    <span class="glyphicon glyphicon-plus green-text right" onclick="{$('#addRippleAccountPanel').modal('show');}"></span>
+                                </h2>
+
+                                <hr>
+                                <form class="form-horizontal" role="form">
+                                </form>
+                            </div>
+                            <div id="conf-gt">
+                                <h2>
+                                    Gateway Nickname
+                                    <span class="glyphicon glyphicon-plus green-text right" onclick="{$('#setGatewayNickname').modal('show');}"></span>
+                                </h2>
+
+                                <hr>
+                                <form class="form-horizontal" role="form">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="tab-pane fade" id="settings">
