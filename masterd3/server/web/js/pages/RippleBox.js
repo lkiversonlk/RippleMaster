@@ -269,23 +269,23 @@ RippleBox.SellBuyBox = function(address){
 
 RippleBox.IOUFlowBox = function(address){
     var option = {};
-    option[RippleBox.Keys.title] = "Money Flow Stats";
+    option[RippleBox.Keys.title] = "Value Flow Stats";
     //option[RippleBox.Keys.progressBar] = true;
     option[RippleBox.Keys.buttons] = [
         {type : RippleBox.ButtonTypes.ok},
         {type : RippleBox.ButtonTypes.close}
     ];
     var ret = new RippleBox(address, option);
-    ret.moneyFlowPanel = new MoneyFlowPanel(ret.content);
+    ret.ValueFlowPanel = new ValueFlowPanel(ret.content);
     ret.ok = function(){
         ret.progressBar.SetProgress(40, "Loading transaction data");
-        var startTime = new Date($(ret.moneyFlowPanel.datepickers[0]).data('date'));
-        var endTime = new Date($(ret.moneyFlowPanel.datepickers[1]).data('date'));
+        var startTime = new Date($(ret.ValueFlowPanel.datepickers[0]).data('date'));
+        var endTime = new Date($(ret.ValueFlowPanel.datepickers[1]).data('date'));
         if(startTime > endTime){
             ret.progressBar.SetProgress(100, "Verify the time range");
             return;
         }
-        var iou = $(ret.moneyFlowPanel.iouSelector).val();
+        var iou = $(ret.ValueFlowPanel.iouSelector).val();
         var dataCollections = ret.clientMaster.QueryTransactions(ret.address, function(result, data){
             if(result === Consts.RESULT.SUCCESS){
                 var iouSummary = Stat.CalIOUSummary(startTime,
@@ -296,7 +296,7 @@ RippleBox.IOUFlowBox = function(address){
                     ret.progressBar.SetProgress(100, "No related transactions found");
                     return;
                 }
-                ret.moneyFlowPanel.PaintData(iouSummary);
+                ret.ValueFlowPanel.PaintData(iouSummary);
                 ret.progressBar.SetProgress(100, "Succeed");
             }else if(result === Consts.RESULT.FAIL_NETWORKERROR) {
                 ret.progressBar.SetProgress(100, "Fail, verify your network status");
@@ -312,16 +312,16 @@ RippleBox.IOUFlowBox = function(address){
         ret.clientMaster.AccountInfoNoRefresh(ret.address, function(result, id){
             if(result === Consts.RESULT.SUCCESS){
                 var currencies = [id.XRP()].concat(id.Balances());
-                $(ret.moneyFlowPanel.iouSelector).empty();
+                $(ret.ValueFlowPanel.iouSelector).empty();
                 $.each(currencies, function(i){
                     var balance = currencies[i];
                     var opt = $("<option />", {
                         value : balance.Currency()+balance.Issuer(),
                         text : balance.Currency() + " " + Consts.GetGatewayNick(balance.Issuer())
                     });
-                    $(ret.moneyFlowPanel.iouSelector).append(opt);
+                    $(ret.ValueFlowPanel.iouSelector).append(opt);
                 });
-                $(ret.moneyFlowPanel.iouSelector).selectpicker('refresh');
+                $(ret.ValueFlowPanel.iouSelector).selectpicker('refresh');
                 ret.progressBar.SetProgress(100, "Succeed");
             }else if(result === Consts.RESULT.FAIL_NETWORKERROR) {
                 ret.progressBar.SetProgress(100, "Fail, verify your network status");
@@ -620,13 +620,13 @@ BalanceChangeBox.prototype.PaintData = function(balBefore, bTime, balLater, lTim
         var iou = balBefore.balances[i].Currency() + balBefore.balances[i].Issuer();
         if(!process[iou]) process[iou] = {}
         process[iou].label = iou;
-        process[iou].before = balBefore.balances[i].Money();
+        process[iou].before = balBefore.balances[i].Value();
     };
     for(i in balLater.balances){
         var iou = balLater.balances[i].Currency() + balLater.balances[i].Issuer();
         if(!process[iou]) process[iou] = {}
         process[iou].label = iou;
-        process[iou].after = balLater.balances[i].Money();
+        process[iou].after = balLater.balances[i].Value();
     };
 
     for(key in process){
@@ -642,8 +642,8 @@ BalanceChangeBox.prototype.PaintData = function(balBefore, bTime, balLater, lTim
     Chart.option({
         dataSource : data,
         series : [
-            {valueField : 'before', name : bTime.format('MM/dd/yyyy hh:mm:ss')},
-            {valueField : 'after', name : lTime.format('MM/dd/yyyy hh:mm:ss')}
+            {valueField : 'before', name : Util.formatDate(bTime,'MM/dd/yyyy hh:mm:ss')},
+            {valueField : 'after', name : Util.formatDate(lTime, 'MM/dd/yyyy hh:mm:ss')}
         ]
     });
 };

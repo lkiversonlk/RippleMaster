@@ -7,7 +7,7 @@ function Balance(json){
     }else if(typeof json === 'number') {
         this.issuer = "Ripple";
         this.currency = "XRP";
-        this.money = json / 1000000.0;
+        this.value = json / 1000000.0;
         this.limit = null;
     }else{
         /* amount: currency, issuer, value

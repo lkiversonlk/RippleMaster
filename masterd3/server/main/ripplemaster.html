@@ -299,14 +299,21 @@
 <script src="js/pages/AddrPage.js"></script>
 <script src="js/pages/ConfigPage.js"></script>
 <script src="js/pages/MainPage.js"></script>
+<script src="js/Ripple/RippleServer.js"></script>
+<script src="js/Ripple/Server.js"></script>
+<script src="js/Ripple/RippleRequest.js"></script>
+<script src="js/Ripple/Transaction.js"></script>
+<script src="js/Ripple/TransactionAnalyzer.js"></script>
 <script src="js/Util.js"></script>
 <script src="js/ClientMaster.js"></script>
 <script>
     $(document).ready(function(){
         Log.SetLevel(Log.DEBUG_LEVEL);
         var client = new ClientMaster();
-        var mainPage = new MainPage(client, function(){
-        });
+        client.Start(function(){
+            var mainPage = new MainPage(client, function(){
+            });
+        })
     });
 </script>
 </body>

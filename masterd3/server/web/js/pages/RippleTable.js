@@ -39,7 +39,7 @@ RippleTable.prototype = {
     AddTxes : function(Txes){
         var self = this;
         var txRow = function(tx){
-            var date = Util.toTimestamp(tx.date).format('MM/dd/yyyy hh:mm:ss');
+            var date = Util.formatDate(Util.toTimestamp(tx.date), 'MM/dd/yyyy hh:mm:ss');
             var type;
             switch (tx.type){
                 case Transaction.Type.Send:
@@ -57,14 +57,14 @@ RippleTable.prototype = {
             var content;
             switch (tx.type){
                 case Transaction.Type.Send:
-                    content=tx.cost.Money().toFixed(2) + tx.cost.Currency() + " to " + Consts.GetGatewayNick(tx.dest);
+                    content=tx.cost.Value().toFixed(2) + tx.cost.Currency() + " to " + Consts.GetGatewayNick(tx.dest);
                     break;
                 case Transaction.Type.Trade:
-                    content = tx.cost.Money().toFixed(2) + tx.cost.Currency() + " for " + tx.amount.Money().toFixed(2) + tx.amount.Currency() + " rate :" + (tx.amount.Money()/tx.cost.Money()).toFixed(2);
+                    content = tx.cost.Value().toFixed(2) + tx.cost.Currency() + " for " + tx.amount.Value().toFixed(2) + tx.amount.Currency() + " rate :" + (tx.amount.Value()/tx.cost.Value()).toFixed(2);
 
                     break;
                 case Transaction.Type.Receive:
-                    content=tx.amount.Money().toFixed(2) + tx.amount.Currency() + " from " + Consts.GetGatewayNick(tx.host);
+                    content=tx.amount.Value().toFixed(2) + tx.amount.Currency() + " from " + Consts.GetGatewayNick(tx.host);
                     break;
                 default :
                     return null;

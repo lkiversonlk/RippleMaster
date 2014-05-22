@@ -58,7 +58,7 @@ RippleMaster.prototype.AddressInfo = function(address, ledger, callback) {
     } else {
         var option = null;
         if(ledger != -1){
-            option = {ledger_index : ledger};
+            option = {ledger_index : new Number(ledger)};
         }
         var request = RippleRequest.AccountRequest(RippleRequest.RequestCMD.AccountInfo, address, option, function (result, data) {
             if (result != Common.RESULT.SUCC) {
@@ -68,7 +68,7 @@ RippleMaster.prototype.AddressInfo = function(address, ledger, callback) {
                 var request = RippleRequest.AccountRequest(RippleRequest.RequestCMD.AccountLines, address, option, function (result, data) {
                     if (result === Common.RESULT.SUCC) {
                         var ret = new Address(address);
-                        ret.SetBalance(xrp, data);
+                        ret.SetBalance(data.concat([xrp]));
                         var request = RippleRequest.AccountRequest(RippleRequest.RequestCMD.AccountOffers, address, option, function (result, data){
                             if(result === Common.RESULT.SUCC){
                                 ret.SetOffers(data);

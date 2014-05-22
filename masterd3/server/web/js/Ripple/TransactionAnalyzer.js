@@ -27,20 +27,20 @@ TransactionAnalyzer.prototype = {
                 case Transaction.Type.Send:
                     if(transaction.cost){
                         ret.push(transaction);
-                        logger.log(Log.DEBUG_LEVEL, " send " + transaction.cost.Money() + " " + transaction.cost.Currency() + " to " + transaction.dest);
+                        logger.log(Log.DEBUG_LEVEL, " send " + transaction.cost.Value() + " " + transaction.cost.Currency() + " to " + transaction.dest);
                     }else{
                     }
                     break;
                 case Transaction.Type.Receive:
                     if(transaction.amount){
                         ret.push(transaction);
-                        logger.log(Log.DEBUG_LEVEL, " receive " + transaction.amount.Money() + " " + transaction.amount.Currency() + " from " + transaction.host);
+                        logger.log(Log.DEBUG_LEVEL, " receive " + transaction.amount.Value() + " " + transaction.amount.Currency() + " from " + transaction.host);
                     }else{
                     }
                     break;
                 case Transaction.Type.Trade :
                     if(transaction.cost && transaction.amount){
-                        logger.log(Log.DEBUG_LEVEL, " trade " + transaction.cost.Money() + " " + transaction.cost.Currency() + " to " + transaction.amount.Money() + " " + transaction.amount.Currency());
+                        logger.log(Log.DEBUG_LEVEL, " trade " + transaction.cost.Value() + " " + transaction.cost.Currency() + " to " + transaction.amount.Value() + " " + transaction.amount.Currency());
                         ret.push(transaction);
                     }else{
                     }
@@ -166,7 +166,7 @@ TransactionAnalyzer.prototype = {
                             var current = new Balance(node.FinalFields.Balance);
                             if(typeof  node.PreviousFields.Balance !== 'undefined'){
                                 var previous = new Balance(node.PreviousFields.Balance);
-                                var xrpCost = current.Money() - previous.Money() + transaction.fee.Money();
+                                var xrpCost = current.Value() - previous.Value() + transaction.fee.Value();
                                 if(Math.abs(xrpCost) > 0.0001){
                                     if(xrpCost > 0){
                                         transaction.amount = new Balance(xrpCost);
@@ -183,17 +183,17 @@ TransactionAnalyzer.prototype = {
                             var current = new Balance(node.FinalFields.Balance);
                             current.SetIssuer(node.FinalFields.LowLimit.issuer);
                             var previous = new Balance(node.PreviousFields.Balance);
-                            current.SetMoney(previous.Money() - current.Money());
-                            if(current.Money() > 0){
+                            current.SetValue(previous.Value() - current.Value());
+                            if(current.Value() > 0){
                                 if(transaction.amount){
-                                    transaction.amount.SetMoney(transaction.amount.Money() + current.Money());
+                                    transaction.amount.SetValue(transaction.amount.Value() + current.Value());
                                 }else {
                                     transaction.amount = current;
                                 }
                             }else{
-                                current.SetMoney(-1 * current.Money());
+                                current.SetValue(-1 * current.Value());
                                 if(transaction.cost){
-                                    transaction.cost.SetMoney(transaction.cost.Money() + current.Money());
+                                    transaction.cost.SetValue(transaction.cost.Value() + current.Value());
                                 }else {
                                     transaction.cost = current;
                                 }
@@ -202,9 +202,9 @@ TransactionAnalyzer.prototype = {
                             var current = new Balance(node.FinalFields.Balance);
                             current.SetIssuer(node.FinalFields.HighLimit.issuer);
                             var previous = new Balance(node.PreviousFields.Balance);
-                            current.SetMoney(previous.Money() - current.Money());
-                            if(current.Money() < 0){
-                                current.SetMoney(-1 * current.Money());
+                            current.SetValue(previous.Value() - current.Value());
+                            if(current.Value() < 0){
+                                current.SetValue(-1 * current.Value());
                                 transaction.amount = current ;
                             }else{
                                 transaction.cost = current;
