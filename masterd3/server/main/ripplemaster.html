@@ -25,7 +25,7 @@
     <div class="navbar black-background ripplemaster-nav" role="navigation">
         <div class="container">
             <div class="havbar-header">
-                <a class="navbar-brand ripplemaster-nav-font font-size40 green-text" data-toggle="tab" href="#account">Ripple Master</a>
+                <a class="navbar-brand ripplemaster-nav-font font-size40 green-text" data-toggle="tab" href="#account">RP Master</a>
             </div>
 
             <div id="netstat" class="collapse navbar-collapse">
@@ -52,12 +52,7 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-md-3">
-                                <img src="images/ripple.png" class="max-width" style="display: none">
-                                <div class="loading" style="margin-top: 30px">
-                                    <i></i>
-                                    <i></i>
-                                    <i></i>
-                                </div>
+                                <img src="images/ripple.png" class="max-width">
                             </div>
                             <div class="col-md-8 col-md-offset-1">
                                 <div id="account-title-text">
@@ -82,6 +77,12 @@
                             <a href="#arbitrage" data-toggle="tab">
                                 <span class="glyphicon glyphicon-search"></span>
                                 <div>My<br>Trades</div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#rpMaster" data-toggle="tab">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <div>RP<br>Master</div>
                             </a>
                         </li>
                         <li>
@@ -115,6 +116,8 @@
             <div class="tab-pane fade" id="arbitrage">
                 <div id="trade-content" class="container-fluid gray-background">
                 </div>
+            </div>
+            <div class="tab-pane fade" id="rpMaster">
             </div>
             <div class="tab-pane fade" id="settings">
                 <div class="container settings">
@@ -289,41 +292,20 @@
 <script src="lib/charts/dx.chartjs.debug.js"></script>
 <script src="js/protocol.js"></script>
 <script src="js/managers/AccMgr.js"></script>
+<script src="js/pages/Common.js"></script>
 <script src="js/pages/RippleTable.js"></script>
 <script src="js/pages/ProgressBar.js"></script>
 <script src="js/pages/RippleBox.js"></script>
-<script src="js/pages/statPanels.js"></script>
-<script src="js/pages/addrPanel.js"></script>
-<script src="js/pages/ConfigPanel.js"></script>
+<script src="js/pages/AddrPage.js"></script>
+<script src="js/pages/ConfigPage.js"></script>
 <script src="js/pages/MainPage.js"></script>
-<script src="js/Ripple/Model.js"></script>
-<script src="js/Ripple/Server.js"></script>
-<script src="js/Ripple/Common.js"></script>
-<script src="js/Ripple/Stat.js"></script>
-<script src="js/Ripple/DataCollection.js"></script>
-<script src="js/Ripple/RippleRequest.js"></script>
-<script src="js/Ripple/RippleServer.js"></script>
-<script src="js/Ripple/Transaction.js"></script>
-<script src="js/Ripple/TransactionAnalyzer.js"></script>
-<script src="js/managers/TxManagement.js"></script>
-<script src="js/Ripple/Util.js"></script>
+<script src="js/Util.js"></script>
 <script src="js/ClientMaster.js"></script>
 <script>
     $(document).ready(function(){
         Log.SetLevel(Log.DEBUG_LEVEL);
-        var img = $("#user-panel").find("img");
-        var load = $("#user-panel").find("div.loading");
         var client = new ClientMaster();
-        client.Start(function(){
-            var mainPage = new MainPage(client, function(result){
-                if(result){
-
-                }else{
-                    alert("login failed");
-                }
-                $(load).remove();
-                $(img).show()
-            });
+        var mainPage = new MainPage(client, function(){
         });
     });
 </script>

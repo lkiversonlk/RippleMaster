@@ -13,25 +13,20 @@ Util.fromTimestamp = function(rpepoch){
 
 }
 
-Util.DateString = function(date){
-
-}
-
-Date.prototype.format = function(format)
-{
+Util.formatDate = function(date, format){
     var o = {
-        "M+" : this.getMonth()+1, //month
-        "d+" : this.getDate(),    //day
-        "h+" : this.getHours(),   //hour
-        "m+" : this.getMinutes(), //minute
-        "s+" : this.getSeconds(), //second
-        "q+" : Math.floor((this.getMonth()+3)/3),  //quarter
-        "S" : this.getMilliseconds() //millisecond
+        "M+" : date.getMonth()+1, //month
+        "d+" : date.getDate(),    //day
+        "h+" : date.getHours(),   //hour
+        "m+" : date.getMinutes(), //minute
+        "s+" : date.getSeconds(), //second
+        "q+" : Math.floor((date.getMonth()+3)/3),  //quarter
+        "S" : date.getMilliseconds() //millisecond
     }
 
     if(/(y+)/.test(format))
     {
-        format=format.replace(RegExp.$1,(this.getFullYear()+"").substr(4 - RegExp.$1.length));
+        format=format.replace(RegExp.$1,(date.getFullYear()+"").substr(4 - RegExp.$1.length));
     }
 
     for(var k in o)
@@ -42,4 +37,8 @@ Date.prototype.format = function(format)
         }
     }
     return format;
+}
+
+if(typeof exports !== "undefined"){
+    exports.Util = Util;
 }

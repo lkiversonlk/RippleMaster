@@ -70,11 +70,11 @@ TradePanel.ComposeDiv = function(address, nickname, accMgr){
         class : "addr-st-gp row"
     });
 
-    var anlyzeBox = new AnalyzeBox(address, accMgr);
-    $(panel).append(anlyzeBox.root);
+    var analyzeBox = new AnalyzeBox(address, accMgr);
+    $(panel).append(analyzeBox.root);
     $(accMgr).bind(AccMgr.EVENT.ACC_BASIC, function(event, data){
         if(data.address === address){
-            anlyzeBox.Initial(data.balances);
+            analyzeBox.Initial(data.balances);
         }
     })
     $(ele).append(panel);

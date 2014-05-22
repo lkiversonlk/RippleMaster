@@ -52,12 +52,7 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-md-3">
-                                <img src="images/ripple.png" class="max-width" style="display: none">
-                                <div class="loading" style="margin-top: 30px">
-                                    <i></i>
-                                    <i></i>
-                                    <i></i>
-                                </div>
+                                <img src="images/ripple.png" class="max-width">
                             </div>
                             <div class="col-md-8 col-md-offset-1">
                                 <div id="account-title-text">
@@ -123,49 +118,6 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="rpMaster">
-                <div class="container settings">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <a href="#conf-acc" class="list-group-item">Account Basic</a>
-                            <a href="#conf-rp" class="list-group-item">Ripple Addresses</a>
-                            <a href="#conf-gt" class="list-group-item">Gateway Nickname</a>
-                        </div>
-                        <div class="col-md-9">
-                            <div id="conf-acc">
-                                <h2>Account Basic</h2>
-                                <hr>
-                                <form class="form-horizontal" role="form">
-                                    <div class="form-group">
-                                        <label for="configure-account" class="col-sm-2 control-label">Account Name</label>
-                                        <div class="col-sm-10">
-                                            <label id="configure-account" class="form-control"></label>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <div id="conf-rp">
-                                <h2>
-                                    Ripple Addresses
-                                    <span class="glyphicon glyphicon-plus green-text right" onclick="{$('#addRippleAccountPanel').modal('show');}"></span>
-                                </h2>
-
-                                <hr>
-                                <form class="form-horizontal" role="form">
-                                </form>
-                            </div>
-                            <div id="conf-gt">
-                                <h2>
-                                    Gateway Nickname
-                                    <span class="glyphicon glyphicon-plus green-text right" onclick="{$('#setGatewayNickname').modal('show');}"></span>
-                                </h2>
-
-                                <hr>
-                                <form class="form-horizontal" role="form">
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
             <div class="tab-pane fade" id="settings">
                 <div class="container settings">
@@ -340,36 +292,20 @@
 <script src="lib/charts/dx.chartjs.debug.js"></script>
 <script src="js/protocol.js"></script>
 <script src="js/managers/AccMgr.js"></script>
+<script src="js/pages/Common.js"></script>
 <script src="js/pages/RippleTable.js"></script>
 <script src="js/pages/ProgressBar.js"></script>
 <script src="js/pages/RippleBox.js"></script>
-<script src="js/pages/statPanels.js"></script>
-<script src="js/pages/addrPanel.js"></script>
-<script src="js/pages/ConfigPanel.js"></script>
+<script src="js/pages/AddrPage.js"></script>
+<script src="js/pages/ConfigPage.js"></script>
 <script src="js/pages/MainPage.js"></script>
-<script src="js/Ripple/Model.js"></script>
-<script src="js/Ripple/Server.js"></script>
-<script src="js/Ripple/Common.js"></script>
-<script src="js/Ripple/Stat.js"></script>
-<script src="js/Ripple/DataCollection.js"></script>
-<script src="js/Ripple/RippleRequest.js"></script>
-<script src="js/Ripple/RippleServer.js"></script>
-<script src="js/Ripple/Transaction.js"></script>
-<script src="js/Ripple/TransactionAnalyzer.js"></script>
-<script src="js/managers/TxManagement.js"></script>
-<script src="js/Ripple/Util.js"></script>
+<script src="js/Util.js"></script>
 <script src="js/ClientMaster.js"></script>
 <script>
     $(document).ready(function(){
         Log.SetLevel(Log.DEBUG_LEVEL);
-        var img = $("#user-panel").find("img");
-        var load = $("#user-panel").find("div.loading");
         var client = new ClientMaster();
-        client.Start(function(){
-            var mainPage = new MainPage(client, function(){
-                $(load).remove();
-                $(img).show()
-            });
+        var mainPage = new MainPage(client, function(){
         });
     });
 </script>

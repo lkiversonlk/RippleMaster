@@ -1,3 +1,4 @@
+/*
 function RippleBox(address, options){
     var div = $("<div />", {
         class : "ripple-box col-md-12"
@@ -10,7 +11,9 @@ function RippleBox(address, options){
     this.onAddressLoaded = function(){};
     this.onTxLoaded = function(){};
 };
+*/
 
+/*
 RippleBox.Keys = {
     title : 'title',
     progressBar : 'progress',
@@ -333,25 +336,7 @@ RippleBox.IOUFlowBox = function(address){
     return ret;
 }
 
-var dateSelectHtml = '<div class="form-group">' +
-    '<div class="col-md-2">' +
-    '<label class="form-control">Start Time</label>' +
-    '</div>' +
-    '<div class="col-md-4">' +
-    '<div class="input-group date">' +
-    '<input type="text" class="form-control"><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>' +
-    '</div>' +
-    '</div>' +
-    '<div class="col-md-2">' +
-    '<label class="form-control">End Time</label>' +
-    '</div>' +
-    '<div class="col-md-4">' +
-    '<div class="input-group date">' +
-    '<input type="text" class="form-control"><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>' +
-    '</div>' +
-    '</div>' +
-    '</div>'
-
+*/
 function AnalyzeBox(address, accMgr){
     var self = this;
     self.address = address;
@@ -364,7 +349,6 @@ function AnalyzeBox(address, accMgr){
         class : "second-caption row",
         text : "Trade Analytic"
     });
-
     var fold = $("<a />", {
         class : "left"
     });
@@ -372,7 +356,6 @@ function AnalyzeBox(address, accMgr){
         class : "glyphicon glyphicon-th-list"
     }))
     $(title).append(fold);
-
     var button = $("<a />", {
         class : "right"
     });
@@ -398,7 +381,6 @@ function AnalyzeBox(address, accMgr){
     });
     $(progressBar).append(progressText);
     $(progress).append(progressBar);
-
     $(div).append(progress);
     self.progressBar = new ProgressBar(progress, "");
 
@@ -410,28 +392,10 @@ function AnalyzeBox(address, accMgr){
     $(fold).click(function(){
         $(content).toggle();
     });
-
-    var configureTableHtml = '<form class="form-horizontal" role="form">' +
-        dateSelectHtml +
-        '<div class="form-group">' +
-        '<div class="col-md-2">' +
-        '<label class="form-control">Base Currency</label>' +
-        '</div>' +
-        '<div class="col-md-10">' +
-        '<select class="selectpicker" data-width="auto"></select>' +
-        '</div>' +
-        '</form>';
-
-    var config = $("<div />", {
-    });
-    $(config).html(configureTableHtml);
-    self.datepickers = $(config).find(".date");
-    self.iouSelector = $(config).find(".selectpicker");
-    $(self.iouSelector).selectpicker();
-    $(self.datepickers).datetimepicker();
+    var sep = $("<div />", { class : "shadow"});
+    $(mainPanel).append(self.ComposeConf());
+    $(mainPanel).append(sep);
     var content = $("<div />");
-    $(mainPanel).append(config);
-    $(mainPanel).append($("<div />", {class : "shadow"}));
     $(mainPanel).append(content);
     var graph = $("<div />", {
         class : "col-md-7"
@@ -440,64 +404,51 @@ function AnalyzeBox(address, accMgr){
         class : "col-md-5"
     });
     $(content).append(graph);
-    self.graph = graph;
     var balDiv = $("<div />");
-    var label = $("<label />", {
-        class : "form-control text-center green-background"
-    });
-    $(label).text("Balance Comparison");
-    $(balDiv).append(label);
-    var balChartDiv = $("<div />", {
-        class : "balance chart"
-    });
-    $(balDiv).append(balChartDiv);
-    var sep = $("<div />", {
-        class : "shadow"
-    });
-    self.graph.append(sep);
-    self.graph.append(balDiv);
-    self.graph.append(sep);
-    self.balanceDiv = balChartDiv;
-    $(self.balanceDiv).dxChart({
-        commonSeriesSettings :{
-            argumentField : 'label',
-            type : 'bar',
-            label : {
-                visible : true,
-                format : 'fixedPoint',
-                precision : 3
-            }
-        },
-        legend : {
-            verticalAlignment : "bottom",
-            horizontalAlignment : "center"
-        },
-        palette : Consts.BLACKGREE_PALETTE,
-        rotated : true
-    });
-
-    var inoutDiv = $("<div />");
-    $(inoutDiv).html(self.ComposeInoutForm());
-    self.inoutFormDiv = inoutDiv;
-    //$(self.graph).append(inoutDiv);
-
-    $(self.graph).append(self.ComposeSellBuyBox());
+    graph.append(sep);
+    graph.append(balDiv);
+    self.balanceChangeBox = new BalanceChangeBox(balDiv);
+    graph.append(sep);
+    var sellBuyDiv = $("<div />");
+    graph.append(sellBuyDiv);
+    self.sellBuyBox = new SellBuyBox(sellBuyDiv);
     $(content).append(tx);
-    $(tx).append($("<input />", {
-        id : "table"+address,
-        class : 'form-control',
-        type : 'text'
-    }));
-    var table = $("<div />");
-    $(tx).append(table);
-    var tableHtml = '<table class="footable table" data-page-size="10" data-filter='+"#table"+address +'><thead><tr><th>Date</th><th>Type</th><th>Content</th></tr></thead><tbody></tbody><tfoot><tr style="text-align: center"><td colspan="5"><ul class="pagination"></div> </td> </tr></tfoot></table>';
-    $(table).html(tableHtml);
-    self.table = table;
-    //self.txTable = new RippleTable(table);
+    self.ComposeTxHistoryBox(tx, address);
     self.ok = button;
     $(self.ok).click(function(){
         self.StartAnalyze();
     });
+};
+
+AnalyzeBox.prototype.ComposeConf = function(){
+    var self = this;
+    var dateSelectHtml = '<div class="form-group">' +
+        '<div class="col-md-2">' +
+        '<label class="form-control">Start Time</label>' +
+        '</div>' +
+        '<div class="col-md-4">' +
+        '<div class="input-group date">' +
+        '<input type="text" class="form-control"><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>' +
+        '</div>' +
+        '</div>' +
+        '<div class="col-md-2">' +
+        '<label class="form-control">End Time</label>' +
+        '</div>' +
+        '<div class="col-md-4">' +
+        '<div class="input-group date">' +
+        '<input type="text" class="form-control"><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>' +
+        '</div>' +
+        '</div>' +
+        '</div>';
+
+    var configureTableHtml = '<form class="form-horizontal" role="form">' +
+        dateSelectHtml +
+        '</form>';
+    var div = $("<div />");
+    $(div).html(configureTableHtml);
+    self.datepickers = $(div).find(".date");
+    $(self.datepickers).datetimepicker();
+    return div;
 };
 
 AnalyzeBox.prototype.Initial = function(balances){
@@ -511,18 +462,7 @@ AnalyzeBox.prototype.Initial = function(balances){
         });
         $(self.iouSelector).append(opt);
     });
-    $(self.iouSelector).selectpicker('refresh');
-
-    $(self.sellbuyIouSelectors).empty();
-    $.each(balances, function(i){
-        var balance = balances[i];
-        var opt = $("<option />", {
-            value : balance.Currency()+balance.Issuer(),
-            text : balance.Currency() + " " + Consts.GetGatewayNick(balance.Issuer())
-        });
-        $(self.sellbuyIouSelectors).append(opt);
-    });
-    $(self.sellbuyIouSelectors).selectpicker('refresh');
+    self.sellBuyBox.SetConfig(balances);
 };
 
 AnalyzeBox.prototype.GetSelectedTimeRange = function(){
@@ -533,6 +473,19 @@ AnalyzeBox.prototype.GetSelectedTimeRange = function(){
     return [startTime, endTime];
 };
 
+AnalyzeBox.prototype.ComposeTxHistoryBox = function(root, address){
+    var self = this;
+    $(root).append($("<input />", {
+        id : "table"+address,
+        class : 'form-control',
+        type : 'text'
+    }));
+    var table = $("<div />");
+    $(root).append(table);
+    var tableHtml = '<table class="footable table" data-page-size="10" data-filter='+"#table"+address +'><thead><tr><th>Date</th><th>Type</th><th>Content</th></tr></thead><tbody></tbody><tfoot><tr style="text-align: center"><td colspan="5"><ul class="pagination"></div> </td> </tr></tfoot></table>';
+    $(table).html(tableHtml);
+    self.table = table;
+}
 
 AnalyzeBox.prototype.StartAnalyze = function(){
     var self = this;
@@ -551,7 +504,7 @@ AnalyzeBox.prototype.StartAnalyze = function(){
             self.txTable.AddTxes(txes);
             self.progressBar.SetProgress(100, "transactions loaded");
             self.txes = txes;
-
+            self.sellBuyBox.SetData(self.txes);
             if(txes.length != 0) {
                 var minLedger = self.txes[self.txes.length - 1].ledger;
                 var bTime = Util.toTimestamp(self.txes[self.txes.length - 1].date);
@@ -563,173 +516,19 @@ AnalyzeBox.prototype.StartAnalyze = function(){
                         self.accMgr.GetRpBalanceInLedger(self.address, maxLedger, function (result, addrBal) {
                             if (result === Consts.RESULT.SUCCESS) {
                                 var maxBal = addrBal;
-                                self.AddBalanceBox(minBal, bTime, maxBal, lTime);
+                                self.balanceChangeBox.PaintData(minBal, bTime, maxBal, lTime);
                             }
                         })
                     }
                 });
-                var inout = Stat.CalSummary(self.txes);
-                self.PaintInoutForm(inout);
             }
             else{
-                self.AddBalanceBox(null, null, null, null);
+                self.balanceChangeBox.Clear();
             }
         }else{
             self.progressBar.SetProgress(50, "transactions load failure");
         }
     });
-};
-
-AnalyzeBox.prototype.AddBalanceBox = function(balBefore, bTime, balLater, lTime){
-    var self = this;
-    var Chart = $(self.balanceDiv).dxChart("instance");
-    if(balBefore == null){
-        Chart.option({
-            dataSource : []
-        });
-        return;
-    }
-    var data = [];
-    var process = {};
-    for(i in balBefore.balances){
-        var iou = balBefore.balances[i].Currency() + balBefore.balances[i].Issuer();
-        if(!process[iou]) process[iou] = {}
-        process[iou].label = iou;
-        process[iou].before = balBefore.balances[i].Money();
-    };
-    for(i in balLater.balances){
-        var iou = balLater.balances[i].Currency() + balLater.balances[i].Issuer();
-        if(!process[iou]) process[iou] = {}
-        process[iou].label = iou;
-        process[iou].after = balLater.balances[i].Money();
-    };
-
-    for(key in process){
-        if(process.hasOwnProperty(key)){
-            if(!process[key].before) process[key].before = 0;
-            if(!process[key].after) process[key].after = 0;
-            data.push(process[key]);
-        }
-    }
-
-    $(self.balanceDiv).height(80 * data.length);
-    //prepare balance div
-    Chart.option({
-        dataSource : data,
-        series : [
-            {valueField : 'before', name : bTime.format('MM/dd/yyyy hh:mm:ss')},
-            {valueField : 'after', name : lTime.format('MM/dd/yyyy hh:mm:ss')}
-        ]
-    });
-};
-
-var inoutFormHtml = '<form class="form-horizontal">' +
-                        '<fieldset>' +
-                            '<legend class="text-center">In Out Sheet</legend>' +
-                        '</fieldset>' +
-                        '<fieldset class="inout">' +
-                        '</fieldset>'
-                        '<div class="form-group">' +
-                            '<div class="col-md-offset-10 col-md-2">' +
-                                '<button type="submit" class="btn btn-default">Calculate</button>' +
-                            '</div>' +
-                        '</div>' +
-                    '</form>'
-
-AnalyzeBox.prototype.ComposeInoutForm = function(){
-    return inoutFormHtml;
-};
-
-AnalyzeBox.prototype.PaintInoutForm = function(data){
-    var self = this;
-    var form = $(self.inoutFormDiv).find("form");
-    $($(form).find("fieldset.inout")).empty();
-    function compose(data){
-
-    };
-
-    for(var i in data){
-        var insert = $("<div />",{
-            class : "form-group"
-        });
-
-    }
-};
-
-AnalyzeBox.prototype.ComposeSellBuyBox = function(){
-    var self = this;
-    var sellBuyDiv = $("<div />");
-    var sellBuyConfHtml = '<form class="form-horizontal" role="form">' +
-        '<label class="form-control text-center green-background">Sell&Buy Stat</label>' +
-        '<div class="form-group">' +
-        '<div class="col-md-2">' +
-        '<label class="form-control">Currency</label>' +
-        '</div>' +
-        '<div class="col-md-8">' +
-        '<select class="selectpicker" data-width="auto"></select>' +
-        '</div>' +
-        '</div>' +
-        '<div class="form-group">' +
-        '<div class="col-md-2">' +
-        '<label class="form-control">Currency</label>' +
-        '</div>' +
-        '<div class="col-md-8">' +
-        '<select class="selectpicker" data-width="auto"></select>' +
-        '</div>' +
-        '<div class="col-md-2">' +
-        '<button type="button" class="btn btn-primary form-control">OK</button>' +
-        '</div>' +
-        '</div>' +
-        '</form>';
-    $(sellBuyDiv).html(sellBuyConfHtml);
-    self.sellBuyChart = $("<div />", {
-        class : "sellbuy chart"
-    });
-    $(sellBuyDiv).append(self.sellBuyChart);
-    self.sellbuyConcluDiv = $("<div />",{
-        class : "row"
-    });
-    $(self.sellbuyConcluDiv).html(
-            '<div class="col-md-offset-1">'+
-            '<p>You have bought <strong class="green-text"></strong> at an average price of <strong class="green-text"></strong></p>' +
-            '<p>You have sold <strong class="green-text"></strong> at an average price of <strong class="green-text"></strong></p>' +
-            '<p>You have get <strong class="green-text"></strong> in amount of <strong class="green-text"></strong>'+
-            '</div>'
-    );
-    $(sellBuyDiv).append(self.sellbuyConcluDiv);
-    self.sellbuyIouSelectors = $(sellBuyDiv).find(".selectpicker");
-    self.sellbuyButton = $(sellBuyDiv).find("button");
-    $(self.sellBuyChart).dxChart({
-        commonSeriesSettings : {
-            type : "bar",
-            argumentField : "rate"
-        },
-        series:[
-            {valueField : 'buy', name:'buy'},
-            {valueField : 'sell', name:'sell'}
-        ],
-        valueAxis:{
-            visible : true
-        },
-        legend:{
-            verticalAlignment: 'bottom',
-            horizontalAlignment: 'center',
-            itemTextPosition: 'right',
-            columnCount: 2
-        },
-        tooltip: {
-            enabled : true,
-            customizeText : function(point){
-                return "Rate: " + point.argumentText + " Amount:" + point.value.toFixed(2);
-            },
-            font:{
-                size : 14
-            }
-        },
-        palette : Consts.BLACKGREE_PALETTE
-    });
-    $(self.sellbuyButton).click(self.SellBuyAnalyze.bind(self));
-    return sellBuyDiv;
 };
 
 AnalyzeBox.prototype.SellBuyAnalyze = function(){
@@ -784,3 +583,244 @@ AnalyzeBox.prototype.SellBuyAnalyze = function(){
     $(strongs[5]).text(amount.toFixed(3) + data.baseCurrency);
 }
 
+function BalanceChangeBox(root){
+    this.root = root;
+    var label = $("<label />", {
+        class : "form-control text-center green-background"
+    });
+    $(label).text("Balance Change");
+    $(this.root).append(label);
+    var chart = $("<div />");
+    this.chart = chart;
+    $(this.root).append(chart);
+    $(this.chart).dxChart({
+        commonSeriesSettings :{
+            argumentField : 'label',
+            type : 'bar',
+            label : {
+                visible : true,
+                format : 'fixedPoint',
+                precision : 3
+            }
+        },
+        legend : {
+            verticalAlignment : "bottom",
+            horizontalAlignment : "center"
+        },
+        palette : Consts.BLACKGREE_PALETTE,
+        rotated : true
+    });
+};
+
+BalanceChangeBox.prototype.PaintData = function(balBefore, bTime, balLater, lTime){
+    var self = this;
+    var data = [];
+    var process = {};
+    for(i in balBefore.balances){
+        var iou = balBefore.balances[i].Currency() + balBefore.balances[i].Issuer();
+        if(!process[iou]) process[iou] = {}
+        process[iou].label = iou;
+        process[iou].before = balBefore.balances[i].Money();
+    };
+    for(i in balLater.balances){
+        var iou = balLater.balances[i].Currency() + balLater.balances[i].Issuer();
+        if(!process[iou]) process[iou] = {}
+        process[iou].label = iou;
+        process[iou].after = balLater.balances[i].Money();
+    };
+
+    for(key in process){
+        if(process.hasOwnProperty(key)){
+            if(!process[key].before) process[key].before = 0;
+            if(!process[key].after) process[key].after = 0;
+            data.push(process[key]);
+        }
+    }
+
+    $(self.root).height(80 * data.length);
+    var Chart = $(self.chart).dxChart("instance");
+    Chart.option({
+        dataSource : data,
+        series : [
+            {valueField : 'before', name : bTime.format('MM/dd/yyyy hh:mm:ss')},
+            {valueField : 'after', name : lTime.format('MM/dd/yyyy hh:mm:ss')}
+        ]
+    });
+};
+BalanceChangeBox.prototype.Clear = function(){
+    var self = this;
+    var Chart = $(self.chart).dxChart("instance");
+    Chart.option({
+        dataSource : []
+    });
+}
+
+function InOutBox(root){
+    var inoutFormHtml = '<form class="form-horizontal">' +
+        '<fieldset>' +
+        '<legend class="text-center">In Out Sheet</legend>' +
+        '</fieldset>' +
+        '<fieldset class="inout">' +
+        '</fieldset>'
+    '<div class="form-group">' +
+    '<div class="col-md-offset-10 col-md-2">' +
+    '<button type="submit" class="btn btn-default">Calculate</button>' +
+    '</div>' +
+    '</div>' +
+    '</form>';
+    this.root =root;
+    $(this.root).html(inoutFormHtml);
+}
+
+function SellBuyBox(root){
+    this.root = root;
+    var sellBuyConfHtml = '<form class="form-horizontal" role="form">' +
+        '<label class="form-control text-center green-background">Sell&Buy Stat</label>' +
+        '<div class="form-group">' +
+        '<div class="col-md-2">' +
+        '<label class="form-control">Currency</label>' +
+        '</div>' +
+        '<div class="col-md-8">' +
+        '<select class="selectpicker" data-width="auto"></select>' +
+        '</div>' +
+        '</div>' +
+        '<div class="form-group">' +
+        '<div class="col-md-2">' +
+        '<label class="form-control">Currency</label>' +
+        '</div>' +
+        '<div class="col-md-8">' +
+        '<select class="selectpicker" data-width="auto"></select>' +
+        '</div>' +
+        '<div class="col-md-2">' +
+        '<button type="button" class="btn btn-primary form-control">OK</button>' +
+        '</div>' +
+        '</div>' +
+        '</form>';
+    $(root).html(sellBuyConfHtml);
+    var chart = $("<div />", {
+        class : "sellbuy chart"
+    });
+    $(root).append(chart);
+    var conclusion = $("<div />",{
+        class : "row"
+    });
+    $(conclusion).html(
+            '<div class="col-md-offset-1">'+
+            '<p>You have bought <strong class="green-text"></strong> at an average price of <strong class="green-text"></strong></p>' +
+            '<p>You have sold <strong class="green-text"></strong> at an average price of <strong class="green-text"></strong></p>' +
+            '<p>You have get <strong class="green-text"></strong> in amount of <strong class="green-text"></strong>'+
+            '</div>'
+    );
+    $(root).append(conclusion);
+    this.sellbuyIouSelectors = $(root).find(".selectpicker");
+    this.chart = chart;
+    $(chart).dxChart({
+        commonSeriesSettings : {
+            type : "bar",
+            argumentField : "rate"
+        },
+        series:[
+            {valueField : 'buy', name:'buy'},
+            {valueField : 'sell', name:'sell'}
+        ],
+        valueAxis:{
+            visible : true
+        },
+        legend:{
+            verticalAlignment: 'bottom',
+            horizontalAlignment: 'center',
+            itemTextPosition: 'right',
+            columnCount: 2
+        },
+        tooltip: {
+            enabled : true,
+            customizeText : function(point){
+                return "Rate: " + point.argumentText + " Amount:" + point.value.toFixed(2);
+            },
+            font:{
+                size : 14
+            }
+        },
+        palette : Consts.BLACKGREE_PALETTE
+    });
+};
+SellBuyBox.prototype.SetData = function(data){
+    this.txes = data;
+};
+SellBuyBox.prototype.SetConfig = function(balances){
+    var self = this;
+    $(self.sellbuyIouSelectors).empty();
+    $.each(balances, function(i){
+        var balance = balances[i];
+        var opt = $("<option />", {
+            value : balance.Currency()+balance.Issuer(),
+            text : balance.Currency() + " " + balance.Issuer()
+        });
+        $(self.sellbuyIouSelectors).append(opt);
+    });
+    $(self.sellbuyIouSelectors).selectpicker('refresh');
+}
+
+function BalancePanel(){
+};
+
+BalancePanel.Init = function(ele){
+    var root = $("<div />", {
+        class : "row"
+    });
+    $(ele).append(root);
+};
+
+BalancePanel.PaintBalances = function(ele, balances){
+    var root = $(ele).find("div.row");
+    $(root).empty();
+    for(i in balances){
+        $(root).append(BalancePanel.PaintBalance(balances[i]));
+    }
+};
+
+BalancePanel.PaintBalance = function(balance){
+    var div = $("<div />", {
+        class : "pricingtable col-md-3"
+    });
+    div.append(BalancePanel.assembleTop(balance));
+    var inner = $("<div />", {
+        class : "pure-white-background"
+    });
+    inner.append(BalancePanel.assembleIssuer(balance));
+    inner.append("<hr />");
+    inner.append(BalancePanel.assembleBalance(balance));
+    div.append(inner);
+    return div;
+};
+
+BalancePanel.assembleTop = function(line){
+    return '<div class="pricingtable-top"><div class="currency">' + line.Currency() + '</div></div>';
+};
+
+BalancePanel.assembleIssuer = function(line){
+    var gateway = Consts.GetGatewayNick(line.Issuer());
+    return '<div class="pure-white-background"><p>' + gateway + '</p></div>';
+};
+
+BalancePanel.assembleBalance = function(line){
+    return '<div class="balance pure-white-background">' + line.Value().toFixed(2) + '</div>'
+};
+
+function OfferPanel(){
+
+};
+
+OfferPanel.ShowTx = function(root, offers){
+    $(root).empty();
+    var tableHtml = '' +
+        '<table class="footable table" data-page-size="10">' +
+        '<thead>' +
+        '<tr><th>Sell</th><th>Issuer</th><th>Amount</th><th>Want</th><th>Issuer</th><th>Amount</th><th>Rate</th></tr></thead>' +
+        '<tbody>' +
+        '</tbody>' +
+        '</table>';
+    $(root).html(tableHtml);
+    var table = new RippleTable(root);
+    table.AddOffers(offers);
+}

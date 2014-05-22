@@ -24,10 +24,10 @@ RippleTable.prototype = {
     AddOffers : function(offers){
         var self = this;
         var offerRow = function(offer){
-            var sell = Number(offer._sell.Money());
-            var buy = Number(offer._want.Money());
+            var sell = Number(offer.sell.Value());
+            var buy = Number(offer.want.Value());
             var rate = buy / sell;
-            return "<tr><td>" + offer._sell.Currency() + "</td><td>" + Consts.GetGatewayNick(offer._sell.Issuer()) + " </td><td>" + sell.toFixed(2) + "</td><td>" + offer._want.Currency() + "</td><td>" + Consts.GetGatewayNick(offer._want.Issuer()) + " </td><td>" + buy.toFixed(2) + "</td><td>" + rate.toFixed(2) + "</td></tr>";
+            return "<tr><td>" + offer.sell.Currency() + "</td><td>" + Consts.GetGatewayNick(offer.sell.Issuer()) + " </td><td>" + sell.toFixed(2) + "</td><td>" + offer.want.Currency() + "</td><td>" + Consts.GetGatewayNick(offer.want.Issuer()) + " </td><td>" + buy.toFixed(2) + "</td><td>" + rate.toFixed(2) + "</td></tr>";
         };
 
         $.each(offers, function(i){

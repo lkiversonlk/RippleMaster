@@ -1,23 +1,4 @@
 /* Log */
-function Log(type){this._type = type;}
-Log.WORK_LEVEL = 0;
-Log.DEBUG_LEVEL = 1;
-
-Log.SetLevel = function(level) {
-    this._level = level;
-}
-
-Log.GetLevel = function() {
-    return this._level;
-}
-
-Log.prototype = {
-    log : function(level, msg) {
-        if(level <= Log.GetLevel()){
-            console.log(this._type + ": " + msg);
-        }
-    }
-};
 
 /* Gloabal Variable */
 function Consts(){}

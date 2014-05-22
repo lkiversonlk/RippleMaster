@@ -111,9 +111,9 @@ Stat.CalIOUBuySell = function(baseIOU, refIOU, txes){
                 sellRef += sellAmount;
                 buyBase += buyAmount;
                 buyRecords.push({
-                   'rate' : rate,
-                   'sell' : sellAmount,
-                   'buy' : buyAmount
+                    'rate' : rate,
+                    'sell' : sellAmount,
+                    'buy' : buyAmount
                 });
             }
         }
@@ -241,4 +241,8 @@ Stat.CalSummary = function(txes){
         }
     }
     return ret;
+}
+
+if(typeof exports !== "undefined"){
+    exports.Stat = Stat;
 }
