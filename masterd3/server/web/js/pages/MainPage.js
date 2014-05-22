@@ -118,6 +118,7 @@ MainPage.prototype = {
             var userCnt = $(lis[0]).find("strong");
             $(userCnt).text(status.users);
         });
+        self.master = new Master($("#rpMaster"), self.accMgr);
         self.accMgr.GetAccInfo(callback);
     },
 

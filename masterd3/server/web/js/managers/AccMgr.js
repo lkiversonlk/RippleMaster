@@ -117,7 +117,7 @@ AccMgr.prototype.RemoveGateNick = function(address){
     self.GetRpBalance();
 };
 
-AccMgr.prototype.GetRpBalance = function(address){
+AccMgr.prototype.GetRpBalance = function(address, callback){
     var self = this;
     if(address){
         for(var i in self.accInfo.rippleAddress){
@@ -126,7 +126,10 @@ AccMgr.prototype.GetRpBalance = function(address){
                 if(addr === address){
                     self.balancesInfo[addr] = {address:addr};
                     self.rpMaster.AddrBalance(addr, function(result, addrBal){
-                        $(self).trigger(AccMgr.EVENT.ACC_BASIC, addrBal);
+                        if(result === Consts.RESULT.SUCCESS){
+                            $(self).trigger(AccMgr.EVENT.ACC_BASIC, addrBal);
+                            if(callback) callback(addrBal);
+                        }
                     });
                     break;
                 }
@@ -239,4 +242,8 @@ AccMgr.prototype.RpStatus = function(callback){
             error : function(){}
         }
     )
+};
+
+AccMgr.prototype.ManualTxLoad = function(address, size, callback){
+    this.rpMaster.LoadAllTransactions(address, size, null, callback);
 }

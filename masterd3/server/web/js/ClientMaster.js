@@ -113,6 +113,43 @@ ClientMaster.prototype = {
         self._rippleServer.Request(accountTxRequest);
     },
 
+    LoadAllTransactions : function(address, size, marker, callback){
+        var self = this;
+        if(self.State() === Consts.STATE.OFFLINE){
+            callback(Consts.RESULT.FAIL_NETWORKERROR);
+        }
+        var options = {
+            ledger_index_min:-1,
+            ledger_index_max:-1,
+            limit:size
+        };
+        if(marker){
+            options.marker = marker;
+        }
+        var accountTxRequest = RippleRequest.AccountRequest(
+            RippleRequest.RequestCMD.AccountTransactions,
+            address,
+            options,
+            function(result, data){
+                if(result === Consts.RESULT.SUCCESS){
+                    if(data.marker){
+                        var goOn = callback(Consts.RESULT.SUCCESS, true, data.transactions);
+                        if(goOn){
+                            self.LoadAllTransactions(address, size, data.marker, callback);
+                        }else{
+                        }
+                    }else{
+                        callback(Consts.RESULT.SUCCESS, false, data.transactions);
+                    }
+                }else{
+                    callback(result);
+                }
+            }
+        );
+        self._rippleServer.Request(accountTxRequest);
+    },
+
+
     initializeComponents : function(){
         this.ids = {};
         this._rippleServer = new RippleServer();
