@@ -34,10 +34,9 @@ BaseInfoPanel.ComposeDiv = function(address, nickname, accMgr){
     }))
     $(panel).append(offers);
 
-    BalancePanel.Init(balance);
+    var balancePanel = new BalancePanel(balance, accMgr.addressBalances[address]);
     $(accMgr).on(AccMgr.EVENT.ACC_BASIC, function(event, data){
         if(data.address === address){
-            BalancePanel.PaintBalances(balance, data.balances);
             OfferPanel.ShowTx(offers, data.offers);
         }
     })

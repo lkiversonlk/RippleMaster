@@ -49,7 +49,7 @@ Host.prototype.InitRippleTx = function(account, callback){
 
     AccountTx.findOne({name : account}, function(err, doc){
         if(doc){
-            if(callback){callback(Consts.RESULT.FAIL_ACCOUNT, doc.toObject().transactions);}
+            if(callback){callback(Common.RESULT.FAIL_ACCOUNT, doc.toObject().transactions);}
         }else{
             var first = true;
             var save = new AccountTx({

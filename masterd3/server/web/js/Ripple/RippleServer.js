@@ -18,7 +18,7 @@ RippleServer.prototype = {
             var server = self._server;
 
             $(server).one('connected', function(event){
-                callback(Consts.RESULT.SUCCESS, "");
+                callback(Common.RESULT.SUCC, "");
             });
 
             $(server).bind('message', function(event, msg){
@@ -31,7 +31,7 @@ RippleServer.prototype = {
 
             this._server.Connect();
         }catch (e){
-            callback(Consts.RESULT.FAIL, e);
+            callback(Common.RESULT.FAIL, e);
         }
     },
 
@@ -52,11 +52,11 @@ RippleServer.prototype = {
 
     HandleMessage : function(message){
       switch (message.type){
-          case Consts.SERVER_MESSAGE_TYPE.LedgerClosed:
+          case Common.SERVER_MESSAGE_TYPE.LedgerClosed:
               break;
-          case Consts.SERVER_MESSAGE_TYPE.PATH_FIND:
+          case Common.SERVER_MESSAGE_TYPE.PATH_FIND:
               break;
-          case Consts.SERVER_MESSAGE_TYPE.RESPONSE:
+          case Common.SERVER_MESSAGE_TYPE.RESPONSE:
               var id = message.id;
               var request = this._requests[id];
               delete this._requests[id];
@@ -64,9 +64,9 @@ RippleServer.prototype = {
               if(!request){
                   this._logger.log(Log.DEBUG_LEVEL, "unexpected msg: " + message.toString());
               }else if(message.error){
-                  request.Callback(Consts.RESULT.FAIL, message.error_message);
+                  request.Callback(Common.RESULT.FAIL, message.error_message);
               }else if(message.status == 'success') {
-                  request.Callback(Consts.RESULT.SUCCESS, message);
+                  request.Callback(Common.RESULT.SUCC, message);
               }else{
 
               }

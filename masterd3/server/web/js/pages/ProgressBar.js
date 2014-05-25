@@ -16,14 +16,11 @@ ProgressBar.prototype = {
     },
 
     SetProgress : function(number, label){
-        var date = Date();
         var maxWidth = $(this._root).width();
         var width = maxWidth * number / 100;
         $(this._root).find(".progress-bar").width(number + "%");
-
-
         if(label){
-            $(this._root).find(".text").text(label + "  @" + date);
+            $(this._root).find(".text").text(label);
         }
     },
 

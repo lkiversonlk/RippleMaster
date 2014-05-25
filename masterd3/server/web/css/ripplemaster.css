@@ -99,6 +99,9 @@
 td{
     text-align: center;
 }
+th{
+    text-align: center;
+}
 /* this is for the size */
 
 /* common div */
@@ -354,6 +357,9 @@ html, body{
     color: #E9772E;
 }
 
+table thead{
+    text-align: center;
+}
 /**for loading effec **/
 .loading {
     position: absolute;

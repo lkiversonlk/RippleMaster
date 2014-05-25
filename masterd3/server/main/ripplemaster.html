@@ -102,7 +102,7 @@
     </div>
 
     <div style="min-height: 200px">
-        <div class="tab-content pure-white-background">
+        <div class="tab-content gray-background">
             <div class="tab-pane active fade in" id="account">
                 <div id="account-content" class="container-fluid gray-background">
                 </div>
@@ -112,17 +112,17 @@
                 <div id="trade-content" class="container-fluid gray-background">
                 </div>
             </div>
-            <div class="tab-pane fade gray-background" id="rpMaster">
-                <div class="container-fluid">
-                    <div class="white-background">
-                        <div style="height: 20px"></div>
-                        <div class="row">
+            <div class="tab-pane fade " id="rpMaster">
+                <div class="container">
+                    <div class="toggle">
+                        <div class="row white-background">
+                            <div style="height:20px"></div>
                             <form class="form-horizontal">
                                 <div class="form-group">
                                     <div class="col-md-3 col-md-offset-3">
                                         <label class="form-control">Select a Ripple Account</label>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-5">
                                         <select class="selectpicker baseaddress"></select>
                                     </div>
                                 </div>
@@ -130,22 +130,29 @@
                                     <div class="col-md-3 col-md-offset-3">
                                         <label class="form-control">Select your base currency</label>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-5">
                                         <select class="selectpicker basecurrency"></select>
                                     </div>
                                 </div>
                             </form>
                         </div>
-                        <div class="row text-center">
-                            Want to be the Master of your Ripple Account? <button class="btn btn-primary startmaster" type="button">Start</button>
+                        <div class="row">
+                            <p class="text-center">Want to be the Master of your Ripple Account? Let's start <button class="btn btn-primary startmaster" type="button">Start</button></p>
                         </div>
                     </div>
-                    <div style="height: 20px"></div>
-                    <div class="master-main white-background row">
+                    <div class="rpMaster-panel">
+                        <div class=" balance-stat">
+                            <label class="form-control text-center black-background green-text time">
 
+                            </label>
+                        </div>
+
+                        <div style="height: 20px"></div>
+                        <div class="white-background data-seg">
+
+                        </div>
                     </div>
                 </div>
-
             </div>
             <div class="tab-pane fade" id="settings">
                 <div class="container settings">
@@ -278,8 +285,106 @@
     </div><!-- /.modal-dialog -->
 </div>
 
+<script type="text/html" id="inout-form-template">
+    <label class="form-control text-center green-background" data-bind="text: title"></label>
+    <table>
+        <thead class="green-text">
+            <tr class="row">
+                <th class="col-md-1">
+                    <label>Type</label>
+                </th>
+                <th class="col-md-3">
+                    <label>IOU</label>
+                </th>
+                <th class="col-md-4">
+                    <label>Amount</label>
+                </th>
+                <th class="col-md-4">
+                    <label>Average Cost</label>
+                </th>
+
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: inouts" >
+            <tr class="row">
+                <td class="col-md-1">
+                    <label data-bind="text: typeText"></label>
+                </td>
+                <td class="col-md-3">
+                    <label data-bind="text: IOU"></label>
+                </td>
+                <td class="col-md-4">
+                    <label data-bind="text: amount"></label>
+                </td>
+                <td class="col-md-4">
+                    <span><input type="text" data-bind="value: ratio" placeholder="cost in baseiou"></span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</script>
+
+<script type="text/html" id="balance-template">
+    <!-- ko foreach: balancesPage -->
+        <div class="pricingtable col-md-3">
+            <div class="pricingtable-top">
+                <div class="currency" data-bind="text: currency">CNY</div>
+            </div>
+            <div class="pure-white-background">
+                <div>
+                    <p data-bind="text: Issuer">rippleChina</p>
+                </div>
+                <hr>
+                <div class="balance" data-bind="text: value">195.00</div>
+                <hr>
+                <p data-bind="text: MasterCost"></p>
+            </div>
+        </div>
+    <!-- /ko -->
+</script>
+
+<script type="text/html" id="cost-estimate-template">
+    <label class="form-control text-center green-background">Please estimate your cost price (in your base iou)</label>
+    <table>
+        <thead class="green-text">
+        <tr class="row">
+            <th class="col-md-1">
+                <label>Currency</label>
+            </th>
+            <th class="col-md-3">
+                <label>Issuer</label>
+            </th>
+            <th class="col-md-4">
+                <label>Amount</label>
+            </th>
+            <th class="col-md-4">
+                <label>Estimate Cost</label>
+            </th>
+        </tr>
+        </thead>
+        <tbody data-bind="foreach: balancesPage" >
+        <tr class="row">
+            <td class="col-md-1">
+                <label data-bind="text: currency"></label>
+            </td>
+            <td class="col-md-3">
+                <label data-bind="text: Issuer"></label>
+            </td>
+            <td class="col-md-4">
+                <label data-bind="text: value"></label>
+            </td>
+            <td class="col-md-4">
+                <span><input type="text" data-bind="value: Ratio" placeholder="cost in baseiou"></span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <button class="btn btn-primary form-control" type="button">OK</button>
+</script>
+
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="lib/jquery/jquery.js"></script>
+<script src="lib/knockout/knockout.js"></script>
 <script src="lib/utils/moment.js"></script>
 <script src="lib/d3/d3.min.js"></script>
 <script src="lib/bootstrap/bootstrap.min.js"></script>
@@ -293,18 +398,19 @@
 <script src="lib/charts/dx.chartjs.debug.js"></script>
 <script src="js/protocol.js"></script>
 <script src="js/managers/AccMgr.js"></script>
-<script src="js/pages/Common.js"></script>
+<script src="js/pages/Consts.js"></script>
 <script src="js/pages/RippleTable.js"></script>
 <script src="js/pages/ProgressBar.js"></script>
 <script src="js/pages/RippleBox.js"></script>
 <script src="js/pages/AddrPage.js"></script>
 <script src="js/pages/ConfigPage.js"></script>
+<script src="js/pages/MasterPage.js"></script>
 <script src="js/pages/MainPage.js"></script>
 <script src="js/Ripple/RippleServer.js"></script>
 <script src="js/Ripple/Server.js"></script>
 <script src="js/Ripple/RippleRequest.js"></script>
-<script src="js/Ripple/Transaction.js"></script>
 <script src="js/Ripple/TransactionAnalyzer.js"></script>
+<script src="js/managers/TxManagement.js"></script>
 <script src="js/MasterFunc/Master.js"></script>
 <script src="js/Stat.js"></script>
 <script src="js/Util.js"></script>

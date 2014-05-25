@@ -223,21 +223,22 @@ Stat.CalIOUBuySell = function(baseIOU, refIOU, txes){
     return ret;
 };
 
-Stat.CalSummary = function(txes){
+Stat.CallIOUInOut = function(txes){
     var ret = {};
-
     for(var i in txes){
         var tx = txes[i];
 
-        switch (tx.Type()){
+        switch (tx.type){
             case Transaction.Type.Receive:
                 var iou = tx.amount.Currency() + tx.amount.Issuer();
-                if(!ret[iou]) ret[iou] = {receive:0, send:0};
+                if(!ret[iou]) ret[iou] = {receive:0};
                 ret[iou].receive += tx.amount.Value();
+                break;
             case Transaction.Type.Send:
                 var iou = tx.cost.Currency() + tx.cost.Issuer();
-                if(!ret[iou]) ret[iou] = {receive:0, send:0};
+                if(!ret[iou]) ret[iou] = {send:0};
                 ret[iou].send += tx.cost.Value();
+                break;
         }
     }
     return ret;

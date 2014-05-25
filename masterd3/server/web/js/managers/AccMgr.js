@@ -8,7 +8,7 @@
  */
 function AccMgr(ClMaster){
     this.rpMaster = ClMaster;
-    this.balancesInfo = {};
+    this.addressBalances = {};
     this.txes = {};
     this.mapper = {};
     var self = this;
@@ -17,7 +17,7 @@ function AccMgr(ClMaster){
         for(i in self.accInfo.rippleAddress){
             self.mapper[self.accInfo.rippleAddress[i].address] = self.accInfo.rippleAddress[i].nickname;
         }
-        Balance.Mapper = self.mapper;
+        Consts.NickMapper = self.mapper;
     })
 };
 
@@ -36,6 +36,10 @@ AccMgr.prototype.GetAccInfo = function(callback){
             dataType : "json",
             success : function(json){
                 self.accInfo = json;
+                var addresses = self.accInfo.rippleAddress.filter(function(d){return d.addressType == 0;});
+                for(var i in addresses){
+                    self.addressBalances[addresses[i].address] = new AddressBalancePage();
+                }
                 $(self).trigger(AccMgr.EVENT.ACC_INFO, self.accInfo);
                 callback(true);
                 self.GetRpBalance();
@@ -120,28 +124,29 @@ AccMgr.prototype.RemoveGateNick = function(address){
 AccMgr.prototype.GetRpBalance = function(address, callback){
     var self = this;
     if(address){
-        for(var i in self.accInfo.rippleAddress){
-            if(self.accInfo.rippleAddress[i].addressType == 0){
-                var addr = self.accInfo.rippleAddress[i].address;
-                if(addr === address){
-                    self.balancesInfo[addr] = {address:addr};
-                    self.rpMaster.AddrBalance(addr, function(result, addrBal){
-                        if(result === Consts.RESULT.SUCCESS){
-                            $(self).trigger(AccMgr.EVENT.ACC_BASIC, addrBal);
-                            if(callback) callback(addrBal);
-                        }
-                    });
-                    break;
+        self.rpMaster.AddrBalance(address, function(result, addrBal){
+            if(result === Common.RESULT.SUCC){
+                $(self).trigger(AccMgr.EVENT.ACC_BASIC, addrBal);
+                if(self.addressBalances[addrBal.address]){
+                    self.addressBalances[addrBal.address].Update(addrBal);
+                }else{
+                    self.addressBalances[addrBal.address] = new AddressBalancePage(addrBal);
                 }
+                if(callback) callback(addrBal);
             }
-        }
+        });
     }else{
         for(var i in self.accInfo.rippleAddress){
             if(self.accInfo.rippleAddress[i].addressType == 0){
                 var addr = self.accInfo.rippleAddress[i].address;
                 self.rpMaster.AddrBalance(addr, function(result, addrBal){
-                    if(result === Consts.RESULT.SUCCESS){
+                    if(result === Common.RESULT.SUCC){
                         $(self).trigger(AccMgr.EVENT.ACC_BASIC, addrBal);
+                        if(self.addressBalances[addrBal.address]){
+                            self.addressBalances[addrBal.address].Update(addrBal);
+                        }else{
+                            self.addressBalances[addrBal.address] = new AddressBalancePage(addrBal);
+                        }
                     }
                 });
             }
@@ -174,7 +179,7 @@ AccMgr.prototype.GetTransaction = function(address, startTime, endTime, callback
     var self = this;
     if(!self.txes[address]){
         self.rpMaster.ConsultTransactions(address, null, function(result, marker, txes){
-            if(result === Consts.RESULT.SUCCESS){
+            if(result === Common.RESULT.SUCC){
                 var txStart = (txes[txes.length -1].date);
                 var txEnd = (txes[0].date);
                 if(!self.txes[address]){
@@ -191,9 +196,9 @@ AccMgr.prototype.GetTransaction = function(address, startTime, endTime, callback
                     }
                 }
                 //all the data has been loaded
-                callback(Consts.RESULT.SUCCESS, filter(self.txes[address].txes, start, end));
+                callback(Common.RESULT.SUCC, filter(self.txes[address].txes, start, end));
             }else{
-                callback(Consts.RESULT.FAIL)
+                callback(Common.RESULT.FAIL)
             }
         })
     }else{
@@ -207,11 +212,11 @@ AccMgr.prototype.GetTransaction = function(address, startTime, endTime, callback
                         return true;
                     }
                 }
-                callback(Consts.RESULT.SUCCESS, filter(self.txes[address].txes, start, end));
+                callback(Common.RESULT.SUCC, filter(self.txes[address].txes, start, end));
             })
         }else{
             //already have or can't get more
-            callback(Consts.RESULT.SUCCESS, filter(self.txes[address].txes, start, end));
+            callback(Common.RESULT.SUCC, filter(self.txes[address].txes, start, end));
         }
     }
 };
@@ -246,4 +251,98 @@ AccMgr.prototype.RpStatus = function(callback){
 
 AccMgr.prototype.ManualTxLoad = function(address, size, callback){
     this.rpMaster.LoadAllTransactions(address, size, null, callback);
+};
+
+function BalancePage(balance){
+    var self = this;
+    self.currency = balance.currency;
+    self.issuer = balance.issuer;
+    self.value = ko.observable(balance.value);
+    self.mastercostvalue = ko.observable();
+    self.mastercostcurrency = ko.observable();
+    self.mastercostissuer = ko.observable();
+    if(balance.mastercost){
+        self.mastercostvalue(balance.mastercost.value);
+        self.mastercostcurrency(balance.mastercost.currency);
+        self.mastercostissuer(balance.mastercost.issuer);
+    }
+    self.Issuer = ko.computed(function(){
+        return Consts.GetNick(self.issuer);
+    });
+
+    self.MasterCost = ko.computed(function(){
+        if(self.mastercostvalue()){
+            return self.mastercostvalue() + " " + self.mastercostcurrency() + " " + Consts.GetNick(self.mastercostissuer());
+        }else{
+            return "unknown cost";
+        }
+    });
+
+    self.Ratio = ko.computed({
+        read : function(){
+            return self.mastercostvalue();
+        },
+        write : function(value){
+            self.mastercostvalue(value);
+        }
+    })
+};
+
+BalancePage.prototype.Update = function(balance){
+    var self = this;
+    self.currency = balance.currency;
+    self.issuer = balance.issuer;
+    self.value(balance.value);
+    if(balance.mastercost){
+        self.mastercostvalue(balance.mastercost.value);
+        self.mastercostcurrency(balance.mastercost.currency);
+        self.mastercostissuer(balance.mastercost.issuer);
+    };
 }
+
+function AddressBalancePage(address){
+    var self = this;
+    self.balancesPage = ko.observableArray();
+    if(address){
+        this.address = address.address;
+        for(var i in address.balances){
+            self.balancesPage.push(new BalancePage(address.balances[i]));
+        }
+    }
+};
+
+AddressBalancePage.prototype.updateBalances = function(balances){
+    var self = this;
+    for(var i = 0; i < self.balancesPage().length ; i++){
+        var balancePage = self.balancesPage()[i];
+        var id = balancePage.currency + balancePage.issuer;
+        var found = false;
+        for(var j in balances){
+            var balance = balances[j];
+            var bid = balance.currency + balance.issuer;
+            if(id == bid){
+                found = true;
+                break;
+            }
+        }
+
+        if(found){
+            var balance = balances[j];
+            balances.splice(j, 1);
+            balancePage.Update(balance);
+        }else{
+            self.balancesPage.splice(i,1);
+            i--;
+        }
+    };
+
+    for(var j in balances){
+        self.balancesPage.push(new BalancePage(balances[j]));
+    }
+};
+
+AddressBalancePage.prototype.Update = function(address){
+    var self = this;
+    self.updateBalances(address.balances.slice(0));
+};
+

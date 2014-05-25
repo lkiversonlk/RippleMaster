@@ -64,6 +64,11 @@ Server.prototype.Connect = function(){
         logger.log(Log.DEBUG_LEVEL, "get msg :" + msg);
         self.emit("message", msg);
     }
+
+    ws.on('error', function(error){
+        logger.log(Log.WORK_LEVEL, "faile due to error " + error);
+        self.emit("error", error);
+    })
 };
 
 Server.prototype.SendMessage = function(msg, callback){

@@ -134,11 +134,11 @@ RippleBox.AddrBox = function(address){
         ret.progressBar.SetProgress(40, "Loading account balances");
         ret.balancePanel.Clear();
         ret.clientMaster.AccountInfoNoRefresh(ret.address, function(result, id){
-            if(result === Consts.RESULT.SUCCESS){
+            if(result === Common.RESULT.SUCC){
                 ret.progressBar.SetProgress(100, "Account balances loaded");
                 ret.balancePanel.AddBalance(id.XRP());
                 ret.balancePanel.AddBalances(id.Balances());
-            }else if(result === Consts.RESULT.FAIL_NETWORKERROR) {
+            }else if(result === Common.RESULT.FAIL_NETWORKERROR) {
                 ret.progressBar.SetProgress(100, "Fail, verify your network status");
             }else {
                 ret.progressBar.SetProgress(100, "Fail to load account balances");
@@ -171,7 +171,7 @@ RippleBox.TxBox = function(address){
         ret.progressBar.SetProgress(30, "Loading account transactions");
         ret.table.Clear();
         ret.clientMaster.ConsultTransactions(ret.address, function(result, isThereMore, addedTxes){
-            if(result === Consts.RESULT.SUCCESS){
+            if(result === Common.RESULT.SUCC){
                 ret.table.AddTxes(addedTxes);
                 if(isThereMore){
                     var left = ret.progressBar.Left();
@@ -181,7 +181,7 @@ RippleBox.TxBox = function(address){
                     ret.progressBar.SetProgress(100, "Account transactions loaded");
                     return false;
                 }
-            }else if(result === Consts.RESULT.FAIL_NETWORKERROR) {
+            }else if(result === Common.RESULT.FAIL_NETWORKERROR) {
                 ret.progressBar.SetProgress(100, "Fail, verify your network status");
             }else {
                 ret.progressBar.SetProgress(100, "Fail to load transactions");
@@ -217,7 +217,7 @@ RippleBox.SellBuyBox = function(address){
             return;
         }
         var dataCollections = ret.clientMaster.QueryTransactions(ret.address, function(result, data){
-            if(result === Consts.RESULT.SUCCESS){
+            if(result === Common.RESULT.SUCC){
                 var sellBuy = Stat.CalIOUBuySell(startTime,
                     endTime,
                     baseIOU,
@@ -229,9 +229,9 @@ RippleBox.SellBuyBox = function(address){
                 }
                 ret.sellBuyPanel.PaintData(sellBuy);
                 ret.progressBar.SetProgress(100, "Succeed");
-            }else if(result === Consts.RESULT.FAIL_NETWORKERROR) {
+            }else if(result === Common.RESULT.FAIL_NETWORKERROR) {
                 ret.progressBar.SetProgress(100, "Fail, verify your network status");
-            }else if(result === Consts.RESULT.FAIL_ACCOUNTNOTLOADED) {
+            }else if(result === Common.RESULT.FAIL_ACCOUNTNOTLOADED) {
                 ret.progressBar.SetProgress(100, "Fail, please load the account's transactions");
             }else {
                 ret.progressBar.SetProgress(100, "Fail to load transaction data");
@@ -242,7 +242,7 @@ RippleBox.SellBuyBox = function(address){
         ret.progressBar.SetProgress(40, "Loading account info");
         ret.clientMaster.AccountInfoNoRefresh(ret.address, function(result, id){
             var currencies = [id.XRP()].concat(id.Balances());
-            if(result === Consts.RESULT.SUCCESS){
+            if(result === Common.RESULT.SUCC){
                 $(ret.sellBuyPanel.iouSelectors).empty();
                 $.each(currencies, function(i){
                     var balance = currencies[i];
@@ -254,9 +254,9 @@ RippleBox.SellBuyBox = function(address){
                 });
                 $(ret.sellBuyPanel.iouSelectors).selectpicker('refresh');
                 ret.progressBar.SetProgress(100, "Succeed");
-            }else if(result === Consts.RESULT.FAIL_NETWORKERROR) {
+            }else if(result === Common.RESULT.FAIL_NETWORKERROR) {
                 ret.progressBar.SetProgress(100, "Fail, verify your network status");
-            }else if(result === Consts.RESULT.FAIL_ACCOUNTNOTLOADED){
+            }else if(result === Common.RESULT.FAIL_ACCOUNTNOTLOADED){
                 ret.progressBar.SetProgress(100, "Fail, please reload the account's information");
             }else {
                 ret.progressBar.SetProgress(50, "Fail to load account info");
@@ -287,7 +287,7 @@ RippleBox.IOUFlowBox = function(address){
         }
         var iou = $(ret.ValueFlowPanel.iouSelector).val();
         var dataCollections = ret.clientMaster.QueryTransactions(ret.address, function(result, data){
-            if(result === Consts.RESULT.SUCCESS){
+            if(result === Common.RESULT.SUCC){
                 var iouSummary = Stat.CalIOUSummary(startTime,
                     endTime,
                     iou,
@@ -298,9 +298,9 @@ RippleBox.IOUFlowBox = function(address){
                 }
                 ret.ValueFlowPanel.PaintData(iouSummary);
                 ret.progressBar.SetProgress(100, "Succeed");
-            }else if(result === Consts.RESULT.FAIL_NETWORKERROR) {
+            }else if(result === Common.RESULT.FAIL_NETWORKERROR) {
                 ret.progressBar.SetProgress(100, "Fail, verify your network status");
-            }else if(result === Consts.RESULT.FAIL_ACCOUNTNOTLOADED) {
+            }else if(result === Common.RESULT.FAIL_ACCOUNTNOTLOADED) {
                 ret.progressBar.SetProgress(100, "Fail, please load the account's transactions");
             }else {
                 ret.progressBar.SetProgress(100, "Fail to load transaction data");
@@ -310,7 +310,7 @@ RippleBox.IOUFlowBox = function(address){
     ret.refresh = function(){
         ret.progressBar.SetProgress(40, "Loading account info");
         ret.clientMaster.AccountInfoNoRefresh(ret.address, function(result, id){
-            if(result === Consts.RESULT.SUCCESS){
+            if(result === Common.RESULT.SUCC){
                 var currencies = [id.XRP()].concat(id.Balances());
                 $(ret.ValueFlowPanel.iouSelector).empty();
                 $.each(currencies, function(i){
@@ -323,9 +323,9 @@ RippleBox.IOUFlowBox = function(address){
                 });
                 $(ret.ValueFlowPanel.iouSelector).selectpicker('refresh');
                 ret.progressBar.SetProgress(100, "Succeed");
-            }else if(result === Consts.RESULT.FAIL_NETWORKERROR) {
+            }else if(result === Common.RESULT.FAIL_NETWORKERROR) {
                 ret.progressBar.SetProgress(100, "Fail, verify your network status");
-            }else if(result === Consts.RESULT.FAIL_ACCOUNTNOTLOADED){
+            }else if(result === Common.RESULT.FAIL_ACCOUNTNOTLOADED){
                 ret.progressBar.SetProgress(100, "Fail, please reload the account's information");
             }else {
                 ret.progressBar.SetProgress(50, "Fail to load account info");
@@ -473,7 +473,7 @@ AnalyzeBox.prototype.ComposeTxHistoryBox = function(root, address){
     }));
     var table = $("<div />");
     $(root).append(table);
-    var tableHtml = '<table class="footable table" data-page-size="10" data-filter='+"#table"+address +'><thead><tr><th>Date</th><th>Type</th><th>Content</th></tr></thead><tbody></tbody><tfoot><tr style="text-align: center"><td colspan="5"><ul class="pagination"></div> </td> </tr></tfoot></table>';
+    var tableHtml = '<table class="footable table" data-page-size="20" data-filter='+"#table"+address +'><thead><tr><th>Date</th><th>Type</th><th>Content</th></tr></thead><tbody></tbody><tfoot><tr style="text-align: center"><td colspan="5"><ul class="pagination"></div> </td> </tr></tfoot></table>';
     $(table).html(tableHtml);
     self.table = table;
 }
@@ -491,7 +491,7 @@ AnalyzeBox.prototype.StartAnalyze = function(){
     var findingLatest = true;
     var findingEarliest = true;
     self.accMgr.GetTransaction(self.address, timeRange[0], timeRange[1], function(result, txes){
-        if(result === Consts.RESULT.SUCCESS){
+        if(result === Common.RESULT.SUCC){
             self.txTable.AddTxes(txes);
             self.progressBar.SetProgress(100, "transactions loaded");
             self.txes = txes;
@@ -502,10 +502,10 @@ AnalyzeBox.prototype.StartAnalyze = function(){
                 var maxLedger = self.txes[0].ledger;
                 var lTime = Util.toTimestamp(self.txes[0].date);
                 self.accMgr.GetRpBalanceInLedger(self.address, minLedger, function (result, addrBal) {
-                    if (result === Consts.RESULT.SUCCESS) {
+                    if (result === Common.RESULT.SUCC) {
                         var minBal = addrBal;
                         self.accMgr.GetRpBalanceInLedger(self.address, maxLedger, function (result, addrBal) {
-                            if (result === Consts.RESULT.SUCCESS) {
+                            if (result === Common.RESULT.SUCC) {
                                 var maxBal = addrBal;
                                 self.balanceChangeBox.PaintData(minBal, bTime, maxBal, lTime);
                             }
@@ -522,6 +522,7 @@ AnalyzeBox.prototype.StartAnalyze = function(){
     });
 };
 
+/*
 AnalyzeBox.prototype.SellBuyAnalyze = function(){
     var self = this;
     var baseIOU = $(self.sellbuyIouSelectors[0]).val();
@@ -573,6 +574,7 @@ AnalyzeBox.prototype.SellBuyAnalyze = function(){
     $(strongs[4]).text(benefits.toFixed(3) + data.refCurrency);
     $(strongs[5]).text(amount.toFixed(3) + data.baseCurrency);
 }
+*/
 
 function BalanceChangeBox(root){
     this.root = root;
@@ -598,7 +600,7 @@ function BalanceChangeBox(root){
             verticalAlignment : "bottom",
             horizontalAlignment : "center"
         },
-        palette : Consts.BLACKGREE_PALETTE,
+        palette : Consts.BLACKGREEN_PALETTE,
         rotated : true
     });
 };
@@ -613,12 +615,15 @@ BalanceChangeBox.prototype.PaintData = function(balBefore, bTime, balLater, lTim
         process[iou].label = iou;
         process[iou].before = balBefore.balances[i].Value();
     };
-    for(i in balLater.balances){
-        var iou = balLater.balances[i].Currency() + balLater.balances[i].Issuer();
-        if(!process[iou]) process[iou] = {}
-        process[iou].label = iou;
-        process[iou].after = balLater.balances[i].Value();
-    };
+    if(balLater){
+        for(i in balLater.balances){
+            var iou = balLater.balances[i].Currency() + balLater.balances[i].Issuer();
+            if(!process[iou]) process[iou] = {}
+            process[iou].label = iou;
+            process[iou].after = balLater.balances[i].Value();
+        };
+    }
+
 
     for(key in process){
         if(process.hasOwnProperty(key)){
@@ -628,7 +633,7 @@ BalanceChangeBox.prototype.PaintData = function(balBefore, bTime, balLater, lTim
         }
     }
 
-    $(self.root).height(80 * data.length);
+    $(self.chart).height(70 * data.length);
     var Chart = $(self.chart).dxChart("instance");
     Chart.option({
         dataSource : data,
@@ -638,6 +643,46 @@ BalanceChangeBox.prototype.PaintData = function(balBefore, bTime, balLater, lTim
         ]
     });
 };
+
+BalanceChangeBox.prototype.PaintPageData = function(balPageBefore, bTime, balPageLater, lTime){
+    var self = this;
+    var data = [];
+    var process = {};
+    for(i in balPageBefore.balancesPage()){
+        var iou = balPageBefore.balancesPage()[i].currency + balPageBefore.balancesPage()[i].Issuer();
+        if(!process[iou]) process[iou] = {}
+        process[iou].label = iou;
+        process[iou].before = balPageBefore.balancesPage()[i].value();
+    };
+    if(balPageLater){
+        for(i in balPageLater.balancesPage()){
+            var iou = balPageLater.balancesPage()[i].currency + balPageLater.balancesPage()[i].Issuer();
+            if(!process[iou]) process[iou] = {}
+            process[iou].label = iou;
+            process[iou].after = balPageLater.balancesPage()[i].value();
+        };
+    }
+
+
+    for(key in process){
+        if(process.hasOwnProperty(key)){
+            if(!process[key].before) process[key].before = 0;
+            if(!process[key].after) process[key].after = 0;
+            data.push(process[key]);
+        }
+    }
+
+    $(self.chart).height(70 * data.length);
+    var Chart = $(self.chart).dxChart("instance");
+    Chart.option({
+        dataSource : data,
+        series : [
+            {valueField : 'before', name : Util.formatDate(bTime,'MM/dd/yyyy hh:mm:ss')},
+            {valueField : 'after', name : Util.formatDate(lTime, 'MM/dd/yyyy hh:mm:ss')}
+        ]
+    });
+};
+
 BalanceChangeBox.prototype.Clear = function(){
     var self = this;
     var Chart = $(self.chart).dxChart("instance");
@@ -722,7 +767,7 @@ function SellBuyBox(root){
                 size : 14
             }
         },
-        palette : Consts.BLACKGREE_PALETTE
+        palette : Consts.BLACKGREEN_PALETTE
     });
 };
 SellBuyBox.prototype.SetData = function(data){
@@ -793,51 +838,15 @@ SellBuyBox.prototype.PaintData = function(){
     }
 }
 
-function BalancePanel(){
-};
-
-BalancePanel.Init = function(ele){
-    var root = $("<div />", {
-        class : "row"
-    });
-    $(ele).append(root);
-};
-
-BalancePanel.PaintBalances = function(ele, balances){
-    var root = $(ele).find("div.row");
-    $(root).empty();
-    for(i in balances){
-        $(root).append(BalancePanel.PaintBalance(balances[i]));
-    }
-};
-
-BalancePanel.PaintBalance = function(balance){
+function BalancePanel(root, data){
     var div = $("<div />", {
-        class : "pricingtable col-md-3"
+        class : "row",
+        "data-bind" : "template: {name:'balance-template', data: $root}"
     });
-    div.append(BalancePanel.assembleTop(balance));
-    var inner = $("<div />", {
-        class : "pure-white-background"
-    });
-    inner.append(BalancePanel.assembleIssuer(balance));
-    inner.append("<hr />");
-    inner.append(BalancePanel.assembleBalance(balance));
-    div.append(inner);
-    return div;
-};
-
-BalancePanel.assembleTop = function(line){
-    return '<div class="pricingtable-top"><div class="currency">' + line.Currency() + '</div></div>';
-};
-
-BalancePanel.assembleIssuer = function(line){
-    var gateway = Consts.GetGatewayNick(line.Issuer());
-    return '<div class="pure-white-background"><p>' + gateway + '</p></div>';
-};
-
-BalancePanel.assembleBalance = function(line){
-    return '<div class="balance pure-white-background">' + line.Value().toFixed(2) + '</div>'
-};
+    $(root).append(div);
+    this.root = div;
+    ko.applyBindings(data, this.root[0]);
+}
 
 function OfferPanel(){
 
@@ -855,4 +864,5 @@ OfferPanel.ShowTx = function(root, offers){
     $(root).html(tableHtml);
     var table = new RippleTable(root);
     table.AddOffers(offers);
-}
+};
+

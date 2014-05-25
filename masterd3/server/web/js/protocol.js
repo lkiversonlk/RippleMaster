@@ -18,12 +18,18 @@ function Balance(json){
             this.currency = json.currency;
             this.issuer = json.issuer;
             this.value = new Number(json.value);
+            if(json.mastercost){
+                this.mastercost = json.mastercost;
+            }
         }else{
             /* line */
             this.currency = json.currency;
             this.value = new Number(json.balance);
             this.issuer = json.account;
             this.limit = json.limit;
+            if(json.mastercost){
+                this.mastercost = json.mastercost;
+            }
         }
     }
 };
@@ -55,6 +61,14 @@ Balance.prototype = {
 
     SetIssuer : function(issuer){
         this.issuer = issuer;
+    },
+
+    MasterCost : function(){
+        return this.mastercost;
+    },
+
+    SetMasterCost : function(mastercost){
+        this.mastercost = mastercost;
     }
 }
 function Offer(sell, want){
@@ -93,10 +107,10 @@ Address.prototype = {
 function Common(){};
 Common.RESULT = {
     SUCC : 0,
-    FAIL_NETWORK : 1,
-    FAIL_MESSAGE : 2,
-    FAIL_ACCOUNT : 3,
-    FAIL_LOGIN : 4,
+    FAIL_NETWORKERROR : 1,
+    FAIL_MESSAGEFORMAT : 2,
+    FAIL_ACCOUNTNOTLOADED : 3,
+    FAIL_LOGINFIRST : 4,
     FAIL : 5
 };
 
@@ -105,21 +119,24 @@ Common.RP_SERVERS = [
         domain : "s1.ripple.com",
         port : 443,
         secure : true
-    }
-    /*
+    },
     {
         domain : "s-west.ripple.com",
         port : 443,
         secure : true
     },
-    */
-    /*
     {
         domain : "s-east.ripple.com",
         port : 443,
         secure : true
-    }*/
+    }
 ];
+
+Common.SERVER_MESSAGE_TYPE = {
+    LEDGER_CLOSED : "ledgerClosed",
+    RESPONSE : "response",
+    PATH_FIND : "path_find"
+};
 
 function Transaction(){
     this.type = null;

@@ -39,6 +39,16 @@ Util.formatDate = function(date, format){
     return format;
 }
 
+Util.deposeIOU = function(iou){
+    var currency = iou.substr(0,3);
+    var issuer = iou.substr(3);
+    return {currency : currency, issuer : issuer};
+};
+
+Util.composeIOU = function(currency, issuer){
+    return currency + issuer;
+}
+
 if(typeof exports !== "undefined"){
     exports.Util = Util;
 }

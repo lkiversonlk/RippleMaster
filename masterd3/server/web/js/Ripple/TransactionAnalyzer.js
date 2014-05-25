@@ -27,20 +27,20 @@ TransactionAnalyzer.prototype = {
                 case Transaction.Type.Send:
                     if(transaction.cost){
                         ret.push(transaction);
-                        logger.log(Log.DEBUG_LEVEL, " send " + transaction.cost.Value() + " " + transaction.cost.Currency() + " to " + transaction.dest);
+                        logger.log(Log.DEBUG_LEVEL, transaction.date + " send " + transaction.cost.Value() + " " + transaction.cost.Currency() + " to " + transaction.dest);
                     }else{
                     }
                     break;
                 case Transaction.Type.Receive:
                     if(transaction.amount){
                         ret.push(transaction);
-                        logger.log(Log.DEBUG_LEVEL, " receive " + transaction.amount.Value() + " " + transaction.amount.Currency() + " from " + transaction.host);
+                        logger.log(Log.DEBUG_LEVEL, transaction.date + " receive " + transaction.amount.Value() + " " + transaction.amount.Currency() + " from " + transaction.host);
                     }else{
                     }
                     break;
                 case Transaction.Type.Trade :
                     if(transaction.cost && transaction.amount){
-                        logger.log(Log.DEBUG_LEVEL, " trade " + transaction.cost.Value() + " " + transaction.cost.Currency() + " to " + transaction.amount.Value() + " " + transaction.amount.Currency());
+                        logger.log(Log.DEBUG_LEVEL, transaction.date + " trade " + transaction.cost.Value() + " " + transaction.cost.Currency() + " to " + transaction.amount.Value() + " " + transaction.amount.Currency());
                         ret.push(transaction);
                     }else{
                     }
@@ -169,9 +169,9 @@ TransactionAnalyzer.prototype = {
                                 var xrpCost = current.Value() - previous.Value() + transaction.fee.Value();
                                 if(Math.abs(xrpCost) > 0.0001){
                                     if(xrpCost > 0){
-                                        transaction.amount = new Balance(xrpCost);
+                                        transaction.amount = new Balance(1000000 * xrpCost);
                                     }else{
-                                        transaction.cost = new Balance(-1 * xrpCost);
+                                        transaction.cost = new Balance(-1 * 1000000 * xrpCost);
                                     }
                                 }
                             }else{

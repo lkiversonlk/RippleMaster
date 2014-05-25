@@ -57,14 +57,14 @@ RippleTable.prototype = {
             var content;
             switch (tx.type){
                 case Transaction.Type.Send:
-                    content=tx.cost.Value().toFixed(2) + tx.cost.Currency() + " to " + Consts.GetGatewayNick(tx.dest);
+                    content=tx.cost.Value().toFixed(2) + tx.cost.Currency() + " to " + tx.dest;
                     break;
                 case Transaction.Type.Trade:
                     content = tx.cost.Value().toFixed(2) + tx.cost.Currency() + " for " + tx.amount.Value().toFixed(2) + tx.amount.Currency() + " rate :" + (tx.amount.Value()/tx.cost.Value()).toFixed(2);
 
                     break;
                 case Transaction.Type.Receive:
-                    content=tx.amount.Value().toFixed(2) + tx.amount.Currency() + " from " + Consts.GetGatewayNick(tx.host);
+                    content=tx.amount.Value().toFixed(2) + tx.amount.Currency() + " from " + tx.host;
                     break;
                 default :
                     return null;
@@ -76,5 +76,13 @@ RippleTable.prototype = {
             var tx = Txes[i];
             self.AddRow(txRow(tx));
         })
+    },
+
+    RemoveTopRow : function(){
+        var self = this;
+        var rows = $(self._root).find("table tbody tr");
+        if(rows.length > 0){
+            self._table.removeRow(rows[0]);
+        }
     }
 }

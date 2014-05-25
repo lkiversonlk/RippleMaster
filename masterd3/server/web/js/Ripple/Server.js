@@ -88,10 +88,10 @@ Server.prototype.SendMessage = function(msg, callback){
     if(this._ws){
         try{
             this._ws.send(message);
-            callback(Consts.RESULT.SUCCESS);
+            callback(Common.RESULT.SUCC);
         }catch (e) {
             this._logger.log(Log.WORK_LEVEL, "fail to send message");
-            callback(Consts.RESULT.FAIL);
+            callback(Common.RESULT.FAIL);
         }
     }
 }

@@ -61,20 +61,14 @@ app.get("/", function(req, res){
     if(req.user){
         res.sendfile("./main/ripplemaster.html");
     }else{
-        res.redirect("/index.html");
+        res.redirect("/login.html");
     }
 });
 
+
 app.post('/login',
-    passport.authenticate('local'),
-    function(req,res){
-        if(req.user){
-            res.sendfile("./main/ripplemaster.html");
-        }else{
-            res.redirect("/index.html");
-        }
-    }
-);
+    passport.authenticate('local', { successRedirect: '/',
+        failureRedirect: '/login' }));
 
 function verify(ip, chanllenge, response, callback){
     var data = {
@@ -120,17 +114,6 @@ function verify(ip, chanllenge, response, callback){
     request.end();
 }
 
-app.get('/login',
-    passport.authenticate('local'),
-    function(req,res){
-        if(req.user){
-            res.sendfile("./main/ripplemaster.html");
-        }else{
-            res.redirect("/index.html");
-        }
-    }
-);
-
 app.post('/register', function(req, res) {
     var account = req.body.account;
     var password = req.body.password;
@@ -138,7 +121,7 @@ app.post('/register', function(req, res) {
     host.InitAccount(account, password, email, function(result){
         if(result === Common.RESULT.SUCC){
             req.login(account, function(err){
-                res.sendfile("./main/ripplemaster.html");
+                res.redirect("/");
             });
         }else{
             res.redirect("/signup.html");
@@ -225,24 +208,7 @@ app.get("/addressinfo", function(req, res){
         })
     }
 });
-/*
 
-
-app.get("/signup", function(req, res){
-    res.sendfile('./html/signup.html');
-});
-*/
-
-/*
-app.get('/ripplemaster', function(req, res){
-    console.log(req.user);
-    if(req.user){
-        res.sendfile('./html/ripplemaster.html');
-    }else{
-        res.redirect('/');
-    }
-})
-*/
 host.Work(function(){
     app.listen(80);
 });

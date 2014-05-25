@@ -55,7 +55,7 @@ RippleRequest.AccountRequest = function(type, account, options, callback){
     RippleRequest.Logger.log(Log.DebugLevel, "find " + type + " of account: " + account);
     var request = new RippleRequest(type, function(result, msg){
         RippleRequest.Logger.log(Log.DEBUG_LEVEL, JSON.stringify(msg));
-        if(result !== Consts.RESULT.SUCCESS){
+        if(result !== Common.RESULT.SUCC){
             RippleRequest.Logger.log(Log.DEBUG_LEVEL, type + " request failed, error " + msg);
             callback(result, msg);
         }else{
@@ -100,7 +100,7 @@ RippleRequest.AccountRequest = function(type, account, options, callback){
                         marker : msg.result.marker
                     }
             };
-            callback(Consts.RESULT.SUCCESS, ret);
+            callback(Common.RESULT.SUCC, ret);
         }
     });
     request.message.account = account;

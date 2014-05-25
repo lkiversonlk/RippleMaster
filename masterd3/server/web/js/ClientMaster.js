@@ -2,7 +2,6 @@ function ClientMaster(){
     var self = this;
     self.initializeComponents();
     self.initializeBindings();
-    self.SetState(Consts.STATE.OFFLINE);
 };
 
 ClientMaster.prototype = {
@@ -18,10 +17,10 @@ ClientMaster.prototype = {
                     var ret = new Address(addrBalance.address);
                     ret.SetBalance(addrBalance.balances);
                     ret.SetOffers(addrBalance.offers);
-                    callback(Consts.RESULT.SUCCESS, ret);
+                    callback(Common.RESULT.SUCC, ret);
                 },
                 error : function(){
-                    callback(Consts.RESULT.FAIL);
+                    callback(Common.RESULT.FAIL);
                 }
             }
         )
@@ -38,22 +37,13 @@ ClientMaster.prototype = {
                     var ret = new Address(addrBalance.address);
                     ret.SetBalance(addrBalance.balances);
                     ret.SetOffers(addrBalance.offers);
-                    callback(Consts.RESULT.SUCCESS, ret);
+                    callback(Common.RESULT.SUCC, ret);
                 },
                 error : function(){
-                    callback(Consts.RESULT.FAIL);
+                    callback(Common.RESULT.FAIL);
                 }
             }
         )
-    },
-
-    SetState : function(state){
-        this._state = state;
-        $(this).trigger(Consts.EVENT.STATE_CHANGE);
-    },
-
-    State : function(){
-        return this._state;
     },
 
     Start : function(callback){
@@ -61,8 +51,7 @@ ClientMaster.prototype = {
         var netConfig = Consts.DefaultNetConfig;
         self._rippleServer.Connect(netConfig, function(result, msg){
             switch (result){
-                case Consts.RESULT.SUCCESS:
-                    self.SetState(Consts.STATE.ONLINE);
+                case Common.RESULT.SUCC:
                     if(callback){
                         callback();
                     }
@@ -78,9 +67,7 @@ ClientMaster.prototype = {
      */
     ConsultTransactions: function(address, marker, callback){
         var self = this;
-        if(self.State() === Consts.STATE.OFFLINE){
-            callback(Consts.RESULT.FAIL_NETWORKERROR);
-        }
+
         var options = {
             ledger_index_min:-1,
             ledger_index_max:-1,
@@ -94,16 +81,16 @@ ClientMaster.prototype = {
             address,
             options,
             function(result, data){
-                if(result === Consts.RESULT.SUCCESS){
+                if(result === Common.RESULT.SUCC){
                     if(data.marker){
                         var marker = data.marker;
-                        var goOn = callback(Consts.RESULT.SUCCESS, marker, data.transactions);
+                        var goOn = callback(Common.RESULT.SUCC, marker, data.transactions);
                         if(goOn){
                             self.ConsultTransactions(address, marker, callback);
                         }else{
                         }
                     }else{
-                        callback(Consts.RESULT.SUCCESS, null, data.transactions);
+                        callback(Common.RESULT.SUCC, null, data.transactions);
                     }
                 }else{
                     callback(result);
@@ -115,9 +102,6 @@ ClientMaster.prototype = {
 
     LoadAllTransactions : function(address, size, marker, callback){
         var self = this;
-        if(self.State() === Consts.STATE.OFFLINE){
-            callback(Consts.RESULT.FAIL_NETWORKERROR);
-        }
         var options = {
             ledger_index_min:-1,
             ledger_index_max:-1,
@@ -131,15 +115,15 @@ ClientMaster.prototype = {
             address,
             options,
             function(result, data){
-                if(result === Consts.RESULT.SUCCESS){
+                if(result === Common.RESULT.SUCC){
                     if(data.marker){
-                        var goOn = callback(Consts.RESULT.SUCCESS, true, data.transactions);
+                        var goOn = callback(Common.RESULT.SUCC, true, data.transactions);
                         if(goOn){
                             self.LoadAllTransactions(address, size, data.marker, callback);
                         }else{
                         }
                     }else{
-                        callback(Consts.RESULT.SUCCESS, false, data.transactions);
+                        callback(Common.RESULT.SUCC, false, data.transactions);
                     }
                 }else{
                     callback(result);
