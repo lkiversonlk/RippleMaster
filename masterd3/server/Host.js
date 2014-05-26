@@ -1,4 +1,4 @@
-var db = require('./DB/db').db;
+var DB = require('./DB/db').DB;
 var Account = require('./DB/model').Account;
 var AccountTx = require('./DB/model').AccountTx;
 var RippleMaster = require("./Ripple/RippleMaster").RippleMaster;
@@ -10,13 +10,13 @@ function Host(options){
     var self = this;
     self.options = options;
     self.running = false;
-    self.db = new db(self.options.db, null, null);
+    self.db = new DB(self.options.db, null, null);
     self.rpMaster = new RippleMaster();
 };
 
 Host.prototype.Work = function(callback){
     var self = this;
-    self.db.start(self.options.debugging);
+    self.db.Start(self.options.debugging);
     self.rpMaster.on(RippleMaster.EVENT.ST, function(){
         self.running = (self.rpMaster.state == RippleMaster.STATE.ON);
     });
@@ -82,71 +82,89 @@ Host.prototype.InitRippleTx = function(account, callback){
     });
 };
 
-Host.prototype.InitAccount = function(account, password, email, callback){
+Host.prototype.InitLocalAccount = function(name, password, email, callback){
     var self = this;
-    Account.findOne({name : account}, function(err, doc){
-        if(err){
+
+    var cipher = crypto.createCipher('aes-256-cbc', self.options.dbKey);
+    var crypted = cipher.update(password, 'utf-8', 'hex');
+    crypted += cipher.final('hex');
+
+    self.db.RegisterLocalAccount(name, crypted, email, function(result){
+        switch (result){
+            case DB.RESULT.SUCC:
+                callback(Common.RESULT.SUCC);
+                break;
+            case DB.RESULT.FAIL_EXIST:
+                callback(Common.RESULT.FAIL_ACCEXISTS);
+                break;
+            default :
+                callback(Common.RESULT.FAIL);
+                break;
+        }
+    });
+};
+
+Host.prototype.LoginLocalAccount = function(name, password, callback){
+    var self = this;
+    self.db.FindLocalAccount(name, function(result, account){
+        if(result !== DB.RESULT.SUCC){
             callback(Common.RESULT.FAIL);
-        }else if(doc){
-            callback(Common.RESULT.FAIL_ACCOUNT);
         }else{
             var cipher = crypto.createCipher('aes-256-cbc', self.options.dbKey);
             var crypted = cipher.update(password, 'utf-8', 'hex');
             crypted += cipher.final('hex');
 
-            var save = new Account({
-                name : account,
-                password : crypted,
-                email : email,
-                rippleAddress : []
-            });
-            save.save();
-            callback(Common.RESULT.SUCC);
-        }
-    })
-}
-
-Host.prototype.LoginAccount = function(account, password, callback){
-    var self = this;
-    Account.findOne({name : account}, function(err, doc){
-        if(err){
-            callback(Common.RESULT.FAIL);
-        }else if(doc){
-            var correct = doc.password;
-            var cipher = crypto.createCipher('aes-256-cbc', self.options.dbKey);
-            var crypted = cipher.update(password, 'utf-8', 'hex');
-            crypted += cipher.final('hex');
+            var correct = account.password;
 
             if(correct == crypted){
                 callback(Common.RESULT.SUCC);
             }else{
-                callback(Common.RESULT.FAIL_ACCOUNT);
+                callback(Common.RESULT.FAIL_LOGINFIRST);
             }
-        }else{
-            callback(Common.RESULT.FAIL_ACCOUNT);
         }
-    })
-}
+    });
+};
+
+Host.prototype.CreateOrUpdateOAuthAccount = function(id, type, name, email, callback){
+    var self = this;
+    self.db.UpdateOAuthAccount(id, type, name, email, function(result){
+        switch (result){
+            case DB.RESULT.SUCC:
+                callback(Common.RESULT.SUCC);
+                break;
+            default :
+                callback(Common.RESULT.FAIL);
+                break;
+        }
+    });
+};
+
+Host.prototype.FindAccount = function(type, unique, callback){
+    var self = this;
+    if(type === DB.localType){
+        self.db.FindLocalAccount(unique, function(result, account){
+            if(result === DB.RESULT.SUCC){
+                callback(Common.RESULT.SUCC, account);
+            }else{
+                callback(Common.RESULT.FAIL);
+            }
+        });
+    }else{
+        self.db.FindOAuthAccount(unique, type, function(result, account){
+            if(result === DB.RESULT.SUCC){
+                callback(Common.RESULT.SUCC, account);
+            }else{
+                callback(Common.RESULT.FAIL);
+            }
+        });
+    }
+};
 
 Host.prototype.AddressInfo = function(address, ledger, callback){
     this.rpMaster.AddressInfo(address, ledger, callback);
 };
 
-Host.prototype.AccountInfo = function(account, callback){
-    var self = this;
-    Account.findOne({name : account}, function(err, doc){
-        if(err){
-            callback(Common.RESULT.FAIL);
-        }else if(doc){
-            var ret = doc.toObject();
-            delete ret['password'];
-            callback(Common.RESULT.SUCC, ret);
-        }else{
-            callback(Common.RESULT.FAIL_ACCOUNT);
-        }
-    })
-};
-
+/*
 Host.prototype.UpdateAccountInfo = function(accountInfo, callback){
     var self = this;
     Account.findOne({name : accountInfo.name}, function(err, doc){
@@ -166,47 +184,18 @@ Host.prototype.UpdateAccountInfo = function(accountInfo, callback){
         }
     })
 };
+*/
 
 Host.prototype.RpStatus = function(callback){
-    var ret = {};
-    Account.count({}, function(err, count){
-        if(err){
-            callback(Common.RESULT.FAIL);
-        }else{
-            ret['users'] = count;
+    this.db.AccountCount(function(result, ret){
+        if(ret === DB.RESULT.SUCC){
             callback(Common.RESULT.SUCC, ret);
+        }else{
+            callback(Common.RESULT.FAIL);
         }
-    })
+    });
 };
 
-Host.prototype.FindOrCreateOAuthAccount = function(identifier, profile, callback){
-    var self = this;
-    var id = profile.provider + ":" + profile.id;
-    Account.findOne({id:id}, function(err, doc){
-        if(err){
-            callback(Common.RESULT.FAIL);
-        }else if(doc){
-            var ret = doc.toObject();
-            callback(Common.RESULT.SUCC, ret);
-        }else{
-            //create
-            var email = null;
-            if(profile.emails && profile.emails.length > 0){
-                email = profile.emails[0];
-            }
-            var account = new Account({
-                name:profile.displayName,
-                id:id,
-                email:email,
-                rippleAddress:[]
-            });
-
-            account.save();
-            callback(Common.RESULT.SUCC, account);
-        }
-    })
-
-}
 /*
  Host.prototype.UpdateAccountTx = function(account, callback){
  var self = this;

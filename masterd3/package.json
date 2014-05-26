@@ -7,10 +7,8 @@
 		"express":"3.x",
 		"passport":"*",
 		"passport-local":"*",
-        "passport-google":"*",
+        "passport-google-oauth":"*",
 		"connect-flash":"*",
-        "mongoose":"*",
-        "log":"*"
-
+        "mongoose":"*"
     }
 }

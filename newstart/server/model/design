@@ -1,2 +1,0 @@
-Account [Name, Password, Email,[RippleAddress, NickName, type<gateway, watch>], language]
-AccountTx [Name, [Type, cost, costCurrency, costIssuer, gain, gainCurrency, gainIssuer, time, ledgernumber, ledgersequence]]

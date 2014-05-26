@@ -1,7 +1,7 @@
 var express = require('express');
 var passport = require('passport')
     ,LocalStrategy = require('passport-local').Strategy
-    ,GoogleStrategy = require('passport-google').Strategy;
+    ,GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 var flash = require('connect-flash');
 var Host = require("./Host").Host;
@@ -30,7 +30,7 @@ passport.use(new LocalStrategy
             passwordField:'password'
         },
         function(user, passwd, done){
-            host.LoginAccount(user, passwd, function(result){
+            host.LoginLocalAccount(user, passwd, function(result){
                 if(result === Common.RESULT.SUCC){
                     return done(null, user);
                 }else{
@@ -42,13 +42,16 @@ passport.use(new LocalStrategy
 );
 
 passport.use(new GoogleStrategy({
-    returnURL: "http://www.ripplemaster.net/auth/google/return",
-    realm: "http://www.ripplemaster.net"
+    clientID : '726839628263-npo0nhne7nl7hbi8h6knrsgfojipa4tq.apps.googleusercontent.com',
+    clientSecret : 'cabYu_aiqgjRUkXht1l22-t7',
+    callbackURL : "http://www.ripplemaster.net/oauth2callback"
     },
-    function(identifier, profile, done){
-        host.FindOrCreateOAuthAccount(identifier, profile, function(result, account){
+    function(accessToken, refreshToken, profile, done){
+        var email = null;
+        if(profile.emails.length > 0) email = profile.emails[0].value;
+        host.CreateOrUpdateOAuthAccount(profile.id, profile.provider, profile.displayName, email, function(result){
             if(result === Common.RESULT.SUCC){
-                done(null, account.name);
+                done(null, profile.displayName);
             }else{
                 done(null, false, {message : 'fail'});
             }
@@ -85,7 +88,7 @@ app.get("/", function(req, res){
 
 app.post('/login',
     passport.authenticate('local', { successRedirect: '/',
-        failureRedirect: '/login' }));
+        failureRedirect: '/login.html' }));
 
 function verify(ip, chanllenge, response, callback){
     var data = {
@@ -135,7 +138,7 @@ app.post('/register', function(req, res) {
     var account = req.body.account;
     var password = req.body.password;
     var email = req.body.email;
-    host.InitAccount(account, password, email, function(result){
+    host.InitLocalAccount(account, password, email, function(result){
         if(result === Common.RESULT.SUCC){
             req.login(account, function(err){
                 res.redirect("/");
@@ -170,7 +173,7 @@ app.get("/rpstatus", function(req, res){
     }
 });
 
-app.get('/masteraccount', function(req, res){
+app.get('/accountinfo', function(req, res){
     if(req.user){
         var user = req.user;
         host.AccountInfo(user, function(result, account){
@@ -227,11 +230,11 @@ app.get("/addressinfo", function(req, res){
 });
 
 //google login
-app.get('/auth/google', passport.authenticate('google'));
-app.get('/auth/google/return', passport.authenticate('google', {
-    successRedirect:'/',
-    failureRedirect:'/login.html'
-}));
+app.get('/auth/google',passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/userinfo.email'] }),function(req, res){});
+
+app.get('/oauth2callback', passport.authenticate('google', {successRedirect:'/',failureRedirect:'/login.html'}));
+
+
 
 host.Work(function(){
     app.listen(80);

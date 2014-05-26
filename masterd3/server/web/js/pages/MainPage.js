@@ -1,14 +1,63 @@
-function MainPage(clientMaster, callback){
+function MainPage(clientMaster){
     var self = this;
     self.accMgr = new AccMgr(clientMaster);
-    self.clientMaster = clientMaster;
     self.account = null;
     self.initPage();
     self.initBinding();
-    self.init(callback);
+    self.init();
 }
 
 MainPage.prototype = {
+    initPage : function(){
+        var self = this;
+        $(".selectpicker").selectpicker();
+    },
+    initBinding : function() {
+        var self = this;
+        $("#logout").click(function () {
+            location.href = "/logout";
+        });
+
+        /*
+        $(self.accMgr).on(AccMgr.EVENT.ACC_INFO, function (event, account) {
+            self.updateAccountName(account.name);
+            self.updateAccountPanel(account);
+            self.updateTradePanel(account);
+            self.updateConfigurePanel(account);
+        });
+
+        $("#add-rippleaddress-ok").click(function () {
+            var addressPanelAccountInput = $("#addRippleAccountPanel input");
+            var address = $(addressPanelAccountInput[0]).val();
+            var nickname = $(addressPanelAccountInput[1]).val();
+            self.accMgr.AddRpAddress(address, nickname);
+            $("#addRippleAccountPanel").modal('hide');
+        });
+
+        $("#set-gatewayname-ok").click(function () {
+            var setGatewayNicksInput = $("#setGatewayNickname input");
+            var address = $(setGatewayNicksInput[0]).val();
+            var nickname = $(setGatewayNicksInput[1]).val();
+            self.accMgr.AddGtNick(address, nickname);
+            $("#setGatewayNickname").modal('hide');
+        });
+
+        //$(self.clientMaster).bind(ClientMaster.EVENT.STATE_CHANGE, self.updateeNetStat.bind(self));
+        */
+    },
+    init : function(){
+        var self = this;
+        self.accMgr.RpStatus(function(status){
+            var lis = $("#RpStatus").find('ul li');
+            var userCnt = $(lis[0]).find("strong");
+            $(userCnt).text(status.users);
+        });
+        self.master = new Master($("#rpMaster"), self.accMgr);
+        self.accMgr.GetAccInfo(function(result, accInfo){
+
+        });
+    },
+    /*
     updateAccountPanel : function(acc){
         var addresses = acc.rippleAddress;
         var self = this;
@@ -74,60 +123,9 @@ MainPage.prototype = {
         gtSe.exit().remove();
     },
 
+    */
     updateAccountName : function(name){
         $("#account-title-text").text(name);
         $("#configure-account").text(name);
-    },
-
-    initBinding : function() {
-        var self = this;
-        $("#logout").click(function () {
-            location.href = "/logout";
-        });
-
-        $(self.accMgr).on(AccMgr.EVENT.ACC_INFO, function (event, account) {
-            self.updateAccountName(account.name);
-            self.updateAccountPanel(account);
-            self.updateTradePanel(account);
-            self.updateConfigurePanel(account);
-        });
-
-        $("#add-rippleaddress-ok").click(function () {
-            var addressPanelAccountInput = $("#addRippleAccountPanel input");
-            var address = $(addressPanelAccountInput[0]).val();
-            var nickname = $(addressPanelAccountInput[1]).val();
-            self.accMgr.AddRpAddress(address, nickname);
-            $("#addRippleAccountPanel").modal('hide');
-        });
-
-        $("#set-gatewayname-ok").click(function () {
-            var setGatewayNicksInput = $("#setGatewayNickname input");
-            var address = $(setGatewayNicksInput[0]).val();
-            var nickname = $(setGatewayNicksInput[1]).val();
-            self.accMgr.AddGtNick(address, nickname);
-            $("#setGatewayNickname").modal('hide');
-        });
-
-        //$(self.clientMaster).bind(ClientMaster.EVENT.STATE_CHANGE, self.updateeNetStat.bind(self));
-    },
-
-    init : function(callback){
-        var self = this;
-        self.accMgr.RpStatus(function(status){
-            var lis = $("#RpStatus").find('ul li');
-            var userCnt = $(lis[0]).find("strong");
-            $(userCnt).text(status.users);
-        });
-        self.master = new Master($("#rpMaster"), self.accMgr);
-        self.accMgr.GetAccInfo(callback);
-    },
-
-    initPage : function(){
-        var self = this;
-        $(".selectpicker").selectpicker();
-    },
-
-    postMasterAccountAndSettings : function(){
-
     }
 };

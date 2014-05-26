@@ -1,0 +1,241 @@
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (malloc) failed to allocate 12288 bytes for committing reserved memory.
+# Possible reasons:
+#   The system is out of physical RAM or swap space
+#   In 32 bit mode, the process size limit was hit
+# Possible solutions:
+#   Reduce memory load on the system
+#   Increase physical memory or swap space
+#   Check if swap backing store is full
+#   Use 64 bit Java on a 64 bit OS
+#   Decrease Java heap size (-Xmx/-Xms)
+#   Decrease number of Java threads
+#   Decrease Java thread stack sizes (-Xss)
+#   Set larger code cache with -XX:ReservedCodeCacheSize=
+# This output file may be truncated or incomplete.
+#
+#  Out of Memory Error (os_linux.cpp:2769), pid=2993, tid=140505743083264
+#
+# JRE version: OpenJDK Runtime Environment (7.0_51-b31) (build 1.7.0_51-b31)
+# Java VM: OpenJDK 64-Bit Server VM (24.51-b03 mixed mode linux-amd64 compressed oops)
+# Failed to write core dump. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007fca781bc000):  JavaThread "JobScheduler FJ pool 0/4" daemon [_thread_new, id=33953, stack(0x00007fca0ad7c000,0x00007fca0ae7d000)]
+
+Stack: [0x00007fca0ad7c000,0x00007fca0ae7d000],  sp=0x00007fca0ae7bbe0,  free space=1022k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [libjvm.so+0x917a35]  VMError::report_and_die()+0x175
+V  [libjvm.so+0x468134]  report_vm_out_of_memory(char const*, int, unsigned long, char const*)+0x74
+V  [libjvm.so+0x79a17b]  os::pd_commit_memory(char*, unsigned long, bool)+0xdb
+V  [libjvm.so+0x794f2f]  os::commit_memory(char*, unsigned long, bool)+0x1f
+V  [libjvm.so+0x79b350]  os::pd_create_stack_guard_pages(char*, unsigned long)+0x70
+V  [libjvm.so+0x8cf786]  JavaThread::run()+0x76
+V  [libjvm.so+0x7973e2]  java_start(Thread*)+0xf2
+
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+=>0x00007fca781bc000 JavaThread "JobScheduler FJ pool 0/4" daemon [_thread_new, id=33953, stack(0x00007fca0ad7c000,0x00007fca0ae7d000)]
+  0x00007fca6c002800 JavaThread "JobScheduler FJ pool 0/4" daemon [_thread_blocked, id=33950, stack(0x00007fca201ff000,0x00007fca20300000)]
+  0x00007fca240f0800 JavaThread "ApplicationImpl pooled thread 30" daemon [_thread_blocked, id=33931, stack(0x00007fca0aa79000,0x00007fca0ab7a000)]
+  0x00007fca9004d000 JavaThread "process reaper" daemon [_thread_in_native, id=6601, stack(0x00007fca44046000,0x00007fca4407f000)]
+  0x00007fca04ead800 JavaThread "ApplicationImpl pooled thread 16" [_thread_blocked, id=4056, stack(0x00007fca0af7e000,0x00007fca0b07f000)]
+  0x00007fca24116800 JavaThread "ApplicationImpl pooled thread 15" daemon [_thread_blocked, id=3971, stack(0x00007fca0b07f000,0x00007fca0b180000)]
+  0x00007fca04eb2000 JavaThread "ApplicationImpl pooled thread 14" [_thread_in_vm, id=3970, stack(0x00007fca0ac7b000,0x00007fca0ad7c000)]
+  0x00007fca7c00c000 JavaThread "Change List Updater" daemon [_thread_blocked, id=3105, stack(0x00007fca0ae7d000,0x00007fca0af7e000)]
+  0x00007fca04e6f000 JavaThread "ApplicationImpl pooled thread 9" [_thread_blocked, id=3101, stack(0x00007fca0b281000,0x00007fca0b382000)]
+  0x00007fca04e48800 JavaThread "FS Synchronizer" daemon [_thread_blocked, id=3099, stack(0x00007fca0b382000,0x00007fca0b483000)]
+  0x00007fca1c061000 JavaThread "ApplicationImpl pooled thread 7" [_thread_blocked, id=3094, stack(0x00007fca0b483000,0x00007fca0b584000)]
+  0x00007fca1c05c800 JavaThread "ApplicationImpl pooled thread 6" [_thread_blocked, id=3093, stack(0x00007fca0b584000,0x00007fca0b685000)]
+  0x00007fca4825e000 JavaThread "Encoding detection thread" daemon [_thread_blocked, id=3092, stack(0x00007fca0b685000,0x00007fca0b786000)]
+  0x00007fca4814a800 JavaThread "Document commit thread" [_thread_blocked, id=3058, stack(0x00007fca0b786000,0x00007fca0b887000)]
+  0x00007fca04bc2000 JavaThread "ApplicationImpl pooled thread 5" [_thread_blocked, id=3054, stack(0x00007fca20300000,0x00007fca20401000)]
+  0x00007fca04bb5000 JavaThread "RefCountingStorage write content helper" [_thread_blocked, id=3053, stack(0x00007fca20401000,0x00007fca20502000)]
+  0x00007fca04b9b000 JavaThread "timer-int" daemon [_thread_blocked, id=3052, stack(0x00007fca20502000,0x00007fca20603000)]
+  0x00007fca04b98000 JavaThread "Animations" daemon [_thread_blocked, id=3051, stack(0x00007fca20603000,0x00007fca20704000)]
+  0x00007fca04b94800 JavaThread "TimerQueue" daemon [_thread_blocked, id=3050, stack(0x00007fca20704000,0x00007fca20805000)]
+  0x00007fca2414c000 JavaThread "Alarm pool(shared)" daemon [_thread_blocked, id=3049, stack(0x00007fca20805000,0x00007fca20906000)]
+  0x00007fca045b3800 JavaThread "FocusManager timer" daemon [_thread_blocked, id=3047, stack(0x00007fca20e44000,0x00007fca20f45000)]
+  0x00007fca0458c800 JavaThread "Shared SimpleTimer" daemon [_thread_blocked, id=3046, stack(0x00007fca20f45000,0x00007fca21046000)]
+  0x00007fca044a3800 JavaThread "Performance watcher" [_thread_in_vm, id=3045, stack(0x00007fca22594000,0x00007fca22695000)]
+  0x00007fca044a3000 JavaThread "ApplicationImpl pooled thread 3" [_thread_blocked, id=3044, stack(0x00007fca22695000,0x00007fca22796000)]
+  0x00007fca04368000 JavaThread "StoreRefreshStatusThread" daemon [_thread_blocked, id=3043, stack(0x00007fca22838000,0x00007fca22939000)]
+  0x00007fca04366000 JavaThread "ApplicationImpl pooled thread 2" [_thread_blocked, id=3042, stack(0x00007fca22939000,0x00007fca22a3a000)]
+  0x00007fca04364800 JavaThread "ApplicationImpl pooled thread 1" [_thread_blocked, id=3041, stack(0x00007fca22a3a000,0x00007fca22b3b000)]
+  0x00007fca04360000 JavaThread "ApplicationImpl pooled thread 0" [_thread_blocked, id=3040, stack(0x00007fca22b3b000,0x00007fca22c3c000)]
+  0x00007fca04357800 JavaThread "Flushing thread" daemon [_thread_blocked, id=3038, stack(0x00007fca22c3c000,0x00007fca22d3d000)]
+  0x00007fca0425b800 JavaThread "timed reference disposer" daemon [_thread_blocked, id=3037, stack(0x00007fca22f5e000,0x00007fca2305f000)]
+  0x00007fca04018000 JavaThread "Periodic tasks thread" daemon [_thread_blocked, id=3028, stack(0x00007fca445e3000,0x00007fca446e4000)]
+  0x00007fca24178000 JavaThread "AWT-EventQueue-0 8.0.2#WS-135.831, eap:false" [_thread_blocked, id=3027, stack(0x00007fca236bf000,0x00007fca237c0000)]
+  0x00007fca24176800 JavaThread "AWT-Shutdown" [_thread_blocked, id=3026, stack(0x00007fca237c0000,0x00007fca238c1000)]
+  0x00007fca24174800 JavaThread "SocketListenerThread" [_thread_blocked, id=3025, stack(0x00007fca238c1000,0x00007fca239c2000)]
+  0x00007fca24170800 JavaThread "SocketListenerThread" [_thread_blocked, id=3024, stack(0x00007fca239c2000,0x00007fca23ac3000)]
+  0x00007fca2416f800 JavaThread "MessageDeliveryThread" [_thread_blocked, id=3023, stack(0x00007fca23ac3000,0x00007fca23bc4000)]
+  0x00007fca2408a800 JavaThread "Lock thread" [_thread_in_native, id=3021, stack(0x00007fca444a9000,0x00007fca445aa000)]
+  0x00007fca24088000 JavaThread "process reaper" daemon [_thread_in_native, id=3020, stack(0x00007fca445aa000,0x00007fca445e3000)]
+  0x00007fcaa000b000 JavaThread "DestroyJavaVM" [_thread_blocked, id=2994, stack(0x00007fcaa651f000,0x00007fcaa6620000)]
+  0x00007fcaa04c0800 JavaThread "AWT-XAWT" daemon [_thread_blocked, id=3011, stack(0x00007fca4e585000,0x00007fca4e686000)]
+  0x00007fcaa049a800 JavaThread "Java2D Disposer" daemon [_thread_blocked, id=3010, stack(0x00007fca7403f000,0x00007fca74140000)]
+  0x00007fcaa02cf000 JavaThread "timed reference disposer" daemon [_thread_blocked, id=3009, stack(0x00007fca7761b000,0x00007fca7771c000)]
+  0x00007fcaa01a4800 JavaThread "Service Thread" daemon [_thread_blocked, id=3007, stack(0x00007fca7781d000,0x00007fca7791e000)]
+  0x00007fcaa01a1800 JavaThread "C2 CompilerThread1" daemon [_thread_in_vm, id=3006, stack(0x00007fca88043000,0x00007fca88144000)]
+  0x00007fcaa019f800 JavaThread "C2 CompilerThread0" daemon [_thread_blocked, id=3005, stack(0x00007fca88144000,0x00007fca88245000)]
+  0x00007fcaa019d000 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=3004, stack(0x00007fca88245000,0x00007fca88346000)]
+  0x00007fcaa019b000 JavaThread "Surrogate Locker Thread (Concurrent GC)" daemon [_thread_blocked, id=3003, stack(0x00007fca88346000,0x00007fca88447000)]
+  0x00007fcaa0178000 JavaThread "Finalizer" daemon [_thread_blocked, id=3002, stack(0x00007fca88447000,0x00007fca88548000)]
+  0x00007fcaa0176000 JavaThread "Reference Handler" daemon [_thread_blocked, id=3001, stack(0x00007fca88548000,0x00007fca88649000)]
+
+Other Threads:
+  0x00007fcaa0171800 VMThread [stack: 0x00007fca88649000,0x00007fca8874a000] [id=3000]
+  0x00007fcaa01af800 WatcherThread [stack: 0x00007fca7771c000,0x00007fca7781d000] [id=3008]
+
+VM state:synchronizing (normal execution)
+
+VM Mutex/Monitor currently owned by a thread:  ([mutex/lock_event])
+[0x00007fcaa00074c0] Safepoint_lock - owner thread: 0x00007fcaa0171800
+[0x00007fcaa0007540] Threads_lock - owner thread: 0x00007fcaa0171800
+
+Heap
+ par new generation   total 39296K, used 28457K [0x00000000bb400000, 0x00000000bdea0000, 0x00000000cae00000)
+  eden space 34944K,  80% used [0x00000000bb400000, 0x00000000bcf71a30, 0x00000000bd620000)
+  from space 4352K,   8% used [0x00000000bda60000, 0x00000000bdab8db8, 0x00000000bdea0000)
+  to   space 4352K,   0% used [0x00000000bd620000, 0x00000000bd620000, 0x00000000bda60000)
+ concurrent mark-sweep generation total 130808K, used 104473K [0x00000000cae00000, 0x00000000d2dbe000, 0x00000000ea200000)
+ concurrent-mark-sweep perm gen total 176788K, used 106546K [0x00000000ea200000, 0x00000000f4ea5000, 0x0000000100000000)
+
+Card table byte_map: [0x00007fca989d1000,0x00007fca98bf8000] byte_map_base: 0x00007fca983f7000
+
+Polling page: 0x00007fcaa6639000
+
+Code Cache  [0x00007fca9917c000, 0x00007fca9a34c000, 0x00007fca9f17c000)
+ total_blobs=5735 nmethods=4902 adapters=782 free_code_cache=80323Kb largest_free_block=82024896
+
+Compilation events (10 events):
+Event: 29161.932 Thread 0x00007fcaa01a1800 5773             io.netty.util.concurrent.ScheduledFutureTask::executor (5 bytes)
+Event: 29517.384 Thread 0x00007fcaa01a1800 nmethod 5773 0x00007fca9a2c3050 code [0x00007fca9a2c3180, 0x00007fca9a2c31d8]
+Event: 29790.437 Thread 0x00007fcaa01a1800 5774             io.netty.util.concurrent.DefaultPromise::isCancelled (8 bytes)
+Event: 30595.839 Thread 0x00007fcaa01a1800 nmethod 5774 0x00007fca9a31db10 code [0x00007fca9a31dc60, 0x00007fca9a31dcf8]
+Event: 30662.167 Thread 0x00007fcaa01a1800 5775             io.netty.util.concurrent.DefaultPromise::isCancelled0 (26 bytes)
+Event: 31434.636 Thread 0x00007fcaa01a1800 nmethod 5775 0x00007fca9a324190 code [0x00007fca9a3242e0, 0x00007fca9a324358]
+Event: 31675.064 Thread 0x00007fcaa01a1800 5776             io.netty.util.internal.PlatformDependent::getObjectVolatile (6 bytes)
+Event: 31865.338 Thread 0x00007fcaa01a1800 nmethod 5776 0x00007fca99313a50 code [0x00007fca99313b80, 0x00007fca99313bb8]
+Event: 33702.130 Thread 0x00007fcaa019f800 nmethod 5771 0x00007fca9a3379d0 code [0x00007fca9a337fe0, 0x00007fca9a33d598]
+Event: 34808.172 Thread 0x00007fcaa01a1800 5777             org.jdom.output.XMLOutputter::escapeAttributeEntities (408 bytes)
+
+GC Heap History (10 events):
+Event: 22744.475 GC heap before
+{Heap before GC invocations=326 (full 5):
+ par new generation   total 39296K, used 35497K [0x00000000bb400000, 0x00000000bdea0000, 0x00000000cae00000)
+  eden space 34944K, 100% used [0x00000000bb400000, 0x00000000bd620000, 0x00000000bd620000)
+  from space 4352K,  12% used [0x00000000bd620000, 0x00000000bd6aa5d0, 0x00000000bda60000)
+  to   space 4352K,   0% used [0x00000000bda60000, 0x00000000bda60000, 0x00000000bdea0000)
+ concurrent mark-sweep generation total 130808K, used 104324K [0x00000000cae00000, 0x00000000d2dbe000, 0x00000000ea200000)
+ concurrent-mark-sweep perm gen total 176788K, used 106542K [0x00000000ea200000, 0x00000000f4ea5000, 0x0000000100000000)
+Event: 23197.913 GC heap after
+Heap after GC invocations=327 (full 5):
+ par new generation   total 39296K, used 604K [0x00000000bb400000, 0x00000000bdea0000, 0x00000000cae00000)
+  eden space 34944K,   0% used [0x00000000bb400000, 0x00000000bb400000, 0x00000000bd620000)
+  from space 4352K,  13% used [0x00000000bda60000, 0x00000000bdaf7298, 0x00000000bdea0000)
+  to   space 4352K,   0% used [0x00000000bd620000, 0x00000000bd620000, 0x00000000bda60000)
+ concurrent mark-sweep generation total 130808K, used 104337K [0x00000000cae00000, 0x00000000d2dbe000, 0x00000000ea200000)
+ concurrent-mark-sweep perm gen total 176788K, used 106542K [0x00000000ea200000, 0x00000000f4ea5000, 0x0000000100000000)
+}
+Event: 26064.712 GC heap before
+{Heap before GC invocations=327 (full 5):
+ par new generation   total 39296K, used 35548K [0x00000000bb400000, 0x00000000bdea0000, 0x00000000cae00000)
+  eden space 34944K, 100% used [0x00000000bb400000, 0x00000000bd620000, 0x00000000bd620000)
+  from space 4352K,  13% used [0x00000000bda60000, 0x00000000bdaf7298, 0x00000000bdea0000)
+  to   space 4352K,   0% used [0x00000000bd620000, 0x00000000bd620000, 0x00000000bda60000)
+ concurrent mark-sweep generation total 130808K, used 104337K [0x00000000cae00000, 0x00000000d2dbe000, 0x00000000ea200000)
+ concurrent-mark-sweep perm gen total 176788K, used 106543K [0x00000000ea200000, 0x00000000f4ea5000, 0x0000000100000000)
+Event: 26098.972 GC heap after
+Heap after GC invocations=328 (full 5):
+ par new generation   total 39296K, used 666K [0x00000000bb400000, 0x00000000bdea0000, 0x00000000cae00000)
+  eden space 34944K,   0% used [0x00000000bb400000, 0x00000000bb400000, 0x00000000bd620000)
+  from space 4352K,  15% used [0x00000000bd620000, 0x00000000bd6c6928, 0x00000000bda60000)
+  to   space 4352K,   0% used [0x00000000bda60000, 0x00000000bda60000, 0x00000000bdea0000)
+ concurrent mark-sweep generation total 130808K, used 104351K [0x00000000cae00000, 0x00000000d2dbe000, 0x00000000ea200000)
+ concurrent-mark-sweep perm gen total 176788K, used 106543K [0x00000000ea200000, 0x00000000f4ea5000, 0x0000000100000000)
+}
+Event: 31787.438 GC heap before
+{Heap before GC invocations=328 (full 5):
+ par new generation   total 39296K, used 35610K [0x00000000bb400000, 0x00000000bdea0000, 0x00000000cae00000)
+  eden space 34944K, 100% used [0x00000000bb400000, 0x00000000bd620000, 0x00000000bd620000)
+  from space 4352K,  15% used [0x00000000bd620000, 0x00000000bd6c6928, 0x00000000bda60000)
+  to   space 4352K,   0% used [0x00000000bda60000, 0x00000000bda60000, 0x00000000bdea0000)
+ concurrent mark-sweep generation total 130808K, used 104351K [0x00000000cae00000, 0x00000000d2dbe000, 0x00000000ea200000)
+ concurrent-mark-sweep perm gen total 176788K, used 106545K [0x00000000ea200000, 0x00000000f4ea5000, 0x0000000100000000)
+Event: 31834.144 GC heap after
+Heap after GC invocations=329 (full 5):
+ par new generation   total 39296K, used 900K [0x00000000bb400000, 0x00000000bdea0000, 0x00000000cae00000)
+  eden space 34944K,   0% used [0x00000000bb400000, 0x00000000bb400000, 0x00000000bd620000)
+  from space 4352K,  20% used [0x00000000bda60000, 0x00000000bdb413d8, 0x00000000bdea0000)
+  to   space 4352K,   0% used [0x00000000bd620000, 0x00000000bd620000, 0x00000000bda60000)
+ concurrent mark-sweep generation total 130808K, used 104364K [0x00000000cae00000, 0x00000000d2dbe000, 0x00000000ea200000)
+ concurrent-mark-sweep perm gen total 176788K, used 106545K [0x00000000ea200000, 0x00000000f4ea5000, 0x0000000100000000)
+}
+Event: 33501.221 GC heap before
+{Heap before GC invocations=329 (full 5):
+ par new generation   total 39296K, used 36633K [0x00000000bb400000, 0x00000000bdea0000, 0x00000000cae00000)
+  eden space 34944K, 100% used [0x00000000bb400000, 0x00000000bd620000, 0x00000000bd620000)
+  from space 4352K,  38% used [0x00000000bda60000, 0x00000000bdc06408, 0x00000000bdea0000)
+  to   space 4352K,   0% used [0x00000000bd620000, 0x00000000bd620000, 0x00000000bda60000)
+ concurrent mark-sweep generation total 130808K, used 104364K [0x00000000cae00000, 0x00000000d2dbe000, 0x00000000ea200000)
+ concurrent-mark-sweep perm gen total 176788K, used 106546K [0x00000000ea200000, 0x00000000f4ea5000, 0x0000000100000000)
+Event: 33582.315 GC heap after
+Heap after GC invocations=330 (full 5):
+ par new generation   total 39296K, used 485K [0x00000000bb400000, 0x00000000bdea0000, 0x00000000cae00000)
+  eden space 34944K,   0% used [0x00000000bb400000, 0x00000000bb400000, 0x00000000bd620000)
+  from space 4352K,  11% used [0x00000000bd620000, 0x00000000bd6996e0, 0x00000000bda60000)
+  to   space 4352K,   0% used [0x00000000bda60000, 0x00000000bda60000, 0x00000000bdea0000)
+ concurrent mark-sweep generation total 130808K, used 104397K [0x00000000cae00000, 0x00000000d2dbe000, 0x00000000ea200000)
+ concurrent-mark-sweep perm gen total 176788K, used 106546K [0x00000000ea200000, 0x00000000f4ea5000, 0x0000000100000000)
+}
+Event: 33607.073 GC heap before
+{Heap before GC invocations=330 (full 5):
+ par new generation   total 39296K, used 850K [0x00000000bb400000, 0x00000000bdea0000, 0x00000000cae00000)
+  eden space 34944K,   1% used [0x00000000bb400000, 0x00000000bb45b1e8, 0x00000000bd620000)
+  from space 4352K,  11% used [0x00000000bd620000, 0x00000000bd6996e0, 0x00000000bda60000)
+  to   space 4352K,   0% used [0x00000000bda60000, 0x00000000bda60000, 0x00000000bdea0000)
+ concurrent mark-sweep generation total 130808K, used 104397K [0x00000000cae00000, 0x00000000d2dbe000, 0x00000000ea200000)
+ concurrent-mark-sweep perm gen total 176788K, used 106546K [0x00000000ea200000, 0x00000000f4ea5000, 0x0000000100000000)
+Event: 33673.151 GC heap after
+Heap after GC invocations=331 (full 5):
+ par new generation   total 39296K, used 355K [0x00000000bb400000, 0x00000000bdea0000, 0x00000000cae00000)
+  eden space 34944K,   0% used [0x00000000bb400000, 0x00000000bb400000, 0x00000000bd620000)
+  from space 4352K,   8% used [0x00000000bda60000, 0x00000000bdab8db8, 0x00000000bdea0000)
+  to   space 4352K,   0% used [0x00000000bd620000, 0x00000000bd620000, 0x00000000bda60000)
+ concurrent mark-sweep generation total 130808K, used 104473K [0x00000000cae00000, 0x00000000d2dbe000, 0x00000000ea200000)
+ concurrent-mark-sweep perm gen total 176788K, used 106546K [0x00000000ea200000, 0x00000000f4ea5000, 0x0000000100000000)
+}
+
+Deoptimization events (10 events):
+Event: 2075.840 Thread 0x00007fca24178000 Uncommon trap: reason=array_check action=maybe_recompile pc=0x00007fca99cb1d70 method=java.util.TimSort.mergeLo(IIII)V @ 77
+Event: 2081.907 Thread 0x00007fca24178000 Uncommon trap: reason=array_check action=maybe_recompile pc=0x00007fca99cb1d70 method=java.util.TimSort.mergeLo(IIII)V @ 77
+Event: 2084.007 Thread 0x00007fca24178000 Uncommon trap: reason=array_check action=maybe_recompile pc=0x00007fca99cb1d70 method=java.util.TimSort.mergeLo(IIII)V @ 77
+Event: 2451.325 Thread 0x00007fca04eb1000 Uncommon trap: reason=null_check action=make_not_entrant pc=0x00007fca996cff40 method=java.util.concurrent.ThreadPoolExecutor.getTask()Ljava/lang/Runnable; @ 146
+Event: 3244.040 Thread 0x00007fca04eb2000 Uncommon trap: reason=null_check action=make_not_entrant pc=0x00007fca9a31571c method=io.netty.util.concurrent.SingleThreadEventExecutor.takeTask()Ljava/lang/Runnable; @ 56
+Event: 19116.916 Thread 0x00007fca04018000 Uncommon trap: reason=unloaded action=reinterpret pc=0x00007fca997116cc method=com.intellij.concurrency.JobScheduler$1.afterExecute(Ljava/lang/Runnable;Ljava/lang/Throwable;)V @ 35
+Event: 20018.070 Thread 0x00007fca04ead800 Uncommon trap: reason=unreached action=reinterpret pc=0x00007fca9a2dc3cc method=com.intellij.execution.process.AnsiEscapeDecoder.getCurrentOutputAttributes(Lcom/intellij/openapi/util/Key;)Lcom/intellij/openapi/util/Key; @ 4
+Event: 20052.550 Thread 0x00007fca04ead800 Uncommon trap: reason=unreached action=reinterpret pc=0x00007fca9a309710 method=com.jetbrains.nodejs.debug.NodeSlaveTracker$1.onTextAvailable(Lcom/intellij/execution/process/ProcessEvent;Lcom/intellij/openapi/util/Key;)V @ 4
+Event: 20098.813 Thread 0x00007fca04ead800 Uncommon trap: reason=unreached action=reinterpret pc=0x00007fca9a30284c method=com.intellij.execution.impl.ConsoleViewImpl.a(Lcom/intellij/execution/impl/ConsoleViewImpl$MyFlushRunnable;I)V @ 27
+Event: 32868.295 Thread 0x00007fca24178000 Uncommon trap: reason=unloaded action=reinterpret pc=0x00007fca99fcdac4 method=com.intellij.execution.filters.CompositeFilter.applyFilter(Ljava/lang/String;I)Lcom/intellij/execution/filters/Filter$Result; @ 160
+
+Internal exceptions (10 events):
+Event: 38708.740 Thread 0x00007fca24170800 Threw 0x00000000bcd42790 at /build/buildd/openjdk-7-7u51-2.4.6/build/openjdk/hotspot/src/share/vm/prims/jni.cpp:743
+Event: 38708.740 Thread 0x00007fca24174800 Threw 0x00000000bce43530 at /build/buildd/openjdk-7-7u51-2.4.6/build/openjdk/hotspot/src/share/vm/prims/jni.cpp:743
+Event: 38712.204 Thread 0x00007fca04eb2000 Threw 0x00000000bce90358 at /build/buildd/openjdk-7-7u51-2.4.6/build/openjdk/hotspot/src/share/vm/prims/jni.cpp:743
+Event: 38853.581 Thread 0x00007fca24174800 Threw 0x00000000bce437f0 at /build/buildd/openjdk-7-7u51-2.4.6/build/openjdk/hotspot/src/share/vm/prims/jni.cpp:743
+Event: 38853.581 Thread 0x00007fca24170800 Threw 0x00000000bcf299d0 at /build/buildd/openjdk-7-7u51-2.4.6/build/openjdk/hotspot/src/share/vm/prims/jni.cpp:743
+Event: 38853.581 Thread 0x00007fca04eb2000 Threw 0x00000000bce90520 at /build/buildd/openjdk-7-7u51-2.4.6/build/openjdk/hotspot/src/share/vm/prims/jni.cpp:743
+Event: 38880.207 Thread 0x00007fca04eb2000 Threw 0x00000000bcf444f8 at /build/buildd/openjdk-7-7u51-2.4.6/build/openjdk/hotspot/src/share/vm/prims/jni.cpp:743
+Event: 38887.388 Thread 0x00007fca24174800 Threw 0x00000000bcf63690 at /build/buildd/openjdk-7-7u51-2.4.6/build/openjdk/hotspot/src/share/vm/prims/jni.cpp:743
+Event: 38887.388 Thread 0x00007fca24170800 Threw 0x00000000bcf29c90 at /build/buildd/openjdk-7-7u51-2.4.6/build/openjdk/hotspot/src/share/vm/prims/jni.cpp:743
+Event: 38887.388 Thread 0x00007fca04eb2000 Threw 0x00000000bcf446c0 at /build/buildd/openjdk-7-7u51-2.4.6/build/openjdk/hotspot/src/share/vm/prims/jni.cpp:743
+
+Events (10 events):

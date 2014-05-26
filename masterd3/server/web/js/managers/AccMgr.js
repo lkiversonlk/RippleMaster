@@ -12,13 +12,13 @@
  */
 function AccMgr(ClMaster){
     this.rpMaster = ClMaster;
-    this.addressBalances = {};
+    this.accInfo = null;
     this.txes = {};
     this.mapper = {};
     var self = this;
     $(this).bind(AccMgr.EVENT.ACC_INFO, function(){
         self.mapper = {};
-        for(i in self.accInfo.rippleAddress){
+        for(var i in self.accInfo.rippleAddress){
             self.mapper[self.accInfo.rippleAddress[i].address] = self.accInfo.rippleAddress[i].nickname;
         }
         Consts.NickMapper = self.mapper;
@@ -257,107 +257,6 @@ AccMgr.prototype.ManualTxLoad = function(address, size, callback){
     this.rpMaster.LoadAllTransactions(address, size, null, callback);
 };
 
-function BalancePage(balance){
-    var self = this;
-    self.currency = balance.currency;
-    self.issuer = balance.issuer;
-    self.value = ko.observable(balance.value);
-    self.mastercostvalue = ko.observable();
-    self.mastercostcurrency = ko.observable();
-    self.mastercostissuer = ko.observable();
-    if(balance.mastercost){
-        self.mastercostvalue(balance.mastercost.value);
-        self.mastercostcurrency(balance.mastercost.currency);
-        self.mastercostissuer(balance.mastercost.issuer);
-    }
-    self.Issuer = ko.computed(function(){
-        return Consts.GetNick(self.issuer);
-    });
-
-    self.MasterCost = ko.computed(function(){
-        if(self.mastercostvalue()){
-            return self.mastercostvalue() + " " + self.mastercostcurrency() + " " + Consts.GetNick(self.mastercostissuer());
-        }else{
-            return "run RP Master to get cost";
-        }
-    });
-
-    self.Ratio = ko.computed({
-        read : function(){
-            return self.mastercostvalue();
-        },
-        write : function(value){
-            self.mastercostvalue(value);
-        }
-    })
-};
-
-BalancePage.prototype.Update = function(balance){
-    var self = this;
-    self.currency = balance.currency;
-    self.issuer = balance.issuer;
-    self.value(balance.value);
-    if(balance.mastercost){
-        self.mastercostvalue(balance.mastercost.value);
-        self.mastercostcurrency(balance.mastercost.currency);
-        self.mastercostissuer(balance.mastercost.issuer);
-    };
-}
-
-function AddressBalancePage(address){
-    var self = this;
-    self.balancesPage = ko.observableArray();
-    if(address){
-        this.address = address.address;
-        for(var i in address.balances){
-            self.balancesPage.push(new BalancePage(address.balances[i]));
-        }
-    }
-};
-
-AddressBalancePage.prototype.updateBalances = function(balances){
-    var self = this;
-    for(var i = 0; i < self.balancesPage().length ; i++){
-        var balancePage = self.balancesPage()[i];
-        var id = balancePage.currency + balancePage.issuer;
-        var found = false;
-        for(var j in balances){
-            var balance = balances[j];
-            var bid = balance.currency + balance.issuer;
-            if(id == bid){
-                found = true;
-                break;
-            }
-        }
-
-        if(found){
-            var balance = balances[j];
-            balances.splice(j, 1);
-            balancePage.Update(balance);
-        }else{
-            self.balancesPage.splice(i,1);
-            i--;
-        }
-    };
-
-    for(var j in balances){
-        self.balancesPage.push(new BalancePage(balances[j]));
-    }
-};
-
-AddressBalancePage.prototype.Update = function(address){
-    var self = this;
-    self.updateBalances(address.balances.slice(0));
-};
-
-function AddressPage(address, nickname){
-    var self = this;
-    self.address = Address.address;
-    self.nickname = ko.observable(nickname);
-    self.addressType = 0;
-    self.balancePages = ko.observableArray();
-    self.offers = [];
-};
 
 
 

@@ -7,12 +7,13 @@ var Account = new Schema({
     password : String,
     email : String,
     rippleAddress : [{address : String, nickname : String, addressType:Number}],
-    id : String
+    id : String,
+    type : String
 });
 
 
 var AccountTx = new Schema({
-    name : String,
+    address : String,
     transactions : [{
         transactiontype : Number,
         host : String,

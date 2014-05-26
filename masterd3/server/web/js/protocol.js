@@ -107,11 +107,12 @@ Address.prototype = {
 function Common(){};
 Common.RESULT = {
     SUCC : 0,
-    FAIL_NETWORKERROR : 1,
-    FAIL_MESSAGEFORMAT : 2,
-    FAIL_ACCOUNTNOTLOADED : 3,
-    FAIL_LOGINFIRST : 4,
-    FAIL : 5
+    FAIL : 2,
+    FAIL_NETWORKERROR : 3,
+    FAIL_MESSAGEFORMAT : 4,
+    FAIL_ACCOUNTNOTLOADED : 5,
+    FAIL_LOGINFIRST : 6,
+    FAIL_ACCEXISTS : 7
 };
 
 Common.RP_SERVERS = [

@@ -464,8 +464,7 @@
         Log.SetLevel(Log.DEBUG_LEVEL);
         var client = new ClientMaster();
         client.Start(function(){
-            var mainPage = new MainPage(client, function(){
-            });
+            var mainPage = new MainPage(client);
         })
     });
 </script>

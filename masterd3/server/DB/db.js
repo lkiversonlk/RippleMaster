@@ -4,34 +4,98 @@ var model = require("./model.js");
 var Account = model.Account;
 var AccountTx = model.AccountTx;
 
-db.RESULT = {
-    SUCC : 0,
-    FAIL : 1,
-    NOT_EXISIT : 2,
-    EXIST : 3
-}
-
-function db(connectionStr, username, passwd) {
+function DB(connectionStr, username, passwd) {
     var self = this;
 
-    self.start = function(debugging){
+    self.Start = function(debugging){
         mongoose.set('debug', debugging);
         mongoose.connect(connectionStr);
     };
 
-    self.matchAccount = function(account, password, callback){
-        Account.findOne({name : account, password : password}, function(err, doc){
+    self.FindLocalAccount = function(name, callback){
+        Account.findOne({name : name, type : DB.localType}, function(err, doc){
             if(err){
-                callback(db.RESULT.FAIL);
+                callback(DB.RESULT.FAIL);
             }else{
                 if(doc){
-                    callback(db.RESULT.SUCC, doc);
+                    callback(DB.RESULT.SUCC, doc);
                 }else{
-                    callback(db.RESULT.NOT_EXISIT);
+                    callback(DB.RESULT.FAIL_NOT_EXISIT);
                 }
             }
         });
     };
+
+    self.RegisterLocalAccount = function(name, passwd, email, callback){
+        self.FindLocalAccount(name, function(result, account){
+            if(result === DB.RESULT.FAIL_NOT_EXISIT){
+                var dbAccount = new Account({
+                    name:name,
+                    password:passwd,
+                    email: email,
+                    rippleAddress : [],
+                    type: DB.localType
+                });
+                dbAccount.save();
+                callback(DB.RESULT.SUCC);
+            }else if(result === DB.RESULT.SUCC){
+                callback(DB.RESULT.FAIL_EXIST);
+            }else{
+                callback(DB.RESULT.FAIL);
+            }
+        });
+    };
+
+    self.FindOAuthAccount = function(id, type, callback){
+        Account.findOne({id:id, type:type}, function(err, doc){
+            if(err){
+                callback(DB.RESULT.FAIL);
+            }else{
+                if(doc){
+                    callback(DB.RESULT.SUCC, doc);
+                }else{
+                    callback(DB.RESULT.FAIL_NOT_EXISIT);
+                }
+            }
+        });
+    };
+
+    self.UpdateOAuthAccount = function(id, type, name, email, callback){
+        self.FindOAuthAccount(id, type, function(result, account){
+            if(result === DB.RESULT.FAIL_NOT_EXISIT){
+                var dbAccount = new Account({
+                    id: id,
+                    type:type,
+                    name : name,
+                    email: email,
+                    rippleAddress : []
+                });
+                dbAccount.save();
+                callback(DB.RESULT.SUCC);
+            }else if(result === DB.RESULT.SUCC){
+                account.name = name;
+                account.email = email;
+                account.save();
+                callback(DB.RESULT.SUCC);
+            }else{
+                callback(DB.RESULT.FAIL);
+            }
+        });
+    };
+
+    self.AccountCount = function(callback){
+        var ret = {};
+        Account.count({}, function(err, count){
+            if(err){
+                callback(DB.RESULT.FAIL);
+            }else{
+                ret['users'] = count;
+                callback(DB.RESULT.SUCC, ret);
+            }
+        });
+    };
+
+    /*
     self.fetchTx = function(account, callback){
         AccountTx.findOne({name : account}, function(err, doc){
             if(err){
@@ -44,31 +108,20 @@ function db(connectionStr, username, passwd) {
                 }
             }
         })
-    };
-    self.registerAccount = function(account, passwd, email, lanuage, callback){
-        Account.findOne({name:account}, function(err, doc){
-            if(!err){
-                if(doc != null){
-                    callback(db.RESULT.EXIST);
-                }else{
-                    var dbAccount = new Account({
-                        name:account,
-                        password:passwd,
-                        email: email,
-                        rippleAddress : [],
-                        language : lanuage
-                    });
-                    dbAccount.save();
-                    callback(db.RESULT.SUCC, account);
-                }
-            }else{
-                callback(db.RESULT.FAIL);
-            }
-        })
-    };
-    self.stop = function(){
+    };*/
+
+    self.Stop = function(){
         mongoose.disconnect();
     };
 }
 
-exports.db = db;
+DB.localType = 'local';
+
+DB.RESULT = {
+    SUCC : 0,
+    FAIL : 1,
+    FAIL_NOT_EXISIT : 2,
+    FAIL_EXIST : 3
+}
+
+exports.DB = DB;

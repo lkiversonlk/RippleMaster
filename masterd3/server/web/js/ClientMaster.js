@@ -6,7 +6,7 @@ function ClientMaster(){
 
 ClientMaster.prototype = {
 
-    AddrBalance : function(address, callback){
+    AddrInfo : function(address, callback){
         $.ajax(
             {
                 url : "addressinfo",
@@ -47,17 +47,7 @@ ClientMaster.prototype = {
     },
 
     Start : function(callback){
-        var self = this;
-        var netConfig = Consts.DefaultNetConfig;
-        self._rippleServer.Connect(netConfig, function(result, msg){
-            switch (result){
-                case Common.RESULT.SUCC:
-                    if(callback){
-                        callback();
-                    }
-                    break;
-            }
-        });
+        callback();
     },
 
     /**
