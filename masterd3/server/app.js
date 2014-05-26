@@ -1,6 +1,8 @@
 var express = require('express');
 var passport = require('passport')
-    ,LocalStrategy = require('passport-local').Strategy;
+    ,LocalStrategy = require('passport-local').Strategy
+    ,GoogleStrategy = require('passport-google').Strategy;
+
 var flash = require('connect-flash');
 var Host = require("./Host").Host;
 var Log = require('log').log;
@@ -38,6 +40,21 @@ passport.use(new LocalStrategy
         }
     )
 );
+
+passport.use(new GoogleStrategy({
+    returnURL: "http://www.ripplemaster.net/auth/google/return",
+    realm: "http://www.ripplemaster.net"
+    },
+    function(identifier, profile, done){
+        host.FindOrCreateOAuthAccount(identifier, profile, function(result, account){
+            if(result === Common.RESULT.SUCC){
+                done(null, account.name);
+            }else{
+                done(null, false, {message : 'fail'});
+            }
+        })
+    }
+));
 
 passport.serializeUser(function(user, done) {
     done(null, user);
@@ -208,6 +225,13 @@ app.get("/addressinfo", function(req, res){
         })
     }
 });
+
+//google login
+app.get('/auth/google', passport.authenticate('google'));
+app.get('/auth/google/return', passport.authenticate('google', {
+    successRedirect:'/',
+    failureRedirect:'/login.html'
+}));
 
 host.Work(function(){
     app.listen(80);

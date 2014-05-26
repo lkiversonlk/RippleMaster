@@ -4,6 +4,10 @@
  * [address, addressType, nickname]
  * {address: [Address]}
  * {address: start, end, marker, txes[]}
+ *
+ * One Big Acc Manager
+ * AccMgr -> accInfo
+ *                  [address, addressType, nickname, statesInLedger,
  * @constructor
  */
 function AccMgr(ClMaster){
@@ -274,7 +278,7 @@ function BalancePage(balance){
         if(self.mastercostvalue()){
             return self.mastercostvalue() + " " + self.mastercostcurrency() + " " + Consts.GetNick(self.mastercostissuer());
         }else{
-            return "unknown cost";
+            return "run RP Master to get cost";
         }
     });
 
@@ -345,4 +349,15 @@ AddressBalancePage.prototype.Update = function(address){
     var self = this;
     self.updateBalances(address.balances.slice(0));
 };
+
+function AddressPage(address, nickname){
+    var self = this;
+    self.address = Address.address;
+    self.nickname = ko.observable(nickname);
+    self.addressType = 0;
+    self.balancePages = ko.observableArray();
+    self.offers = [];
+};
+
+
 

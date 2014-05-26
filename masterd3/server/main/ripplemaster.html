@@ -382,6 +382,50 @@
     <button class="btn btn-primary form-control" type="button">OK</button>
 </script>
 
+<script type="text/html" id="account-basic-template">
+    <!-- ko foreach: balancesPage -->
+    <div class="address-panel">
+        <div class="account-caption row" data-bind="text: nickname">
+            <a class="right cursor-pointer refresh">
+                <span class="glyphicon glyphicon-refresh"></span>
+            </a>
+        </div>
+        <div class="attr-st-gp">
+            <div class="row balance" data-bind="foreach: balancePages">
+                <div class="pricingtable col-md-3">
+                    <div class="pricingtable-top">
+                        <div class="currency" data-bind="text: currency"></div>
+                    </div>
+                    <div class="pure-white-background">
+                        <div>
+                            <p data-bind="text: Issuer"></p>
+                        </div>
+                        <hr>
+                        <div class="balance" data-bind="text: value"></div>
+                        <hr>
+                        <p data-bind="text: MasterCost"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="separator40"></div>
+            <div class="row offers" data-bind="foreach: offerPages">
+            </div>
+        </div>
+    </div>
+    <!-- /ko -->
+</script>
+
+<script type="text/html" id="account-trade-template">
+    <!-- ko foreach: balancesPage -->
+    <div class="address-panel">
+        <div class="account-caption row" data-bind="text: nickname">
+        </div>
+        <div class="attr-st-gp">
+        </div>
+    </div>
+    <!-- /ko -->
+</script>
+
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="lib/jquery/jquery.js"></script>
 <script src="lib/knockout/knockout.js"></script>

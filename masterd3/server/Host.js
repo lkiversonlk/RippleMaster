@@ -165,7 +165,7 @@ Host.prototype.UpdateAccountInfo = function(accountInfo, callback){
             callback(Common.RESULT.FAIL_ACCOUNT);
         }
     })
-}
+};
 
 Host.prototype.RpStatus = function(callback){
     var ret = {};
@@ -177,6 +177,35 @@ Host.prototype.RpStatus = function(callback){
             callback(Common.RESULT.SUCC, ret);
         }
     })
+};
+
+Host.prototype.FindOrCreateOAuthAccount = function(identifier, profile, callback){
+    var self = this;
+    var id = profile.provider + ":" + profile.id;
+    Account.findOne({id:id}, function(err, doc){
+        if(err){
+            callback(Common.RESULT.FAIL);
+        }else if(doc){
+            var ret = doc.toObject();
+            callback(Common.RESULT.SUCC, ret);
+        }else{
+            //create
+            var email = null;
+            if(profile.emails && profile.emails.length > 0){
+                email = profile.emails[0];
+            }
+            var account = new Account({
+                name:profile.displayName,
+                id:id,
+                email:email,
+                rippleAddress:[]
+            });
+
+            account.save();
+            callback(Common.RESULT.SUCC, account);
+        }
+    })
+
 }
 /*
  Host.prototype.UpdateAccountTx = function(account, callback){
