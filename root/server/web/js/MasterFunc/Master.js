@@ -5,6 +5,8 @@ function Master(root, accMgr){
     var self = this;
     self.control = $(root).find("div.toggle");
     self.accMgr = accMgr;
+
+    /*
     $(accMgr).on(AccMgr.EVENT.ACC_INFO, function(event, account){
         $(self.address).empty();
         var updateIOU = function(balances){
@@ -45,6 +47,7 @@ function Master(root, accMgr){
         })
     });
 
+    */
     $(self.currency).selectpicker();
     $(self.address).selectpicker();
 

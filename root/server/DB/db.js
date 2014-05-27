@@ -12,12 +12,30 @@ function DB(connectionStr, username, passwd) {
         mongoose.connect(connectionStr);
     };
 
-    self.FindLocalAccount = function(name, callback){
-        Account.findOne({name : name, type : DB.localType}, function(err, doc){
+    self.CreateAccount = function(searchOptions, createOptions, callback){
+        Account.findOne(searchOptions, function(err, doc){
             if(err){
                 callback(DB.RESULT.FAIL);
             }else{
                 if(doc){
+                    callback(DB.RESULT.FAIL_EXIST);
+                }else{
+                    var account = new Account(createOptions);
+                    account.save();
+                    callback(DB.RESULT.SUCC);
+                }
+            }
+        });
+    };
+
+    self.FindAccount = function(options, callback){
+        Account.findOne(options, function(err, doc){
+            if(err){
+                callback(DB.RESULT.FAIL);
+            }else{
+                if(doc){
+                    doc = doc.toObject();
+                    if(doc['password']) delete doc['password'];
                     callback(DB.RESULT.SUCC, doc);
                 }else{
                     callback(DB.RESULT.FAIL_NOT_EXISIT);
@@ -26,6 +44,49 @@ function DB(connectionStr, username, passwd) {
         });
     };
 
+    self.UpdateAccount = function(searchOptions, updateOptions, callback){
+        Account.findOne(searchOptions, function(err, doc){
+            if(err){
+                callback(DB.RESULT.FAIL);
+            }else{
+                if(doc){
+                    for(var k in updateOptions){
+                        if(updateOptions.hasOwnProperty(k)){
+                            doc[k] = updateOptions[k];
+                        }
+                    }
+                    doc.save();
+                    callback(DB.RESULT.SUCC);
+                }else{
+                    callback(DB.RESULT.FAIL_NOT_EXISIT);
+                }
+            }
+        });
+    };
+
+    self.UpdateOrCreateAccount = function(searchOptions, updateOptions, createOptions, callback){
+        Account.findOne(searchOptions, function(err, doc){
+            if(err){
+                callback(DB.RESULT.FAIL);
+            }else{
+                if(doc){
+                    for(var k in updateOptions){
+                        if(updateOptions.hasOwnProperty(k)){
+                            doc[k] = updateOptions[k];
+                        }
+                    }
+                    doc.save();
+                    callback(DB.RESULT.SUCC);
+                }else{
+                    var account = new Account(createOptions);
+                    account.save();
+                    callback(DB.RESULT.SUCC);
+                }
+            }
+        });
+    };
+
+    /*
     self.RegisterLocalAccount = function(name, passwd, email, callback){
         self.FindLocalAccount(name, function(result, account){
             if(result === DB.RESULT.FAIL_NOT_EXISIT){
@@ -37,7 +98,7 @@ function DB(connectionStr, username, passwd) {
                     type: DB.localType
                 });
                 dbAccount.save();
-                callback(DB.RESULT.SUCC);
+                callback(DB.RESULT.SUCC, DB.localType, name);
             }else if(result === DB.RESULT.SUCC){
                 callback(DB.RESULT.FAIL_EXIST);
             }else{
@@ -75,6 +136,7 @@ function DB(connectionStr, username, passwd) {
             }else if(result === DB.RESULT.SUCC){
                 account.name = name;
                 account.email = email;
+                account.type = type;
                 account.save();
                 callback(DB.RESULT.SUCC);
             }else{
@@ -82,7 +144,7 @@ function DB(connectionStr, username, passwd) {
             }
         });
     };
-
+    */
     self.AccountCount = function(callback){
         var ret = {};
         Account.count({}, function(err, count){
@@ -115,7 +177,8 @@ function DB(connectionStr, username, passwd) {
     };
 }
 
-DB.localType = 'local';
+DB.localType = 'l';
+DB.GoogleType = "g";
 
 DB.RESULT = {
     SUCC : 0,

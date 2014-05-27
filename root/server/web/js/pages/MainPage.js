@@ -1,7 +1,6 @@
 function MainPage(clientMaster){
     var self = this;
     self.accMgr = new AccMgr(clientMaster);
-    self.account = null;
     self.initPage();
     self.initBinding();
     self.init();
@@ -17,14 +16,13 @@ MainPage.prototype = {
         $("#logout").click(function () {
             location.href = "/logout";
         });
+        ko.applyBindings(self.accMgr.accInfo, $("#account-title-text")[0]);
+        ko.applyBindings(self.accMgr.accInfo, $("#account-content")[0]);
+        ko.applyBindings(self.accMgr.accInfo, $("#trade-content")[0]);
+        ko.applyBindings(self.accMgr.accInfo, $("#conf-rp")[0]);
+        ko.applyBindings(self.accMgr.accInfo, $("#conf-gt")[0]);
 
-        /*
-        $(self.accMgr).on(AccMgr.EVENT.ACC_INFO, function (event, account) {
-            self.updateAccountName(account.name);
-            self.updateAccountPanel(account);
-            self.updateTradePanel(account);
-            self.updateConfigurePanel(account);
-        });
+
 
         $("#add-rippleaddress-ok").click(function () {
             var addressPanelAccountInput = $("#addRippleAccountPanel input");
@@ -42,6 +40,16 @@ MainPage.prototype = {
             $("#setGatewayNickname").modal('hide');
         });
 
+        /*
+        $(self.accMgr).on(AccMgr.EVENT.ACC_INFO, function (event, account) {
+            self.updateAccountName(account.name);
+            self.updateAccountPanel(account);
+            self.updateTradePanel(account);
+            self.updateConfigurePanel(account);
+        });
+
+
+
         //$(self.clientMaster).bind(ClientMaster.EVENT.STATE_CHANGE, self.updateeNetStat.bind(self));
         */
     },
@@ -53,9 +61,7 @@ MainPage.prototype = {
             $(userCnt).text(status.users);
         });
         self.master = new Master($("#rpMaster"), self.accMgr);
-        self.accMgr.GetAccInfo(function(result, accInfo){
-
-        });
+        self.accMgr.Start();
     },
     /*
     updateAccountPanel : function(acc){

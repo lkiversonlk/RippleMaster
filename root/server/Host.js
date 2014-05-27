@@ -6,6 +6,11 @@ var Transaction = require("./Ripple/Share").Transaction;
 var Common = require("./Ripple/Share").Common;
 var crypto = require('crypto');
 
+var AccountType = {
+    Local : 'l',
+    Google : 'g'
+};
+
 function Host(options){
     var self = this;
     self.options = options;
@@ -86,13 +91,17 @@ Host.prototype.InitLocalAccount = function(name, password, email, callback){
     var self = this;
 
     var cipher = crypto.createCipher('aes-256-cbc', self.options.dbKey);
-    var crypted = cipher.update(password, 'utf-8', 'hex');
-    crypted += cipher.final('hex');
+    var encrypted = cipher.update(password, 'utf-8', 'hex');
+    encrypted += cipher.final('hex');
 
-    self.db.RegisterLocalAccount(name, crypted, email, function(result){
+    var searchOptions = {type : AccountType.Local, name : name};
+    var createOptions = {type : AccountType.Local, name : name, password:encrypted, email: email, rippleAddress : []};
+
+
+    self.db.CreateAccount(searchOptions, createOptions, function(result){
         switch (result){
             case DB.RESULT.SUCC:
-                callback(Common.RESULT.SUCC);
+                callback(Common.RESULT.SUCC, AccountType.Local, name);
                 break;
             case DB.RESULT.FAIL_EXIST:
                 callback(Common.RESULT.FAIL_ACCEXISTS);
@@ -106,31 +115,31 @@ Host.prototype.InitLocalAccount = function(name, password, email, callback){
 
 Host.prototype.LoginLocalAccount = function(name, password, callback){
     var self = this;
-    self.db.FindLocalAccount(name, function(result, account){
+
+    var cipher = crypto.createCipher('aes-256-cbc', self.options.dbKey);
+    var encrypted = cipher.update(password, 'utf-8', 'hex');
+    encrypted += cipher.final('hex');
+
+    var searchOptions = {type : AccountType.Local, name : name, password:encrypted};
+
+    self.db.FindAccount(searchOptions, function(result, account){
         if(result !== DB.RESULT.SUCC){
             callback(Common.RESULT.FAIL);
         }else{
-            var cipher = crypto.createCipher('aes-256-cbc', self.options.dbKey);
-            var crypted = cipher.update(password, 'utf-8', 'hex');
-            crypted += cipher.final('hex');
-
-            var correct = account.password;
-
-            if(correct == crypted){
-                callback(Common.RESULT.SUCC);
-            }else{
-                callback(Common.RESULT.FAIL_LOGINFIRST);
-            }
+            callback(Common.RESULT.SUCC, AccountType.Local, name);
         }
     });
 };
 
 Host.prototype.CreateOrUpdateOAuthAccount = function(id, type, name, email, callback){
     var self = this;
-    self.db.UpdateOAuthAccount(id, type, name, email, function(result){
+    var searchOptions = {type : AccountType.Google, id : id};
+    var updateOptions = {name : name, email : email};
+    var createOptions = {type : AccountType.Google, id : id, name : name, email : email};
+    self.db.UpdateOrCreateAccount(searchOptions, updateOptions, createOptions, function(result){
         switch (result){
             case DB.RESULT.SUCC:
-                callback(Common.RESULT.SUCC);
+                callback(Common.RESULT.SUCC, AccountType.Google, id);
                 break;
             default :
                 callback(Common.RESULT.FAIL);
@@ -141,8 +150,11 @@ Host.prototype.CreateOrUpdateOAuthAccount = function(id, type, name, email, call
 
 Host.prototype.FindAccount = function(type, unique, callback){
     var self = this;
+    var options = {type : type};
+
     if(type === DB.localType){
-        self.db.FindLocalAccount(unique, function(result, account){
+        options.name = unique;
+        self.db.FindAccount(options, function(result, account){
             if(result === DB.RESULT.SUCC){
                 callback(Common.RESULT.SUCC, account);
             }else{
@@ -150,7 +162,8 @@ Host.prototype.FindAccount = function(type, unique, callback){
             }
         });
     }else{
-        self.db.FindOAuthAccount(unique, type, function(result, account){
+        options.id = unique;
+        self.db.FindAccount(options, function(result, account){
             if(result === DB.RESULT.SUCC){
                 callback(Common.RESULT.SUCC, account);
             }else{

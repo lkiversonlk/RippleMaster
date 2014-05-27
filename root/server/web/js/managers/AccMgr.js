@@ -12,16 +12,13 @@
  */
 function AccMgr(ClMaster){
     this.rpMaster = ClMaster;
-    this.accInfo = null;
+    this.accInfo = new AccountPage(ClMaster);
     this.txes = {};
     this.mapper = {};
     var self = this;
     $(this).bind(AccMgr.EVENT.ACC_INFO, function(){
-        self.mapper = {};
-        for(var i in self.accInfo.rippleAddress){
-            self.mapper[self.accInfo.rippleAddress[i].address] = self.accInfo.rippleAddress[i].nickname;
-        }
-        Consts.NickMapper = self.mapper;
+        self.GetAllAddressInfo();
+        self.UpdateMapper();
     })
 };
 
@@ -31,27 +28,28 @@ AccMgr.EVENT = {
     ACC_OFF  : "acc_off"
 };
 
-AccMgr.prototype.GetAccInfo = function(callback){
+AccMgr.prototype.GetAccInfo = function(){
     var self = this;
     $.ajax(
         {
-            url : "masteraccount",
+            url : "accountinfo",
             type : "GET",
             dataType : "json",
             success : function(json){
-                self.accInfo = json;
-                var addresses = self.accInfo.rippleAddress.filter(function(d){return d.addressType == 0;});
-                for(var i in addresses){
-                    self.addressBalances[addresses[i].address] = new AddressBalancePage();
+                self.accInfo.AccountName(json.name);
+                for(var i in json.rippleAddress){
+                    var address = json.rippleAddress[i];
+                    if(address.addressType == 0){
+                        self.accInfo.WatchAddresses.push(new AddressPage(address.address, address.nickname));
+                    }else{
+                        self.accInfo.Gateways.push(new AddressPage(address.address, address.nickname));
+                    }
                 }
-                $(self).trigger(AccMgr.EVENT.ACC_INFO, self.accInfo);
-                callback(true);
-                self.GetRpBalance();
+                $(self).trigger(AccMgr.EVENT.ACC_INFO);
+                //self.GetRpBalance();
             },
 
             error : function(xhr, status, errThrown){
-                $(self).trigger(AccMgr.EVENT.ACC_INFO, null);
-                callback(false);
             }
         }
     )
@@ -65,64 +63,55 @@ AccMgr.prototype.SetAccInfo = function(accData){
 
 AccMgr.prototype.AddRpAddress = function(address, nickname){
     var self = this;
-    var addresses = self.accInfo.rippleAddress;
     var found = false;
-    for(i in addresses){
-        if(addresses[i].address == address){
+    for(var i in self.accInfo.WatchAddresses()){
+        if(self.accInfo.WatchAddresses()[i].address == address){
             found = true;
-            address[i].nickname = nickname;
+            self.accInfo.WatchAddresses()[i].Nickname(nickname);
         }
     }
     if(!found){
-        self.accInfo.rippleAddress.push({address : address, nickname : nickname, addressType:0});
+        self.accInfo.WatchAddresses.push(new AddressPage(address, nickname));
     }
-    self.PushSync();
+    //self.PushSync();
     $(self).trigger(AccMgr.EVENT.ACC_INFO, self.accInfo);
-    self.GetRpBalance();
+    //self.GetRpBalance();
 };
 
 AccMgr.prototype.AddGtNick = function(address, nickname){
     var self = this;
-    var addresses = self.accInfo.rippleAddress;
     var found = false;
-    for(i in addresses){
-        if(addresses[i].address == address){
+    for(var i in self.accInfo.Gateways()){
+        if(self.accInfo.Gateways()[i].address == address){
             found = true;
-            address[i].nickname = nickname;
+            self.accInfo.Gateways()[i].Nickname(nickname);
         }
     }
     if(!found){
-        self.accInfo.rippleAddress.push({address : address, nickname : nickname, addressType:1});
+        self.accInfo.Gateways.push(new AddressPage(address, nickname));
     }
-    self.PushSync();
+    //self.PushSync();
     $(self).trigger(AccMgr.EVENT.ACC_INFO, self.accInfo);
-    self.GetRpBalance();
+    //self.GetRpBalance();
 };
 
 AccMgr.prototype.RemoveRpAddress = function(address){
     var self = this;
     var remove = -1;
-    for(i in self.accInfo.rippleAddress){
-        if(self.accInfo.rippleAddress[i].address === address){
+    for(i in self.accInfo.WatchAddresses()){
+        if(self.accInfo.WatchAddresses()[i].address === address){
             remove = i;
         }
     }
-    if(remove != -1) self.accInfo.rippleAddress.splice(remove,1);
-    self.PushSync();
+    if(remove != -1) self.accInfo.WatchAddresses.splice(remove,1);
+    //self.PushSync();
     $(self).trigger(AccMgr.EVENT.ACC_INFO, self.accInfo);
-    self.GetRpBalance();
+    //self.GetRpBalance();
 };
 
-AccMgr.prototype.RemoveGateNick = function(address){
+AccMgr.prototype.GetAllAddressInfo = function(){
     var self = this;
-    for(i in self.accInfo.rippleAddress){
-        if(self.accInfo.rippleAddress[i].address === address){
-            self.accInfo.rippleAddress.splice(i,1);
-        }
-    }
-    self.PushSync();
-    $(self).trigger(AccMgr.EVENT.ACC_INFO, self.accInfo);
-    self.GetRpBalance();
+    self.accInfo.GetAllAddressInfo();
 };
 
 AccMgr.prototype.GetRpBalance = function(address, callback){
@@ -256,6 +245,24 @@ AccMgr.prototype.RpStatus = function(callback){
 AccMgr.prototype.ManualTxLoad = function(address, size, callback){
     this.rpMaster.LoadAllTransactions(address, size, null, callback);
 };
+
+AccMgr.prototype.Start = function(){
+    var self = this;
+    self.GetAccInfo();
+};
+
+AccMgr.prototype.UpdateMapper = function(){
+    var self = this;
+    self.mapper = {};
+    for(var i in self.accInfo.WatchAddresses()){
+        self.mapper[self.accInfo.WatchAddresses()[i].address] = self.accInfo.WatchAddresses()[i].Nickname();
+    }
+    for(var i in self.accInfo.Gateways()){
+        self.mapper[self.accInfo.Gateways()[i].address] = self.accInfo.Gateways()[i].Nickname();
+
+    }
+    Consts.NickMapper = self.mapper;
+}
 
 
 

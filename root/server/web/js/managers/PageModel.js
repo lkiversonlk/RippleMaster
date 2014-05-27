@@ -50,18 +50,18 @@ BalancePage.prototype.Update = function(balance){
 /* An address's data */
 function AddressPage(address, nickname){
     var self = this;
-    self.address = Address.address;
-    self.nickname = ko.observable(nickname);
+    self.address = address;
+    self.Nickname = ko.observable(nickname);
     self.addressType = 0;
-    self.balancePages = ko.observableArray();
-    self.offers = [];
+    self.BalancePages = ko.observableArray();
+    self.Offers = ko.observableArray();
 };
 
 
 AddressPage.prototype.updateBalances = function(balances){
     var self = this;
-    for(var i = 0; i < self.balancePages().length ; i++){
-        var balancePage = self.balancePages()[i];
+    for(var i = 0; i < self.BalancePages().length ; i++){
+        var balancePage = self.BalancePages()[i];
         var id = Util.composeIOU(balancePage.currency, balancePage.issuer);
         var found = false;
         for(var j in balances){
@@ -78,13 +78,13 @@ AddressPage.prototype.updateBalances = function(balances){
             balances.splice(j, 1);
             balancePage.Update(balance);
         }else{
-            self.balancePages.splice(i,1);
+            self.BalancePages.splice(i,1);
             i--;
         }
     };
 
     for(var j in balances){
-        self.balancePages.push(new BalancePage(balances[j]));
+        self.BalancePages.push(new BalancePage(balances[j]));
     }
 };
 
@@ -93,4 +93,32 @@ AddressPage.prototype.Update = function(address){
     self.updateBalances(address.balances);
 };
 
+function AccountPage(clientMaster){
+    var self = this;
+    self.clientMaster = clientMaster;
+    self.AccountName = ko.observable("Loading");
+    self.WatchAddresses = ko.observableArray();
+    self.Gateways = ko.observableArray();
+
+    self.RemoveGatewayNick = function(gatewayNick){
+        self.Gateways.remove(gatewayNick);
+    };
+
+    self.RemoveWatchAddress = function(watchAddress){
+        self.WatchAddresses.remove(watchAddress);
+    };
+
+    self.GetAllAddressInfo = function(){
+        for(var i in self.WatchAddresses()){
+            var addressPage = self.WatchAddresses()[i];
+            self.GetAddressInfo(addressPage);
+        }
+    };
+
+    self.GetAddressInfo = function(addressPage){
+        self.clientMaster.AddrInfo(addressPage.address, function(result, addressModel){
+            addressPage.updateBalances(addressModel.balances);
+        });
+    };
+}
 

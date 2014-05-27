@@ -30,9 +30,9 @@ passport.use(new LocalStrategy
             passwordField:'password'
         },
         function(user, passwd, done){
-            host.LoginLocalAccount(user, passwd, function(result){
+            host.LoginLocalAccount(user, passwd, function(result, type, unique){
                 if(result === Common.RESULT.SUCC){
-                    return done(null, user);
+                    return done(null, type + unique);
                 }else{
                     return done(null, false, {message : "fail"});
                 }
@@ -49,9 +49,9 @@ passport.use(new GoogleStrategy({
     function(accessToken, refreshToken, profile, done){
         var email = null;
         if(profile.emails.length > 0) email = profile.emails[0].value;
-        host.CreateOrUpdateOAuthAccount(profile.id, profile.provider, profile.displayName, email, function(result){
+        host.CreateOrUpdateOAuthAccount(profile.id, ACCOUT_TYPE_PRE.GOOGLE, profile.displayName, email, function(result, type, unique){
             if(result === Common.RESULT.SUCC){
-                done(null, profile.displayName);
+                done(null, type + unique);
             }else{
                 done(null, false, {message : 'fail'});
             }
@@ -138,9 +138,9 @@ app.post('/register', function(req, res) {
     var account = req.body.account;
     var password = req.body.password;
     var email = req.body.email;
-    host.InitLocalAccount(account, password, email, function(result){
+    host.InitLocalAccount(account, password, email, function(result, type, unique){
         if(result === Common.RESULT.SUCC){
-            req.login(account, function(err){
+            req.login(type+unique, function(err){
                 res.redirect("/");
             });
         }else{
@@ -176,7 +176,9 @@ app.get("/rpstatus", function(req, res){
 app.get('/accountinfo', function(req, res){
     if(req.user){
         var user = req.user;
-        host.AccountInfo(user, function(result, account){
+        var type = user.substr(0,1);
+        var unique = user.substr(1);
+        host.FindAccount(type, unique, function(result, account){
             if(result == Common.RESULT.SUCC, account){
                 res.json(account);
             }else{
@@ -193,7 +195,8 @@ app.get('/logout', function(req, res){
     res.redirect('/');
 });
 
-app.post('/masteraccount', function(req, res){
+/*
+app.post('/accountinfo', function(req, res){
     if(req.user){
         var accountInfo = req.body.accountInfo;
         if(accountInfo){
@@ -207,6 +210,7 @@ app.post('/masteraccount', function(req, res){
         }
     }
 });
+*/
 
 app.get("/addressinfo", function(req, res){
     if(req.user){
@@ -217,13 +221,13 @@ app.get("/addressinfo", function(req, res){
             res.status = 400;
             res.end("format error");
         }
-        host.AddressInfo(address, ledger, function(result, addresInfo){
+        host.AddressInfo(address, ledger, function(result, addressInfo){
             if(result != Common.RESULT.SUCC){
                 req.pause();
                 res.status = 400;
                 res.end("account not exists");
             }else{
-                res.json(addresInfo);
+                res.json(addressInfo);
             }
         })
     }
