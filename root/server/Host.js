@@ -131,7 +131,7 @@ Host.prototype.LoginLocalAccount = function(name, password, callback){
     });
 };
 
-Host.prototype.CreateOrUpdateOAuthAccount = function(id, type, name, email, callback){
+Host.prototype.CreateOrUpdateOAuthAccount = function(id, name, email, callback){
     var self = this;
     var searchOptions = {type : AccountType.Google, id : id};
     var updateOptions = {name : name, email : email};

@@ -50,7 +50,7 @@ passport.use(new GoogleStrategy({
     function(accessToken, refreshToken, profile, done){
         var email = null;
         if(profile.emails.length > 0) email = profile.emails[0].value;
-        host.CreateOrUpdateOAuthAccount(profile.id, ACCOUT_TYPE_PRE.GOOGLE, profile.displayName, email, function(result, type, unique){
+        host.CreateOrUpdateOAuthAccount(profile.id, profile.displayName, email, function(result, type, unique){
             if(result === Common.RESULT.SUCC){
                 done(null, type + unique);
             }else{
