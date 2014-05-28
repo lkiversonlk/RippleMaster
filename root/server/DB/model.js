@@ -34,5 +34,11 @@ var AccountTx = new Schema({
     minLedger : Number
 });
 
+var AccountAddressState = new Schema({
+    accountType: String,
+    unique: String,
+    addresses: [{address : String, states : [{ledger : Number, date : Number, baseiou : String, balances : [{currency : String, issuer : String, cost : Number}]}]}]
+});
+
 exports.Account = mongoose.model('Account', Account);
 exports.AccountTx = mongoose.model('AccountTx', AccountTx);

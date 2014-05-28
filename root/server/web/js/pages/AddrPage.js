@@ -58,10 +58,6 @@ TradePanel.prototype.ShowMyTrade = function(){
     };
 
     self.UpdateSellbuyPanel();
-    if(!self.tradeShow){
-        $(self.tradePanel.toggle(1000));
-        self.tradeShow = true;
-    };
     self.progressBar.SetProgress(40, "Loading transactions");
     self.accMgr.GetTransaction(address, start, end, function(result, more, txes){
         if(result === Common.RESULT.SUCC){
@@ -92,7 +88,11 @@ TradePanel.prototype.ShowMyTrade = function(){
                     }else{
                         self.progressBar.SetProgress(90, "fail to load account status");
                     }
-                })
+                });
+                if(!self.tradeShow){
+                    $(self.tradePanel.toggle(1000));
+                    self.tradeShow = true;
+                };
             }
         }else{
             self.progressBar.SetProgress(50, "fail to load transactions");

@@ -662,8 +662,6 @@ BalanceChangeBox.prototype.PaintPageData = function(balPageBefore, bTime, balPag
             process[iou].after = balPageLater.BalancePages()[i].value();
         };
     }
-
-
     for(key in process){
         if(process.hasOwnProperty(key)){
             if(!process[key].before) process[key].before = 0;
@@ -689,24 +687,7 @@ BalanceChangeBox.prototype.Clear = function(){
     Chart.option({
         dataSource : []
     });
-}
-
-function InOutBox(root){
-    var inoutFormHtml = '<form class="form-horizontal">' +
-        '<fieldset>' +
-        '<legend class="text-center">In Out Sheet</legend>' +
-        '</fieldset>' +
-        '<fieldset class="inout">' +
-        '</fieldset>'
-    '<div class="form-group">' +
-    '<div class="col-md-offset-10 col-md-2">' +
-    '<button type="submit" class="btn btn-default">Calculate</button>' +
-    '</div>' +
-    '</div>' +
-    '</form>';
-    this.root =root;
-    $(this.root).html(inoutFormHtml);
-}
+};
 
 function SellBuyBox(root){
     this.root = root;
@@ -720,16 +701,7 @@ function SellBuyBox(root){
     ko.applyBindings(this.SelectModel, this.iouSelector[0]);
     ko.applyBindings(this.SelectModel, this.iouSelector[1]);
     $(this.iouSelector).on('change', this.PaintData.bind(this));
-    /*
-    $(conclusion).html(
-            '<div class="col-md-offset-1">'+
-            '<p>You have bought <strong class="green-text"></strong> at an average price of <strong class="green-text"></strong></p>' +
-            '<p>You have sold <strong class="green-text"></strong> at an average price of <strong class="green-text"></strong></p>' +
-            '<p>You have get <strong class="green-text"></strong> in amount of <strong class="green-text"></strong>'+
-            '</div>'
-    );*/
-    //this.sellbuyIouSelectors = $(root).find(".selectpicker");
-    //$(this.sellbuyIouSelectors).on('change', this.PaintData.bind(this));
+
 
     $(this.chart).dxChart({
         commonSeriesSettings : {
@@ -775,7 +747,7 @@ SellBuyBox.prototype.UpdateSelect = function(balancePages){
 SellBuyBox.prototype.PaintData = function(){
     var self = this;
     var chart = $(self.chart).dxChart("instance");
-    var strongs = $(self.root).find("strong");
+    var strongs = $(self.root.find("div.conclusion")).find("strong");
 
     if(!self.txes || self.txes.length == 0){
         chart.option({
@@ -817,8 +789,7 @@ SellBuyBox.prototype.PaintData = function(){
         $(strongs[1]).text((after.buyBase? after.buyRatio.toFixed(3) : "0.00") + after.refCurrency);
         $(strongs[2]).text((after.sellBase? after.sellBase.toFixed(3) : "0.000") + after.baseCurrency);
         $(strongs[3]).text((after.sellBase? after.sellRatio.toFixed(3) : "0.00") + after.refCurrency);
-
-
+        /*
         var amount, benefits;
         if(after.sellBase && after.buyBase){
             amount = after.sellBase < after.buyBase ? after.sellBase : after.buyBase;
@@ -828,6 +799,7 @@ SellBuyBox.prototype.PaintData = function(){
         }
         $(strongs[4]).text(benefits.toFixed(3) + after.refCurrency);
         $(strongs[5]).text(amount.toFixed(3) + after.baseCurrency);
+        */
     }
 }
 
