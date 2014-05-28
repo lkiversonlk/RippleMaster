@@ -3,6 +3,7 @@ var model = require("./model.js");
 
 var Account = model.Account;
 var AccountTx = model.AccountTx;
+var MasterCost = model.MasterCost;
 
 function DB(connectionStr, username, passwd) {
     var self = this;
@@ -83,6 +84,25 @@ function DB(connectionStr, username, passwd) {
                 }
             }
         });
+    };
+
+    self.GetMasterCostListOfAccount = function(type, unique, address, callback){
+        MasterCost.findOne({accountType:type, unique:unique}, function(err, doc){
+            if(err){
+                callback(DB.RESULT.FAIL);
+            }else if(doc){
+                var addresses = doc.addresses.toObject();
+                for(var i in addresses){
+                    var addrState = addresses[i];
+                    if(addrState.address === address){
+                        callback(DB.RESULT.SUCC, addrState.states);
+                        return;
+                    }
+                }
+            }else{
+                callback(DB.RESULT.FAIL_NOT_EXISIT);
+            }
+        })
     };
 
     /*

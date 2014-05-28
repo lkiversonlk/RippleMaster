@@ -34,7 +34,7 @@ var AccountTx = new Schema({
     minLedger : Number
 });
 
-var AccountAddressState = new Schema({
+var MasterCost = new Schema({
     accountType: String,
     unique: String,
     addresses: [{address : String, states : [{ledger : Number, date : Number, baseiou : String, balances : [{currency : String, issuer : String, cost : Number}]}]}]
@@ -42,3 +42,4 @@ var AccountAddressState = new Schema({
 
 exports.Account = mongoose.model('Account', Account);
 exports.AccountTx = mongoose.model('AccountTx', AccountTx);
+exports.MasterCost = mongoose.model('MasterCost', MasterCost);
