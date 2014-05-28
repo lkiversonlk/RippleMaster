@@ -68,6 +68,10 @@ TradePanel.prototype.ShowMyTrade = function(){
             if(more){
                 self.progressBar.SetProgress(100*(1 - self.progressBar.Left() * 0.7), null);
             }else{
+                if(txes.length == 0){
+                    self.progressBar.SetProgress(90, "No transactions");
+                    return;
+                }
                 self.progressBar.SetProgress(100, "finished");
                 self.sellbuyPanel.SetData(txes);
                 self.txPanel.Clear();

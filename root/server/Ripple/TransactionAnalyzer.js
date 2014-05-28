@@ -177,7 +177,7 @@ TransactionAnalyzer.prototype = {
                     }else if(node.LedgerEntryType === Transaction.LEDGER_ENTRY_TYPE.RIPPLE_STATE){
                         if(node.FinalFields.HighLimit.issuer == self._address){
                             var current = new Balance(node.FinalFields.Balance);
-                            current..issuer = (node.FinalFields.LowLimit.issuer);
+                            current.issuer = (node.FinalFields.LowLimit.issuer);
                             var previous = new Balance(node.PreviousFields.Balance);
                             current.SetMoney(previous.Money() - current.Money());
                             if(current.Money() > 0){
@@ -196,7 +196,7 @@ TransactionAnalyzer.prototype = {
                             }
                         }else if(node.FinalFields.LowLimit.issuer == self._address){
                             var current = new Balance(node.FinalFields.Balance);
-                            current..issuer = (node.FinalFields.HighLimit.issuer);
+                            current.issuer = (node.FinalFields.HighLimit.issuer);
                             var previous = new Balance(node.PreviousFields.Balance);
                             current.SetMoney(previous.Money() - current.Money());
                             if(current.Money() < 0){
