@@ -19,7 +19,9 @@ function AccMgr(ClMaster){
     $(this).bind(AccMgr.EVENT.ACC_INFO, function(){
         self.GetAllAddressInfo();
         self.UpdateMapper();
-    })
+    });
+
+    setInterval(self.SyncRPAddresses.bind(self), 10000);
 };
 
 AccMgr.EVENT = {
