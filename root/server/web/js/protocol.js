@@ -33,57 +33,11 @@ function Balance(json){
         }
     }
 };
-Balance.prototype = {
-    Issuer : function() {
-        if(Balance.Mapper && Balance.Mapper[this.issuer]) return Balance.Mapper[this.issuer];
-        return this.issuer;
-    },
 
-    Currency : function(){
-        return this.currency;
-    },
-
-    Limit : function(){
-        return this.limit;
-    },
-
-    Value : function(){
-        return this.value;
-    },
-
-    SetValue : function(value){
-        this.value = value;
-    },
-
-    SetCurrency : function(currency){
-        this.currency = currency;
-    },
-
-    SetIssuer : function(issuer){
-        this.issuer = issuer;
-    },
-
-    MasterCost : function(){
-        return this.mastercost;
-    },
-
-    SetMasterCost : function(mastercost){
-        this.mastercost = mastercost;
-    }
-}
 function Offer(sell, want){
     this.sell = new Balance(sell);
     this.want = new Balance(want);
 };
-Offer.prototype = {
-    Sell : function(){
-        return this.sell;
-    },
-
-    Want : function(){
-        return this.want;
-    }
-}
 
 function Address(address){
     this.address = address;
@@ -189,6 +143,15 @@ Log.prototype = {
     }
 };
 
+function Protocol(){};
+Protocol.Comm = {
+    SyncAddress : "addr"
+};
+
+Protocol.Keys = {
+    Addresses : 'addr'
+}
+
 if(typeof exports !== "undefined"){
     exports.Balance = Balance;
     exports.Offer = Offer;
@@ -196,4 +159,5 @@ if(typeof exports !== "undefined"){
     exports.Common = Common;
     exports.Transaction = Transaction;
     exports.Log = Log;
+    exports.Protocol = Protocol;
 }

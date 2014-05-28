@@ -12,7 +12,6 @@
     <link href="lib/footable/footable.core.css" rel="stylesheet">
     <link href="lib/bootstrap-datepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
     <link href="lib/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
-    <link href="lib/d3/d3.nv/nv.d3.min.css" rel="stylesheet">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -108,37 +107,146 @@
 
             </div>
             <div class="tab-pane fade" id="myTrade">
-                <div id="trade-content" class="container-fluid gray-background" data-bind="template: { name:'account-trade-template', data: $root}">
+                <div id="trade-content" class="container-fluid gray-background">
+                    <div class="gray-background">
+                        <div style="height:20px"></div>
+                        <div class="container">
+                            <div class="row">
+                                <form id="trade-conf" class="form-horizontal col-md-offset-1 col-md-8">
+                                    <div class="form-group">
+                                        <div class="col-md-6">
+                                            <label class="form-control">Select a Ripple Address</label>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <select class="selectpicker" data-bind="selectPicker: selectedAddress, optionsText:'Nickname', optionsValue:'address', selectPickerOptions:{optionsArray:Addresses}"></select>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="addr-st-gp row">
+                                <div class="ripple-box col-md-12">
+                                    <div class="second-caption row">
+                                        My Trade
+                                        <a class="right ok">
+                                            <span class="glyphicon glyphicon-ok"></span>
+                                        </a>
+                                    </div>
+                                    <div class="progress row">
+                                        <div class='progress-bar progress-bar-ripplemaster' role='progressbar' aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                                            <span class="text"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <form class="form-horizontal container-fluid" role="form">
+                                            <div class="form-group">
+                                                <div class="col-md-2">
+                                                    <label class="form-control">Start Time</label>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="input-group date">
+                                                        <input type="text" class="time form-control"><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-control">End Time</label>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="input-group date">
+                                                        <input type="text" class="time form-control"><span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="shadow"></div>
+                            <div class="row trade-panel">
+                                <div class="col-md-7">
+                                    <div class="balance white-background" style="min-height: 300px"></div>
+                                    <div class="sellbuy white-background">
+                                        <form class="form-horizontal" role="form">
+                                            <label class="form-control text-center green-background">Sell&Buy Stat</label>
+                                            <div class="form-group">
+                                                <div class="col-md-3">
+                                                    <label class="form-control">IOU1</label>
+                                                </div>
+                                                <div class="col-md-9">
+                                                    <select class="selectpicker form-control" data-bind="selectPicker: iou1, optionsText:'IOU', optionsValue:'iou', selectPickerOptions:{optionsArray:BalancePages}"></select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-md-3">
+                                                    <label class="form-control">IOU2</label>
+                                                </div>
+                                                <div class="col-md-9">
+                                                    <select class="selectpicker form-control" style="width: 100%" data-bind="selectPicker: iou2, optionsText:'IOU', optionsValue:'iou', selectPickerOptions:{optionsArray:BalancePages}"></select>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <div class="sellbuy chart" style="min-height: 200px">
+
+                                        </div>
+                                        <div class="conclusion">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="tx white-background">
+                                        <input class="form-control" id="fileter-trade-tx">
+                                        <table class="footable table" data-page-size="10" data-filter='#fileter-trade-tx'>
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Type</th>
+                                                    <th>Content</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                            <tfoot>
+                                                <tr style="text-align: center">
+                                                    <td colspan="5">
+                                                        <ul class="pagination">
+
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="tab-pane fade " id="rpMaster">
-                <div class="container">
-                    <div class="toggle">
-                        <div class="row white-background">
-                            <div style="height:20px"></div>
-                            <form class="form-horizontal">
+                <div class="gray-background">
+                    <div style="height:20px"></div>
+                    <div class="container">
+                        <div class="row">
+                            <form class="form-horizontal col-md-offset-1 col-md-8">
                                 <div class="form-group">
-                                    <div class="col-md-3 col-md-offset-3">
-                                        <label class="form-control">Select a Ripple Account</label>
+                                    <div class="col-md-6">
+                                        <label class="form-control">Select a Ripple Address</label>
                                     </div>
                                     <div class="col-md-5">
-                                        <select class="selectpicker baseaddress"></select>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-md-3 col-md-offset-3">
-                                        <label class="form-control">Select your base currency</label>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <select class="selectpicker basecurrency"></select>
+                                        <select class="selectpicker baseaddress" data-bind="selectPicker: selectedAddress, optionsText:'Nickname', optionsValue:'address', selectPickerOptions:{optionsArray:Addresses}"></select>
                                     </div>
                                 </div>
                             </form>
-                        </div>
-                        <div class="row">
-                            <p class="text-center">Want to be the Master of your Ripple Account? Let's start <button class="btn btn-primary startmaster" type="button">Start</button></p>
+                            <div class="col-md-2">
+                                OK
+                            </div>
                         </div>
                     </div>
+                </div>
+                <div class="container">
+
                     <div class="rpMaster-panel">
                         <div class=" balance-stat">
                             <label class="form-control text-center black-background green-text time">
@@ -167,9 +275,9 @@
                                 <hr>
                                 <form class="form-horizontal" role="form">
                                     <div class="form-group">
-                                        <label for="configure-account" class="col-sm-2 control-label">Account Name</label>
+                                        <label class="col-sm-2 control-label">Account Name</label>
                                         <div class="col-sm-10">
-                                            <label id="configure-account" class="form-control"></label>
+                                            <label id="config-account" class="form-control" data-bind="text: AccountName"></label>
                                         </div>
                                     </div>
                                 </form>
@@ -284,7 +392,6 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div>
-
 <script type="text/html" id="inout-form-template">
     <label class="form-control text-center green-background" data-bind="text: title"></label>
     <table>
@@ -323,26 +430,6 @@
         </tbody>
     </table>
 </script>
-
-<script type="text/html" id="balance-template">
-    <!-- ko foreach: balancesPage -->
-        <div class="pricingtable col-md-3">
-            <div class="pricingtable-top">
-                <div class="currency" data-bind="text: currency">CNY</div>
-            </div>
-            <div class="pure-white-background">
-                <div>
-                    <p data-bind="text: Issuer">rippleChina</p>
-                </div>
-                <hr>
-                <div class="balance" data-bind="text: value">195.00</div>
-                <hr>
-                <p data-bind="text: MasterCost"></p>
-            </div>
-        </div>
-    <!-- /ko -->
-</script>
-
 <script type="text/html" id="cost-estimate-template">
     <label class="form-control text-center green-background">Please estimate your cost price (in your base iou)</label>
     <table>
@@ -381,23 +468,6 @@
     </table>
     <button class="btn btn-primary form-control" type="button">OK</button>
 </script>
-
-<script type="text/html" id="settings-gateway-template">
-    <!-- ko foreach: Gateways -->
-    <div class="form-group">
-        <div class="col-sm-5">
-            <label class="form-control" data-bind="text:address"></label>
-        </div>
-        <div class="col-sm-5">
-            <label class="form-control" data-bind="text:Nickname"></label>
-        </div>
-        <div class="col-sm-2">
-            <button type="button" class="btn btn-danger" data-bind="click:$root.RemoveGatewayNick">Delete</button>
-        </div>
-    </div>
-    <!-- /ko -->
-</script>
-
 <script type="text/html" id="settings-address-template">
     <!-- ko foreach: WatchAddresses -->
     <div class="form-group">
@@ -413,14 +483,31 @@
     </div>
     <!-- /ko -->
 </script>
-
+<script type="text/html" id="settings-gateway-template">
+    <!-- ko foreach: Gateways -->
+    <div class="form-group">
+        <div class="col-sm-5">
+            <label class="form-control" data-bind="text:address"></label>
+        </div>
+        <div class="col-sm-5">
+            <label class="form-control" data-bind="text:Nickname"></label>
+        </div>
+        <div class="col-sm-2">
+            <button type="button" class="btn btn-danger" data-bind="click:$root.RemoveGatewayNick">Delete</button>
+        </div>
+    </div>
+    <!-- /ko -->
+</script>
 <script type="text/html" id="account-basic-template">
     <!-- ko foreach: WatchAddresses -->
     <div class="address-panel">
         <div class="account-caption row">
             <span data-bind="text: Nickname"></span>
-            <a class="right cursor-pointer refresh" data-bind="click:$parents[1].GetAddressInfo">
+            <a class="right cursor-pointer" data-bind="click:$parents[1].GetAddressInfo">
                 <span class="glyphicon glyphicon-refresh"></span>
+            </a>
+            <a class="left cursor-pointer" onclick="($(this).parent().parent().find('.attr-st-gp')).toggle();">
+                <span class="glyphicon glyphicon-th-large"></span>
             </a>
         </div>
         <div class="attr-st-gp">
@@ -442,28 +529,49 @@
             </div>
             <div class="separator40"></div>
             <div class="row offers">
+                <p class="text-center" style="font-size: 20px">Current Offers</p>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Sell</th>
+                        <th>Issuer</th>
+                        <th>Amount</th>
+                        <th>Want</th>
+                        <th>Issuer</th>
+                        <th>Amount</th>
+                        <th>Rate</th>
+                    </tr>
+                    </thead>
+                    <tbody data-bind="foreach:Offers">
+                        <tr>
+                            <td data-bind="text:sellCurrency">
+                            </td>
+                            <td data-bind="text:SellIssuer">
+                            </td>
+                            <td data-bind="text:sellAmount">
+                            </td>
+                            <td data-bind="text:buyCurrency">
+                            </td>
+                            <td data-bind="text:BuyIssuer">
+                            </td>
+                            <td data-bind="text:buyAmount">
+                            </td>
+                            <td data-bind="text:price">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
+    <div class="shadow"></div>
     <!-- /ko -->
 </script>
-<script type="text/html" id="account-trade-template">
-    <!-- ko foreach: WatchAddresses -->
-    <div class="address-panel">
-        <div class="account-caption row" data-bind="text: Nickname">
-        </div>
-        <div class="attr-st-gp">
-        </div>
-    </div>
-    <!-- /ko -->
-</script>
-
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="lib/jquery/jquery.js"></script>
 <script src="lib/knockout/knockout.js"></script>
 <script src="lib/utils/moment.js"></script>
-<script src="lib/d3/d3.min.js"></script>
 <script src="lib/bootstrap/bootstrap.min.js"></script>
 <script src="lib/bootstrap-datepicker/js/bootstrap-datetimepicker.min.js"></script>
 <script src="lib/bootstrap-select/bootstrap-select.min.js"></script>

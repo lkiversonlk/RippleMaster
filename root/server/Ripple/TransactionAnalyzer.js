@@ -23,20 +23,20 @@ TransactionAnalyzer.prototype = {
                 case Transaction.Type.Send:
                     if(transaction.cost){
                         ret.push(transaction);
-                        logger.log(Log.DEBUG_LEVEL, " send " + transaction.cost.Money() + " " + transaction.cost.Currency() + " to " + transaction.dest);
+                        logger.log(Log.DEBUG_LEVEL, " send " + transaction.cost.Money() + " " + transaction.cost.currency + " to " + transaction.dest);
                     }else{
                     }
                     break;
                 case Transaction.Type.Receive:
                     if(transaction.amount){
                         ret.push(transaction);
-                        logger.log(Log.DEBUG_LEVEL, " receive " + transaction.amount.Money() + " " + transaction.amount.Currency() + " from " + transaction.host);
+                        logger.log(Log.DEBUG_LEVEL, " receive " + transaction.amount.Money() + " " + transaction.amount.currency + " from " + transaction.host);
                     }else{
                     }
                     break;
                 case Transaction.Type.Trade :
                     if(transaction.cost && transaction.amount){
-                        logger.log(Log.DEBUG_LEVEL, " trade " + transaction.cost.Money() + " " + transaction.cost.Currency() + " to " + transaction.amount.Money() + " " + transaction.amount.Currency());
+                        logger.log(Log.DEBUG_LEVEL, " trade " + transaction.cost.Money() + " " + transaction.cost.currency + " to " + transaction.amount.Money() + " " + transaction.amount.currency);
                         ret.push(transaction);
                     }else{
                     }
@@ -177,7 +177,7 @@ TransactionAnalyzer.prototype = {
                     }else if(node.LedgerEntryType === Transaction.LEDGER_ENTRY_TYPE.RIPPLE_STATE){
                         if(node.FinalFields.HighLimit.issuer == self._address){
                             var current = new Balance(node.FinalFields.Balance);
-                            current.SetIssuer(node.FinalFields.LowLimit.issuer);
+                            current..issuer = (node.FinalFields.LowLimit.issuer);
                             var previous = new Balance(node.PreviousFields.Balance);
                             current.SetMoney(previous.Money() - current.Money());
                             if(current.Money() > 0){
@@ -196,7 +196,7 @@ TransactionAnalyzer.prototype = {
                             }
                         }else if(node.FinalFields.LowLimit.issuer == self._address){
                             var current = new Balance(node.FinalFields.Balance);
-                            current.SetIssuer(node.FinalFields.HighLimit.issuer);
+                            current..issuer = (node.FinalFields.HighLimit.issuer);
                             var previous = new Balance(node.PreviousFields.Balance);
                             current.SetMoney(previous.Money() - current.Money());
                             if(current.Money() < 0){

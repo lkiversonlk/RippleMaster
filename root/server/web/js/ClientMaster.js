@@ -34,10 +34,7 @@ ClientMaster.prototype = {
                 dataType : "json",
                 data : {address : address, ledger : ledger},
                 success : function(addrBalance){
-                    var ret = new Address(addrBalance.address);
-                    ret.SetBalance(addrBalance.balances);
-                    ret.SetOffers(addrBalance.offers);
-                    callback(Common.RESULT.SUCC, ret);
+                    callback(Common.RESULT.SUCC, addrBalance);
                 },
                 error : function(){
                     callback(Common.RESULT.FAIL);
@@ -47,6 +44,7 @@ ClientMaster.prototype = {
     },
 
     Start : function(callback){
+        this._rippleServer.Connect(Consts.DefaultNetConfig);
         callback();
     },
 

@@ -27,20 +27,20 @@ TransactionAnalyzer.prototype = {
                 case Transaction.Type.Send:
                     if(transaction.cost){
                         ret.push(transaction);
-                        logger.log(Log.DEBUG_LEVEL, transaction.date + " send " + transaction.cost.Value() + " " + transaction.cost.Currency() + " to " + transaction.dest);
+                        logger.log(Log.DEBUG_LEVEL, transaction.date + " send " + transaction.cost.value + " " + transaction.cost.currency + " to " + transaction.dest);
                     }else{
                     }
                     break;
                 case Transaction.Type.Receive:
                     if(transaction.amount){
                         ret.push(transaction);
-                        logger.log(Log.DEBUG_LEVEL, transaction.date + " receive " + transaction.amount.Value() + " " + transaction.amount.Currency() + " from " + transaction.host);
+                        logger.log(Log.DEBUG_LEVEL, transaction.date + " receive " + transaction.amount.value + " " + transaction.amount.currency + " from " + transaction.host);
                     }else{
                     }
                     break;
                 case Transaction.Type.Trade :
                     if(transaction.cost && transaction.amount){
-                        logger.log(Log.DEBUG_LEVEL, transaction.date + " trade " + transaction.cost.Value() + " " + transaction.cost.Currency() + " to " + transaction.amount.Value() + " " + transaction.amount.Currency());
+                        logger.log(Log.DEBUG_LEVEL, transaction.date + " trade " + transaction.cost.value + " " + transaction.cost.currency + " to " + transaction.amount.value + " " + transaction.amount.currency);
                         ret.push(transaction);
                     }else{
                     }
@@ -166,7 +166,7 @@ TransactionAnalyzer.prototype = {
                             var current = new Balance(node.FinalFields.Balance);
                             if(typeof  node.PreviousFields.Balance !== 'undefined'){
                                 var previous = new Balance(node.PreviousFields.Balance);
-                                var xrpCost = current.Value() - previous.Value() + transaction.fee.Value();
+                                var xrpCost = current.value - previous.value + transaction.fee.value;
                                 if(Math.abs(xrpCost) > 0.0001){
                                     if(xrpCost > 0){
                                         transaction.amount = new Balance(1000000 * xrpCost);
@@ -181,30 +181,30 @@ TransactionAnalyzer.prototype = {
                     }else if(node.LedgerEntryType === Transaction.LEDGER_ENTRY_TYPE.RIPPLE_STATE){
                         if(node.FinalFields.HighLimit.issuer == self._address){
                             var current = new Balance(node.FinalFields.Balance);
-                            current.SetIssuer(node.FinalFields.LowLimit.issuer);
+                            current.issuer = (node.FinalFields.LowLimit.issuer);
                             var previous = new Balance(node.PreviousFields.Balance);
-                            current.SetValue(previous.Value() - current.Value());
-                            if(current.Value() > 0){
+                            current.value =(previous.value - current.value);
+                            if(current.value > 0){
                                 if(transaction.amount){
-                                    transaction.amount.SetValue(transaction.amount.Value() + current.Value());
+                                    transaction.amount.value =(transaction.amount.value + current.value);
                                 }else {
                                     transaction.amount = current;
                                 }
                             }else{
-                                current.SetValue(-1 * current.Value());
+                                current.value =(-1 * current.value);
                                 if(transaction.cost){
-                                    transaction.cost.SetValue(transaction.cost.Value() + current.Value());
+                                    transaction.cost.value =(transaction.cost.value + current.value);
                                 }else {
                                     transaction.cost = current;
                                 }
                             }
                         }else if(node.FinalFields.LowLimit.issuer == self._address){
                             var current = new Balance(node.FinalFields.Balance);
-                            current.SetIssuer(node.FinalFields.HighLimit.issuer);
+                            current.issuer = (node.FinalFields.HighLimit.issuer);
                             var previous = new Balance(node.PreviousFields.Balance);
-                            current.SetValue(previous.Value() - current.Value());
-                            if(current.Value() < 0){
-                                current.SetValue(-1 * current.Value());
+                            current.value =(previous.value - current.value);
+                            if(current.value < 0){
+                                current.value =(-1 * current.value);
                                 transaction.amount = current ;
                             }else{
                                 transaction.cost = current;

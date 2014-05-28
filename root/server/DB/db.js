@@ -34,8 +34,7 @@ function DB(connectionStr, username, passwd) {
                 callback(DB.RESULT.FAIL);
             }else{
                 if(doc){
-                    doc = doc.toObject();
-                    if(doc['password']) delete doc['password'];
+
                     callback(DB.RESULT.SUCC, doc);
                 }else{
                     callback(DB.RESULT.FAIL_NOT_EXISIT);
@@ -156,6 +155,15 @@ function DB(connectionStr, username, passwd) {
             }
         });
     };
+
+    self.UpdateModel = function(model, options){
+        for(var key in options){
+            if(options.hasOwnProperty(key)){
+                model[key] = options[key];
+            }
+        };
+        model.save();
+    }
 
     /*
     self.fetchTx = function(account, callback){

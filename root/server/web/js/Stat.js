@@ -16,13 +16,13 @@ Stat.CalIOUSummary = function(start, end, iou, dataCollection){
     dataCollection.ForeachTransaction(start, end, function(tx){
         var proceed = 0;
         if(tx.cost){
-            var costiou = tx.cost.Currency() + tx.cost.Issuer();
+            var costiou = tx.cost.currency + tx.cost.issuer;
             if(costiou == iou){
                 proceed = 1;
             }
         }
         if(tx.amount){
-            var amountiou = tx.amount.Currency() + tx.amount.Issuer();
+            var amountiou = tx.amount.currency + tx.amount.issuer;
             if(amountiou == iou){
                 proceed = 2;
             }
@@ -31,25 +31,25 @@ Stat.CalIOUSummary = function(start, end, iou, dataCollection){
         if(proceed != 0) {
             switch (tx.Type()){
                 case Transaction.Type.Send:
-                    ret['send'] += tx.cost.Value();
+                    ret['send'] += tx.cost.value;
                     break;
                 case Transaction.Type.Receive:
-                    ret['receive'] += tx.amount.Value();
+                    ret['receive'] += tx.amount.value;
                     break;
                 case Transaction.Type.Trade :
                     if(proceed == 1){
-                        ret['sell'] += tx.cost.Value();
-                        if(ret.sellDetail[tx.amount.Currency()]){
-                            ret.sellDetail[tx.amount.Currency()] += tx.cost.Value();
+                        ret['sell'] += tx.cost.value;
+                        if(ret.sellDetail[tx.amount.currency]){
+                            ret.sellDetail[tx.amount.currency] += tx.cost.value;
                         }else{
-                            ret.sellDetail[tx.amount.Currency()] = tx.cost.Value();
+                            ret.sellDetail[tx.amount.currency] = tx.cost.value;
                         }
                     }else{
-                        ret['buy'] += tx.amount.Value();
-                        if(ret.buyDetail[tx.cost.Currency()]){
-                            ret.buyDetail[tx.cost.Currency()] += tx.amount.Value();
+                        ret['buy'] += tx.amount.value;
+                        if(ret.buyDetail[tx.cost.currency]){
+                            ret.buyDetail[tx.cost.currency] += tx.amount.value;
                         }else{
-                            ret.buyDetail[tx.cost.Currency()] = tx.amount.Value();
+                            ret.buyDetail[tx.cost.currency] = tx.amount.value;
                         }
                     }
                     break;
@@ -79,10 +79,10 @@ Stat.CalIOUBuySell = function(baseIOU, refIOU, txes){
     for(i in txes){
         var tx = txes[i];
         if(tx.type === Transaction.Type.Trade){
-            var sellIOU = tx.cost.Currency() + tx.cost.Issuer();
-            var sellAmount = tx.cost.Value();
-            var buyIOU = tx.amount.Currency() + tx.amount.Issuer();
-            var buyAmount = tx.amount.Value();
+            var sellIOU = tx.cost.currency + tx.cost.issuer;
+            var sellAmount = tx.cost.value;
+            var buyIOU = tx.amount.currency + tx.amount.issuer;
+            var buyAmount = tx.amount.value;
 
             if(sellIOU == baseIOU && buyIOU == refIOU){
                 //sell
@@ -230,14 +230,14 @@ Stat.CallIOUInOut = function(txes){
 
         switch (tx.type){
             case Transaction.Type.Receive:
-                var iou = tx.amount.Currency() + tx.amount.Issuer();
+                var iou = tx.amount.currency + tx.amount.issuer;
                 if(!ret[iou]) ret[iou] = {receive:0};
-                ret[iou].receive += tx.amount.Value();
+                ret[iou].receive += tx.amount.value;
                 break;
             case Transaction.Type.Send:
-                var iou = tx.cost.Currency() + tx.cost.Issuer();
+                var iou = tx.cost.currency + tx.cost.issuer;
                 if(!ret[iou]) ret[iou] = {send:0};
-                ret[iou].send += tx.cost.Value();
+                ret[iou].send += tx.cost.value;
                 break;
         }
     }

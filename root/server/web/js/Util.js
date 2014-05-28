@@ -51,4 +51,4 @@ Util.composeIOU = function(currency, issuer){
 
 if(typeof exports !== "undefined"){
     exports.Util = Util;
-}
+};

@@ -40,11 +40,11 @@ Host.prototype.InitRippleTx = function(account, callback){
             txDb.host = txRp.host;
             txDb.dest = txRp.dest;
             txDb.cost = txRp.cost ? txRp.cost.Money() : 0;
-            txDb.cost_cur = txRp.cost ? txRp.cost.Currency() : "";
-            txDb.cost_iss = txRp.cost ? txRp.cost.Issuer() : "";
+            txDb.cost_cur = txRp.cost ? txRp.cost.currency : "";
+            txDb.cost_iss = txRp.cost ? txRp.cost.issuer : "";
             txDb.gain = txRp.amount ? txRp.amount.Money() : 0;
-            txDb.gain_cur = txRp.amount ? txRp.amount.Currency() : "";
-            txDb.gain_iss = txRp.amount ? txRp.amount.Issuer() : "";
+            txDb.gain_cur = txRp.amount ? txRp.amount.currency : "";
+            txDb.gain_iss = txRp.amount ? txRp.amount.issuer : "";
             txDb.date = txRp.date;
             txDb.ledger = txRp.ledger;
             txDb.sequence = txRp.sequence;
@@ -171,6 +171,18 @@ Host.prototype.FindAccount = function(type, unique, callback){
             }
         });
     }
+};
+
+Host.prototype.UpdateAccountAddress = function(type, unique, addresses, callback){
+    var self = this;
+    self.FindAccount(type, unique, function(result, account){
+        if(result != Common.RESULT.SUCC){
+            callback(result);
+        }else{
+            var options = {rippleAddress : addresses};
+            self.db.UpdateModel(account, options);
+        }
+    })
 };
 
 Host.prototype.AddressInfo = function(address, ledger, callback){

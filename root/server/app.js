@@ -7,6 +7,7 @@ var flash = require('connect-flash');
 var Host = require("./Host").Host;
 var Log = require('log').log;
 var Common = require('./Ripple/Share').Common;
+var Protocol = require('./Ripple/Share').Protocol;
 var http = require('http');
 var querystring = require('querystring');
 var MemoryStore = express.session.MemoryStore;
@@ -180,6 +181,8 @@ app.get('/accountinfo', function(req, res){
         var unique = user.substr(1);
         host.FindAccount(type, unique, function(result, account){
             if(result == Common.RESULT.SUCC, account){
+                account = account.toObject();
+                if(account['password']) delete account['password'];
                 res.json(account);
             }else{
                 res.json({fail:"true"});
@@ -195,22 +198,20 @@ app.get('/logout', function(req, res){
     res.redirect('/');
 });
 
-/*
 app.post('/accountinfo', function(req, res){
     if(req.user){
-        var accountInfo = req.body.accountInfo;
-        if(accountInfo){
-            host.UpdateAccountInfo(accountInfo, function(result){
-                if(result == Common.RESULT.SUCC){
-                    res.json({success:"true"});
-                }else{
-                    res.json({fail:"true"});
-                }
-            })
+        var user = req.user;
+        var type = user.substr(0,1);
+        var unique = user.substr(1);
+        var comm = req.body.comm;
+        switch (comm){
+            case Protocol.Comm.SyncAddress:
+                var data = req.body[Protocol.Keys.Addresses];
+                host.UpdateAccountAddress(type, unique, data);
+                break;
         }
     }
 });
-*/
 
 app.get("/addressinfo", function(req, res){
     if(req.user){

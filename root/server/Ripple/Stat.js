@@ -15,14 +15,14 @@ Stat.CalIOUSummary = function(start, end, iou, dataCollection){
 
     dataCollection.ForeachTransaction(start, end, function(tx){
         var proceed = 0;
-        if(tx.Cost()){
-            var costiou = tx.Cost().Currency() + tx.Cost().Issuer();
+        if(tx.cost){
+            var costiou = tx.cost.currency + tx.cost.issuer;
             if(costiou == iou){
                 proceed = 1;
             }
         }
-        if(tx.Amount()){
-            var amountiou = tx.Amount().Currency() + tx.Amount().Issuer();
+        if(tx.amount){
+            var amountiou = tx.amount.currency + tx.amount.issuer;
             if(amountiou == iou){
                 proceed = 2;
             }
@@ -31,25 +31,25 @@ Stat.CalIOUSummary = function(start, end, iou, dataCollection){
         if(proceed != 0) {
             switch (tx.Type()){
                 case Transaction.Type.Send:
-                    ret['send'] += tx.Cost().Money();
+                    ret['send'] += tx.cost.Money();
                     break;
                 case Transaction.Type.Receive:
-                    ret['receive'] += tx.Amount().Money();
+                    ret['receive'] += tx.amount.Money();
                     break;
                 case Transaction.Type.Trade :
                     if(proceed == 1){
-                        ret['sell'] += tx.Cost().Money();
-                        if(ret.sellDetail[tx.Amount().Currency()]){
-                            ret.sellDetail[tx.Amount().Currency()] += tx.Cost().Money();
+                        ret['sell'] += tx.cost.Money();
+                        if(ret.sellDetail[tx.amount.currency]){
+                            ret.sellDetail[tx.amount.currency] += tx.cost.Money();
                         }else{
-                            ret.sellDetail[tx.Amount().Currency()] = tx.Cost().Money();
+                            ret.sellDetail[tx.amount.currency] = tx.cost.Money();
                         }
                     }else{
-                        ret['buy'] += tx.Amount().Money();
-                        if(ret.buyDetail[tx.Cost().Currency()]){
-                            ret.buyDetail[tx.Cost().Currency()] += tx.Amount().Money();
+                        ret['buy'] += tx.amount.Money();
+                        if(ret.buyDetail[tx.cost.currency]){
+                            ret.buyDetail[tx.cost.currency] += tx.amount.Money();
                         }else{
-                            ret.buyDetail[tx.Cost().Currency()] = tx.Amount().Money();
+                            ret.buyDetail[tx.cost.currency] = tx.amount.Money();
                         }
                     }
                     break;
@@ -78,10 +78,10 @@ Stat.CalIOUBuySell = function(start, end, baseIOU, refIOU, dataCollection){
 
     dataCollection.ForeachTransaction(start, end, function(tx){
         if(tx.Type() === Transaction.Type.Trade){
-            var sellIOU = tx.Cost().Currency() + tx.Cost().Issuer();
-            var sellAmount = tx.Cost().Money();
-            var buyIOU = tx.Amount().Currency() + tx.Amount().Issuer();
-            var buyAmount = tx.Amount().Money();
+            var sellIOU = tx.cost.currency + tx.cost.issuer;
+            var sellAmount = tx.cost.Money();
+            var buyIOU = tx.amount.currency + tx.amount.issuer;
+            var buyAmount = tx.amount.Money();
 
             if(sellIOU == baseIOU && buyIOU == refIOU){
                 //sell

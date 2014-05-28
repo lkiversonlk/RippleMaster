@@ -24,10 +24,10 @@ RippleTable.prototype = {
     AddOffers : function(offers){
         var self = this;
         var offerRow = function(offer){
-            var sell = Number(offer.sell.Value());
-            var buy = Number(offer.want.Value());
+            var sell = Number(offer.sell.value);
+            var buy = Number(offer.want.value);
             var rate = buy / sell;
-            return "<tr><td>" + offer.sell.Currency() + "</td><td>" + Consts.GetGatewayNick(offer.sell.Issuer()) + " </td><td>" + sell.toFixed(2) + "</td><td>" + offer.want.Currency() + "</td><td>" + Consts.GetGatewayNick(offer.want.Issuer()) + " </td><td>" + buy.toFixed(2) + "</td><td>" + rate.toFixed(2) + "</td></tr>";
+            return "<tr><td>" + offer.sell.currency + "</td><td>" + Consts.GetGatewayNick(offer.sell.issuer) + " </td><td>" + sell.toFixed(2) + "</td><td>" + offer.want.currency + "</td><td>" + Consts.GetGatewayNick(offer.want.issuer) + " </td><td>" + buy.toFixed(2) + "</td><td>" + rate.toFixed(2) + "</td></tr>";
         };
 
         $.each(offers, function(i){
@@ -57,14 +57,14 @@ RippleTable.prototype = {
             var content;
             switch (tx.type){
                 case Transaction.Type.Send:
-                    content=tx.cost.Value().toFixed(2) + tx.cost.Currency() + " to " + tx.dest;
+                    content=tx.cost.value.toFixed(2) + tx.cost.currency + " to " + tx.dest;
                     break;
                 case Transaction.Type.Trade:
-                    content = tx.cost.Value().toFixed(2) + tx.cost.Currency() + " for " + tx.amount.Value().toFixed(2) + tx.amount.Currency() + " rate :" + (tx.amount.Value()/tx.cost.Value()).toFixed(2);
+                    content = tx.cost.value.toFixed(2) + tx.cost.currency + " for " + tx.amount.value.toFixed(2) + tx.amount.currency + " rate :" + (tx.amount.value/tx.cost.value).toFixed(2);
 
                     break;
                 case Transaction.Type.Receive:
-                    content=tx.amount.Value().toFixed(2) + tx.amount.Currency() + " from " + tx.host;
+                    content=tx.amount.value.toFixed(2) + tx.amount.currency + " from " + tx.host;
                     break;
                 default :
                     return null;

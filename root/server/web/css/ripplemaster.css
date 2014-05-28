@@ -287,6 +287,7 @@ html, body{
     font-family: Impact, Haettenschweiler, "Franklin Gothic Bold", Charcoal, "Helvetica Inserat", "Bitstream Vera Sans Bold", "Arial Black", sans serif;
     font-size: 30px;
     color: #3B3C3E;
+    padding: 10px;
 }
 .footer a{
     color: #AAD53B;

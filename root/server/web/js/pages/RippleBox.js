@@ -247,8 +247,8 @@ RippleBox.SellBuyBox = function(address){
                 $.each(currencies, function(i){
                     var balance = currencies[i];
                     var opt = $("<option />", {
-                        value : balance.Currency()+balance.Issuer(),
-                        text : balance.Currency() + " " + Consts.GetGatewayNick(balance.Issuer())
+                        value : balance.currency+balance.Issuer(),
+                        text : balance.currency + " " + Consts.GetGatewayNick(balance.Issuer())
                     });
                     $(ret.sellBuyPanel.iouSelectors).append(opt);
                 });
@@ -316,8 +316,8 @@ RippleBox.IOUFlowBox = function(address){
                 $.each(currencies, function(i){
                     var balance = currencies[i];
                     var opt = $("<option />", {
-                        value : balance.Currency()+balance.Issuer(),
-                        text : balance.Currency() + " " + Consts.GetGatewayNick(balance.Issuer())
+                        value : balance.currency+balance.Issuer(),
+                        text : balance.currency + " " + Consts.GetGatewayNick(balance.Issuer())
                     });
                     $(ret.ValueFlowPanel.iouSelector).append(opt);
                 });
@@ -610,17 +610,17 @@ BalanceChangeBox.prototype.PaintData = function(balBefore, bTime, balLater, lTim
     var data = [];
     var process = {};
     for(i in balBefore.balances){
-        var iou = balBefore.balances[i].Currency() + balBefore.balances[i].Issuer();
+        var iou = balBefore.balances[i].currency + balBefore.balances[i].Issuer();
         if(!process[iou]) process[iou] = {}
         process[iou].label = iou;
-        process[iou].before = balBefore.balances[i].Value();
+        process[iou].before = balBefore.balances[i].value;
     };
     if(balLater){
         for(i in balLater.balances){
-            var iou = balLater.balances[i].Currency() + balLater.balances[i].Issuer();
+            var iou = balLater.balances[i].currency + balLater.balances[i].Issuer();
             if(!process[iou]) process[iou] = {}
             process[iou].label = iou;
-            process[iou].after = balLater.balances[i].Value();
+            process[iou].after = balLater.balances[i].value;
         };
     }
 
@@ -648,18 +648,18 @@ BalanceChangeBox.prototype.PaintPageData = function(balPageBefore, bTime, balPag
     var self = this;
     var data = [];
     var process = {};
-    for(i in balPageBefore.balancesPage()){
-        var iou = balPageBefore.balancesPage()[i].currency + balPageBefore.balancesPage()[i].Issuer();
+    for(i in balPageBefore.BalancePages()){
+        var iou = balPageBefore.BalancePages()[i].currency + balPageBefore.BalancePages()[i].Issuer();
         if(!process[iou]) process[iou] = {}
         process[iou].label = iou;
-        process[iou].before = balPageBefore.balancesPage()[i].value();
+        process[iou].before = balPageBefore.BalancePages()[i].value();
     };
     if(balPageLater){
-        for(i in balPageLater.balancesPage()){
-            var iou = balPageLater.balancesPage()[i].currency + balPageLater.balancesPage()[i].Issuer();
+        for(i in balPageLater.BalancePages()){
+            var iou = balPageLater.BalancePages()[i].currency + balPageLater.BalancePages()[i].Issuer();
             if(!process[iou]) process[iou] = {}
             process[iou].label = iou;
-            process[iou].after = balPageLater.balancesPage()[i].value();
+            process[iou].after = balPageLater.BalancePages()[i].value();
         };
     }
 
@@ -710,37 +710,28 @@ function InOutBox(root){
 
 function SellBuyBox(root){
     this.root = root;
-    var sellBuyConfHtml = '<form class="form-horizontal" role="form">' +
-        '<label class="form-control text-center green-background">Sell&Buy Stat</label>' +
-        '<div class="form-group">' +
-        '<div class="col-md-6">' +
-            '<select class="selectpicker" data-width="auto"></select>' +
-        '</div>' +
-        '<div class="col-md-6">' +
-            '<select class="selectpicker" data-width="auto"></select>' +
-        '</div>' +
-        '</div>' +
-        '</form>';
-    $(root).html(sellBuyConfHtml);
-    var chart = $("<div />", {
-        class : "sellbuy chart"
-    });
-    $(root).append(chart);
-    var conclusion = $("<div />",{
-        class : "row"
-    });
+    this.chart = $(this.root).find("div.chart");
+    this.SelectModel = {
+        iou1 : ko.observable(),
+        iou2 : ko.observable(),
+        BalancePages : ko.observableArray()
+    };
+    this.iouSelector = $(this.root).find("select.selectpicker");
+    ko.applyBindings(this.SelectModel, this.iouSelector[0]);
+    ko.applyBindings(this.SelectModel, this.iouSelector[1]);
+    $(this.iouSelector).on('change', this.PaintData.bind(this));
+    /*
     $(conclusion).html(
             '<div class="col-md-offset-1">'+
             '<p>You have bought <strong class="green-text"></strong> at an average price of <strong class="green-text"></strong></p>' +
             '<p>You have sold <strong class="green-text"></strong> at an average price of <strong class="green-text"></strong></p>' +
             '<p>You have get <strong class="green-text"></strong> in amount of <strong class="green-text"></strong>'+
             '</div>'
-    );
-    $(root).append(conclusion);
-    this.sellbuyIouSelectors = $(root).find(".selectpicker");
-    $(this.sellbuyIouSelectors).on('change', this.PaintData.bind(this));
-    this.chart = chart;
-    $(chart).dxChart({
+    );*/
+    //this.sellbuyIouSelectors = $(root).find(".selectpicker");
+    //$(this.sellbuyIouSelectors).on('change', this.PaintData.bind(this));
+
+    $(this.chart).dxChart({
         commonSeriesSettings : {
             type : "bar",
             argumentField : "rate"
@@ -772,19 +763,14 @@ function SellBuyBox(root){
 };
 SellBuyBox.prototype.SetData = function(data){
     this.txes = data;
+    this.PaintData();
 };
-SellBuyBox.prototype.SetConfig = function(balances){
+SellBuyBox.prototype.UpdateSelect = function(balancePages){
     var self = this;
-    $(self.sellbuyIouSelectors).empty();
-    $.each(balances, function(i){
-        var balance = balances[i];
-        var opt = $("<option />", {
-            value : balance.Currency()+balance.Issuer(),
-            text : balance.Currency() + " " + balance.Issuer()
-        });
-        $(self.sellbuyIouSelectors).append(opt);
-    });
-    $(self.sellbuyIouSelectors).selectpicker('refresh');
+    self.SelectModel.BalancePages.removeAll();
+    for(var i in balancePages()){
+        self.SelectModel.BalancePages.push(balancePages()[i]);
+    }
 };
 SellBuyBox.prototype.PaintData = function(){
     var self = this;
@@ -803,23 +789,30 @@ SellBuyBox.prototype.PaintData = function(){
         $(strongs[5]).text("");
         return;
     }
-    var baseIOU = $(self.sellbuyIouSelectors[0]).val();
-    var refIOU = $(self.sellbuyIouSelectors[1]).val();
+    var baseIOU = self.SelectModel.iou1();
+    var refIOU = self.SelectModel.iou2();
     if(baseIOU !== refIOU){
         var after = Stat.CalIOUBuySell(baseIOU, refIOU, self.txes);
-        chart.option({
-            dataSource : after.records,
-            argumentAxis:{
-                argumentType : 'numeric',
-                label : {
-                    visible : true,
-                    format : 'fixedPoint',
-                    precision : 3
-                },
-                max : after.highestRatio,
-                min : after.lowestRatio
-            }
-        });
+        if(after == null){
+            chart.option({
+                dataSource : []
+            });
+        }else{
+            chart.option({
+                dataSource : after.records,
+                argumentAxis:{
+                    argumentType : 'numeric',
+                    label : {
+                        visible : true,
+                        format : 'fixedPoint',
+                        precision : 3
+                    },
+                    max : after.highestRatio,
+                    min : after.lowestRatio
+                }
+            });
+        }
+
         $(strongs[0]).text((after.buyBase? after.buyBase.toFixed(3) : "0.000") + after.baseCurrency);
         $(strongs[1]).text((after.buyBase? after.buyRatio.toFixed(3) : "0.00") + after.refCurrency);
         $(strongs[2]).text((after.sellBase? after.sellBase.toFixed(3) : "0.000") + after.baseCurrency);

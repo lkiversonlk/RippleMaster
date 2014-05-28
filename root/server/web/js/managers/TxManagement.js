@@ -1,10 +1,12 @@
 
 function TxManager(){
-    this.txesInMonth = [];
-    this.monthCount = 0;
-    this.startYear = null;
-    this.startMonth = null;
+    this.txes = [];
+    this.startDate = null;
+    this.endDate = null;
+    this.minLedger = null;
+    this.maxledger = null;
     this.index = 0;
+    this.marker = null;
 }
 
 TxManager.BATCH_SIZE = 200;
@@ -12,47 +14,61 @@ TxManager.BATCH_SIZE = 200;
 TxManager.prototype = {
     AddTransactions : function(transactions){
         var self = this;
-        for(var i in transactions){
+        if(transactions.length <= 0) return;
+        transactions.reverse();
+        var txMinLedger = transactions[0].ledger;
+        var txStartDate = transactions[0].date;
+        var txMaxLedger = transactions[transactions.length - 1].ledger;
+        var txEndDate = transactions[transactions.length - 1].date;
+
+        if(!self.maxLedger){
+            self.startDate = txStartDate;
+            self.endDate = txEndDate;
+            self.minLedger = txMinLedger;
+            self.maxLedger = txMaxLedger;
+            self.txes = self.txes.concat(transactions);
+            return;
+        };
+
+        var i;
+        for(i = 0; i < transactions.length; i++){
             var tx = transactions[i];
-            var date = Util.toTimestamp(tx.date);
+            if(tx.ledger >= self.minLedger) break;
+        };
+        var length = i;
 
-            var year = date.getYear();
-            var month = date.getMonth();
-
-            if(!self.startYear || self.startYear > year || self.startMonth > month){
-                self.txesInMonth.unshift([]);
-                self.startYear = year;
-                self.startMonth = month;
-            }
-
-            self.txesInMonth[0].unshift(tx);
+        if(length > 0){
+            self.txes = transactions.slice(0, length).concat(self.txes);
+            self.minLedger = self.txes[0].ledger;
+            self.startDate = self.txes[0].date;
         }
+
+        for(; i < transactions.length; i++){
+            var tx = transactions[i];
+            if(tx.ledger > self.maxLedger) break;
+        }
+
+        if(i == transactions.length) return;
+        self.txes = self.txes.concat(transactions.slice(i));
+        self.maxLedger = self.txes[self.txes.length - 1].ledger;
+        self.endDate = self.txes[self.txes.length - 1].date;
     },
 
-    SetMonthGap : function(number){
-        this.gap = number;
-        this.index = 0;
-    },
-
-    Next : function(){
-        return this.NextN(this.gap);
-    },
-
-    NextN : function(n){
+    QueryTransaction : function(startDate, endDate){
+        var i, j;
         var self = this;
-        if(self.index >= self.txesInMonth.length){
-            return null;
+        for(i = 0; i < self.txes.length; i++){
+            var tx = self.txes[i];
+            if(tx.date >= startDate) break;
         }
-        if(n == 1){
-            return self.txesInMonth[self.index++];
+        for(j = self.txes.length - 1; j >=0 ; j--){
+            var tx = self.txes[j];
+            if(tx.date <= endDate) break;
+        }
+        if(i <= j){
+            return self.txes.slice(i, j + 1);
         }else{
-            var ret = self.txesInMonth[self.index++];
-            var add = (self.NextN(n - 1));
-            if(add == null){
-                return ret;
-            }else{
-                return ret.concat(add);
-            }
+            return [];
         }
     }
 }

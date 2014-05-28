@@ -9,7 +9,8 @@ function MainPage(clientMaster){
 MainPage.prototype = {
     initPage : function(){
         var self = this;
-        $(".selectpicker").selectpicker();
+        self.tradePage = new TradePanel($("#trade-content"), self.accMgr);
+
     },
     initBinding : function() {
         var self = this;
@@ -18,10 +19,9 @@ MainPage.prototype = {
         });
         ko.applyBindings(self.accMgr.accInfo, $("#account-title-text")[0]);
         ko.applyBindings(self.accMgr.accInfo, $("#account-content")[0]);
-        ko.applyBindings(self.accMgr.accInfo, $("#trade-content")[0]);
         ko.applyBindings(self.accMgr.accInfo, $("#conf-rp")[0]);
         ko.applyBindings(self.accMgr.accInfo, $("#conf-gt")[0]);
-
+        ko.applyBindings(self.accMgr.accInfo, $("#config-account")[0]);
 
 
         $("#add-rippleaddress-ok").click(function () {

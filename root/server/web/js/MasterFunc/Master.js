@@ -1,11 +1,13 @@
 function Master(root, accMgr){
-    this.logger = new Log();
-    this.address = $(root).find("select.baseaddress");
-    this.currency = $(root).find("select.basecurrency");
     var self = this;
-    self.control = $(root).find("div.toggle");
     self.accMgr = accMgr;
-
+    self.logger = new Log();
+    self.addressSelect = $(root).find("select.baseaddress")[0];
+    self.SelectPageModel = {
+        selectedAddress : ko.observable(),
+        Addresses : self.accMgr.accInfo.WatchAddresses
+    };
+    ko.applyBindings(self.SelectPageModel, self.addressSelect);
     /*
     $(accMgr).on(AccMgr.EVENT.ACC_INFO, function(event, account){
         $(self.address).empty();
@@ -14,8 +16,8 @@ function Master(root, accMgr){
             $.each(balances, function(i){
                 var balance = balances[i];
                 var opt = $("<option />", {
-                    value : balance.Currency()+balance.Issuer(),
-                    text : balance.Currency() + " " + Consts.GetNick(balance.Issuer())
+                    value : balance.currency+balance.issuer,
+                    text : balance.currency + " " + Consts.GetNick(balance.issuer)
                 });
                 $(self.currency).append(opt);
             });
@@ -274,10 +276,10 @@ Master.prototype.calculateCostChange = function(startBalance, baseiou, txes, ino
     for(var i in txes){
         var tx = txes[i];
         if(tx.type === Transaction.Type.Trade){
-            var sellIOU = tx.cost.Currency() + tx.cost.Issuer();
-            var sellAmount = tx.cost.Value();
-            var buyIOU = tx.amount.Currency() + tx.amount.Issuer();
-            var buyAmount = tx.amount.Value();
+            var sellIOU = tx.cost.currency + tx.cost.issuer;
+            var sellAmount = tx.cost.value;
+            var buyIOU = tx.amount.currency + tx.amount.issuer;
+            var buyAmount = tx.amount.value;
             //the sell only reduce cost, but the buy will change cost
             if(!iouBase[buyIOU]){
                 iouBase[buyIOU] = {iou:buyIOU, value:0, cost: 0};
@@ -289,8 +291,8 @@ Master.prototype.calculateCostChange = function(startBalance, baseiou, txes, ino
         }else{
             if(tx.type === Transaction.Type.Send){
                 /*
-                var sendIOU = tx.cost.Currency() + tx.cost.Issuer();
-                var sendAmount = tx.cost.Value();
+                var sendIOU = tx.cost.currency + tx.cost.issuer;
+                var sendAmount = tx.cost.value;
                 var sendCost = null;
                 for(var i in inout.inouts()){
                     if(inout.inouts()[i].iou === sendIOU && inout.inouts()[i].type === tx.type){
@@ -303,8 +305,8 @@ Master.prototype.calculateCostChange = function(startBalance, baseiou, txes, ino
                 //iouBase[sendIOU].value -= sendAmount;
                 */
             }else if(tx.type === Transaction.Type.Receive){
-                var receiveIOU = tx.amount.Currency() + tx.amount.Issuer();
-                var receiveAmount = tx.amount.Value();
+                var receiveIOU = tx.amount.currency + tx.amount.issuer;
+                var receiveAmount = tx.amount.value;
                 var receiveCost = null;
                 for(var i in inout.inouts()){
                     if(inout.inouts()[i].iou === receiveIOU && inout.inouts()[i].type === tx.type){

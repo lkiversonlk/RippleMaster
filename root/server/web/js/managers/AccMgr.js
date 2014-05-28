@@ -13,7 +13,7 @@
 function AccMgr(ClMaster){
     this.rpMaster = ClMaster;
     this.accInfo = new AccountPage(ClMaster);
-    this.txes = {};
+    this.txMgrs = {};
     this.mapper = {};
     var self = this;
     $(this).bind(AccMgr.EVENT.ACC_INFO, function(){
@@ -55,12 +55,6 @@ AccMgr.prototype.GetAccInfo = function(){
     )
 };
 
-AccMgr.prototype.SetAccInfo = function(accData){
-    var self = this;
-    self.accInfo = accData;
-    $(self).trigger(AccMgr.EVENT.ACC_INFO, self.accInfo);
-};
-
 AccMgr.prototype.AddRpAddress = function(address, nickname){
     var self = this;
     var found = false;
@@ -73,9 +67,8 @@ AccMgr.prototype.AddRpAddress = function(address, nickname){
     if(!found){
         self.accInfo.WatchAddresses.push(new AddressPage(address, nickname));
     }
-    //self.PushSync();
     $(self).trigger(AccMgr.EVENT.ACC_INFO, self.accInfo);
-    //self.GetRpBalance();
+    self.SyncRPAddresses();
 };
 
 AccMgr.prototype.AddGtNick = function(address, nickname){
@@ -90,11 +83,11 @@ AccMgr.prototype.AddGtNick = function(address, nickname){
     if(!found){
         self.accInfo.Gateways.push(new AddressPage(address, nickname));
     }
-    //self.PushSync();
     $(self).trigger(AccMgr.EVENT.ACC_INFO, self.accInfo);
-    //self.GetRpBalance();
+    self.SyncRPAddresses();
 };
 
+/*
 AccMgr.prototype.RemoveRpAddress = function(address){
     var self = this;
     var remove = -1;
@@ -108,123 +101,70 @@ AccMgr.prototype.RemoveRpAddress = function(address){
     $(self).trigger(AccMgr.EVENT.ACC_INFO, self.accInfo);
     //self.GetRpBalance();
 };
-
+*/
 AccMgr.prototype.GetAllAddressInfo = function(){
     var self = this;
     self.accInfo.GetAllAddressInfo();
 };
 
-AccMgr.prototype.GetRpBalance = function(address, callback){
-    var self = this;
-    if(address){
-        self.rpMaster.AddrBalance(address, function(result, addrBal){
-            if(result === Common.RESULT.SUCC){
-                $(self).trigger(AccMgr.EVENT.ACC_BASIC, addrBal);
-                if(self.addressBalances[addrBal.address]){
-                    self.addressBalances[addrBal.address].Update(addrBal);
-                }else{
-                    self.addressBalances[addrBal.address] = new AddressBalancePage(addrBal);
-                }
-                if(callback) callback(addrBal);
-            }
-        });
-    }else{
-        for(var i in self.accInfo.rippleAddress){
-            if(self.accInfo.rippleAddress[i].addressType == 0){
-                var addr = self.accInfo.rippleAddress[i].address;
-                self.rpMaster.AddrBalance(addr, function(result, addrBal){
-                    if(result === Common.RESULT.SUCC){
-                        $(self).trigger(AccMgr.EVENT.ACC_BASIC, addrBal);
-                        if(self.addressBalances[addrBal.address]){
-                            self.addressBalances[addrBal.address].Update(addrBal);
-                        }else{
-                            self.addressBalances[addrBal.address] = new AddressBalancePage(addrBal);
-                        }
-                    }
-                });
-            }
-        }
-    }
-};
-
 AccMgr.prototype.GetRpBalanceInLedger = function(address, ledger, callback){
-    this.rpMaster.AddrBalanceInLedger(address, ledger, callback);
+    var self = this;
+    self.rpMaster.AddrBalanceInLedger(address, ledger, function(result, address){
+        if(result === Common.RESULT.SUCC){
+            var ret = new AddressPage(address, self.mapper[address.address]);
+            ret.updateBalances(address.balances);
+            callback(result, ret);
+        }else{
+            callback(result);
+        }
+    });
 };
 
-AccMgr.prototype.GetTransaction = function(address, startTime, endTime, callback){
-    var start = Util.fromTimestamp(startTime);
-    var end = Util.fromTimestamp(endTime);
-    var filter = function(txes, start, end){
-        var s,e;
-        for(s = txes.length - 1; s >= 0; s--){
-            if(txes[s].date >= start) break;
-        };
-        for(e = 0; e < txes.length; e ++){
-            if(txes[e].date <= end) break;
-        }
-
-        if(e <= s){
-            return txes.slice(e, s + 1);
-        }
-        return [];
-    };
-
+/**
+ * callback(result, more[bool], txes[only return at the last])
+ * @param address
+ * @param startTime
+ * @param endTime
+ * @param callback
+ * @constructor
+ */
+AccMgr.prototype.GetTransaction = function(address, start, end, callback){
     var self = this;
-    if(!self.txes[address]){
+    if(!self.txMgrs[address]){
+        self.txMgrs[address] = new TxManager();
         self.rpMaster.ConsultTransactions(address, null, function(result, marker, txes){
             if(result === Common.RESULT.SUCC){
-                var txStart = (txes[txes.length -1].date);
-                var txEnd = (txes[0].date);
-                if(!self.txes[address]){
-                    self.txes[address] = {start : txStart, end : txEnd, txes : txes, marker : marker};
-                }else{
-                    self.txes[address].marker = marker;
-                    self.txes[address].start = txStart;
-                    self.txes[address].txes = self.txes[address].txes.concat(txes);
-                }
-
+                self.txMgrs[address].AddTransactions(txes);
+                self.txMgrs[address].marker = marker;
                 if(marker){
-                    if(txStart > startTime){
+                    if(self.txMgrs[address].startDate > start){
+                        callback(Common.RESULT.SUCC, true);
                         return true;
                     }
                 }
-                //all the data has been loaded
-                callback(Common.RESULT.SUCC, filter(self.txes[address].txes, start, end));
+                callback(Common.RESULT.SUCC, false, self.txMgrs[address].QueryTransaction(start, end));
             }else{
                 callback(Common.RESULT.FAIL)
             }
         })
     }else{
-        if(self.txes[address].start >= start && self.txes[address].marker){
-            self.rpMaster.ConsultTransactions(address, self.txes[address].marker, function(result, marker, txes){
-                self.txes[address].marker = marker;
-                self.txes[address].start = txes[txes.length - 1].date;
-                self.txes[address].txes = self.txes[address].txes.concat(txes);
+        if(!self.txMgrs[address].startDate || self.txMgrs[address].startDate >= start){
+            self.rpMaster.ConsultTransactions(address, self.txMgrs[address].marker, function(result, marker, txes){
+                self.txMgrs[address].marker = marker;
+                self.txMgrs[address].AddTransactions(txes);
                 if(marker){
-                    if(self.txes[address].start > startTime){
+                    if(self.txMgrs[address].startDate >= start){
+                        callback(Common.RESULT.SUCC, true);
                         return true;
                     }
                 }
-                callback(Common.RESULT.SUCC, filter(self.txes[address].txes, start, end));
+                callback(Common.RESULT.SUCC, false, self.txMgrs[address].QueryTransaction(start, end));
             })
         }else{
             //already have or can't get more
-            callback(Common.RESULT.SUCC, filter(self.txes[address].txes, start, end));
+            callback(Common.RESULT.SUCC, false, self.txMgrs[address].QueryTransaction(start, end));
         }
     }
-};
-
-AccMgr.prototype.PushSync = function(){
-    var self = this;
-    $.ajax(
-        {
-            url : "masteraccount",
-            type : "POST",
-            dataType : "json",
-            data : {accountInfo : self.accInfo},
-            success : function(){}
-        }
-    );
 };
 
 AccMgr.prototype.RpStatus = function(callback){
@@ -262,6 +202,24 @@ AccMgr.prototype.UpdateMapper = function(){
 
     }
     Consts.NickMapper = self.mapper;
+};
+
+AccMgr.prototype.SyncRPAddresses = function(){
+    var self = this;
+    var addresses = self.accInfo.GetAddressDigest();
+    var postData = {};
+    postData['comm'] = Protocol.Comm.SyncAddress;
+    postData[Protocol.Keys.Addresses] = addresses;
+
+    $.ajax(
+        {
+            url : "accountinfo",
+            type : "POST",
+            dataType : "json",
+            data : postData,
+            success : function(){}
+        }
+    );
 }
 
 
