@@ -78,6 +78,9 @@ app.use(passport.session());
 app.use(app.router);
 app.use(flash());
 
+/**
+ * Root
+ */
 app.get("/", function(req, res){
     if(req.user){
         res.sendfile("./main/ripplemaster.html");
@@ -86,11 +89,32 @@ app.get("/", function(req, res){
     }
 });
 
+/**
+ * login : current local login and google login
+ */
+app.post('/login', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login.html' }));
 
-app.post('/login',
-    passport.authenticate('local', { successRedirect: '/',
-        failureRedirect: '/login.html' }));
+//google login
+app.get('/auth/google',passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/userinfo.email'] }),function(req, res){});
+app.get('/oauth2callback', passport.authenticate('google', {successRedirect:'/',failureRedirect:'/login.html'}));
 
+/**
+ * logout
+ */
+app.get('/logout', function(req, res){
+    if(req.user){
+        req.logout();
+    };
+    res.redirect('/');
+});
+
+/**
+ * recapcha
+ * @param ip
+ * @param chanllenge
+ * @param response
+ * @param callback
+ */
 function verify(ip, chanllenge, response, callback){
     var data = {
         remoteip : ip,
@@ -135,6 +159,9 @@ function verify(ip, chanllenge, response, callback){
     request.end();
 }
 
+/**
+ * register
+ */
 app.post('/register', function(req, res) {
     var account = req.body.account;
     var password = req.body.password;
@@ -162,6 +189,10 @@ app.post('/register', function(req, res) {
            });
     */
 });
+
+/**
+ * basic website stats
+ */
 app.get("/rpstatus", function(req, res){
     if(req.user){
         host.RpStatus(function(result, status){
@@ -174,6 +205,9 @@ app.get("/rpstatus", function(req, res){
     }
 });
 
+/**
+ * account information get/set
+ */
 app.get('/accountinfo', function(req, res){
     if(req.user){
         var user = req.user;
@@ -191,13 +225,6 @@ app.get('/accountinfo', function(req, res){
     }
 });
 
-app.get('/logout', function(req, res){
-    if(req.user){
-        req.logout();
-    };
-    res.redirect('/');
-});
-
 app.post('/accountinfo', function(req, res){
     if(req.user){
         var user = req.user;
@@ -213,6 +240,9 @@ app.post('/accountinfo', function(req, res){
     }
 });
 
+/**
+ * get address' balance, offfers
+ */
 app.get("/addressinfo", function(req, res){
     if(req.user){
         var address = req.query.address;
@@ -234,12 +264,32 @@ app.get("/addressinfo", function(req, res){
     }
 });
 
-//google login
-app.get('/auth/google',passport.authenticate('google', {scope: ['https://www.googleapis.com/auth/userinfo.profile','https://www.googleapis.com/auth/userinfo.email'] }),function(req, res){});
+/**
+ * MasterCost Init, Set
+ */
+app.get("/mastercost", function(req, res){
+    if(req.user){
+        var type = req.user.substr(0,1);
+        var unique = req.user.substr(1);
+        var address = req.body.address;
+        host.GetMasterCostListOfAccount(type, unique, address, function(result, costs){
+            if(result != Common.RESULT.SUCC){
+                req.pause();
+                res.status = 400;
+                res.end("no costs found");
+            }else{
+                res.json(costs);
+            }
+        })
+    }
+});
 
-app.get('/oauth2callback', passport.authenticate('google', {successRedirect:'/',failureRedirect:'/login.html'}));
+/**
+ * Transaction update
+ */
+app.get("/txupload", function(req, res){
 
-
+});
 
 host.Work(function(){
     app.listen(80);

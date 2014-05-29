@@ -50,7 +50,6 @@ Server.prototype.Connect = function(){
 
     ws.onerror = function(e){
         logger.log(Log.WORK_LEVEL, "connection to " + self._url + " failed on error: " + e.reason);
-        self.emit("error", e);
     }
 
     ws.onclose = function(){
@@ -67,7 +66,6 @@ Server.prototype.Connect = function(){
 
     ws.on('error', function(error){
         logger.log(Log.WORK_LEVEL, "faile due to error " + error);
-        self.emit("error", error);
     })
 };
 

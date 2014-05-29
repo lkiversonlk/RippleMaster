@@ -7,7 +7,38 @@ function Master(root, accMgr){
         selectedAddress : ko.observable(),
         Addresses : self.accMgr.accInfo.WatchAddresses
     };
+    self.IOUSelectModel = {
+        selectedIOU : ko.observable(),
+        BalancePages : ko.observableArray()
+    };
+
     ko.applyBindings(self.SelectPageModel, self.addressSelect);
+
+    self.progressBar = new ProgressBar($(root).find("div.progress"), null);
+
+    self.baseSelect = $(root).find("div.baseiouSelect");
+
+
+    ko.applyBindings(self.IOUSelectModel, $(self.baseSelect).find("select.baseIOU")[0]);
+
+    $(self.baseSelect).hide();
+    $(root).find("button.startMaster").click(function(){
+        self.UpdateBaseIOUSelect();
+        self.progressBar.SetProgress(0, "Trying to load your previous calculate result");
+        self.progressBar.SetProgress(20);
+
+        self.accMgr.LoadMasterCost(self.SelectPageModel.selectedAddress(), function(result, costs){
+            if(result != Common.RESULT.SUCC || !costs || costs.length == 0){
+                self.progressBar.SetProgress(100, "Please run RP Master on your address");
+                $(self.baseSelect).toggle(1000);
+            }
+        });
+
+        /*
+        self.StartMaster($(self.address).val(), $(self.currency).val());
+        $(self.control).toggle();
+        */
+    });
     /*
     $(accMgr).on(AccMgr.EVENT.ACC_INFO, function(event, account){
         $(self.address).empty();
@@ -50,15 +81,24 @@ function Master(root, accMgr){
     });
 
     */
-    $(self.currency).selectpicker();
-    $(self.address).selectpicker();
 
-    $($(root).find("button.startmaster")).click(function(){
-        self.StartMaster($(self.address).val(), $(self.currency).val());
-        $(self.control).toggle();
-    });
+
 
     self.root = $(root).find("div.rpMaster-panel");
+};
+
+Master.prototype.UpdateBaseIOUSelect = function(){
+    var self = this;
+    var address = self.SelectPageModel.selectedAddress();
+    self.IOUSelectModel.BalancePages.removeAll();
+    for(var i in self.accMgr.accInfo.WatchAddresses()){
+        var addressPage = self.accMgr.accInfo.WatchAddresses()[i];
+        if(addressPage.address === address){
+            for(var i in addressPage.BalancePages()){
+                self.IOUSelectModel.BalancePages.push(addressPage.BalancePages()[i]);
+            }
+        }
+    }
 };
 
 Master.prototype.StartMaster = function(address, baseiou){

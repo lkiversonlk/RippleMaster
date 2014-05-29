@@ -189,6 +189,21 @@ Host.prototype.AddressInfo = function(address, ledger, callback){
     this.rpMaster.AddressInfo(address, ledger, callback);
 };
 
+Host.prototype.GetMasterCostListOfAccount = function(type, unique, address, callback){
+    var self = this;
+    self.db.GetMasterCostListOfAccount(type, unique, address, function(result, costs){
+        if(result === DB.RESULT.SUCC){
+            callback(Common.RESULT.SUCC, costs);
+        }else{
+            callback(Common.RESULT.FAIL);
+        }
+    });
+};
+
+Host.prototype.AddMasterCostToAccount = function(type, unique, address, callback){
+
+};
+
 /*
 Host.prototype.UpdateAccountInfo = function(accountInfo, callback){
     var self = this;

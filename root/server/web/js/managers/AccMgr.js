@@ -21,7 +21,7 @@ function AccMgr(ClMaster){
         self.UpdateMapper();
     });
 
-    setInterval(self.SyncRPAddresses.bind(self), 10000);
+    setInterval(self.SyncRPAddresses.bind(self), 5 * 60 * 1000);
 };
 
 AccMgr.EVENT = {
@@ -60,6 +60,10 @@ AccMgr.prototype.GetAccInfo = function(){
 AccMgr.prototype.AddRpAddress = function(address, nickname){
     var self = this;
     var found = false;
+    if(self.accInfo.WatchAddresses().length > 3){
+        alert("sorry, currently only 4 watch address is allowed");
+        return;
+    }
     for(var i in self.accInfo.WatchAddresses()){
         if(self.accInfo.WatchAddresses()[i].address == address){
             found = true;
@@ -88,7 +92,6 @@ AccMgr.prototype.AddGtNick = function(address, nickname){
     $(self).trigger(AccMgr.EVENT.ACC_INFO, self.accInfo);
     self.SyncRPAddresses();
 };
-
 /*
 AccMgr.prototype.RemoveRpAddress = function(address){
     var self = this;
@@ -187,6 +190,22 @@ AccMgr.prototype.RpStatus = function(callback){
 AccMgr.prototype.ManualTxLoad = function(address, size, callback){
     this.rpMaster.LoadAllTransactions(address, size, null, callback);
 };
+
+AccMgr.prototype.LoadMasterCost = function(address, callback){
+    var self = this;
+    $.ajax({
+        url : "mastercost",
+        type : "GET",
+        dataType : "json",
+        data : {address : address},
+        success : function(json){
+            callback(Common.RESULT.SUCC, json);
+        },
+        error : function(xhr){
+            callback(Common.RESULT.FAIL);
+        }
+    })
+}
 
 AccMgr.prototype.Start = function(){
     var self = this;

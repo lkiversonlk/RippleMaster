@@ -183,8 +183,23 @@ function DB(connectionStr, username, passwd) {
             }
         };
         model.save();
-    }
+    };
 
+    self.SelectTxStage = function(address, fields, callback){
+        var query = AccountTx.findOne({address : address});
+        query.select(fields);
+        query.exec(function(err, txState){
+            if(err){
+                callback(DB.RESULT.FAIL);
+            }else{
+                if(txState){
+                    callback(DB.RESULT.SUCC, txState);
+                }else{
+                    callback(DB.RESULT.FAIL);
+                }
+            }
+        })
+    };
     /*
     self.fetchTx = function(account, callback){
         AccountTx.findOne({name : account}, function(err, doc){
@@ -203,6 +218,7 @@ function DB(connectionStr, username, passwd) {
     self.Stop = function(){
         mongoose.disconnect();
     };
+
 }
 
 DB.localType = 'l';
