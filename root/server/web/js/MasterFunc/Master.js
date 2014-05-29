@@ -22,7 +22,8 @@ function Master(root, accMgr){
     ko.applyBindings(self.IOUSelectModel, $(self.baseSelect).find("select.baseIOU")[0]);
 
     $(self.baseSelect).hide();
-    $(root).find("button.startMaster").click(function(){
+    self.digButton = $(root).find("button.startMaster");
+    $(self.digButton).click(function(){
         self.UpdateBaseIOUSelect();
         self.progressBar.SetProgress(0, "Trying to load your previous calculate result");
         self.progressBar.SetProgress(20);
@@ -31,60 +32,17 @@ function Master(root, accMgr){
             if(result != Common.RESULT.SUCC || !costs || costs.length == 0){
                 self.progressBar.SetProgress(100, "Please run RP Master on your address");
                 $(self.baseSelect).toggle(1000);
+                $(self.baseSelect).find("button.RPMaster").one('click', function(){
+                    $(self.baseSelect).toggle(1000);
+                    self.StartMaster(self.SelectPageModel.selectedAddress(), self.IOUSelectModel.selectedIOU());
+                })
+            }else{
+
             }
         });
-
-        /*
-        self.StartMaster($(self.address).val(), $(self.currency).val());
-        $(self.control).toggle();
-        */
     });
-    /*
-    $(accMgr).on(AccMgr.EVENT.ACC_INFO, function(event, account){
-        $(self.address).empty();
-        var updateIOU = function(balances){
-            $(self.currency).empty();
-            $.each(balances, function(i){
-                var balance = balances[i];
-                var opt = $("<option />", {
-                    value : balance.currency+balance.issuer,
-                    text : balance.currency + " " + Consts.GetNick(balance.issuer)
-                });
-                $(self.currency).append(opt);
-            });
-            $(self.currency).selectpicker('refresh');
-        };
-
-        $(self.address).on('change', function(){
-            var address = $(self.address).val();
-            accMgr.GetRpBalance(address, function(addr){
-                updateIOU(addr.balances);
-            });
-
-            accMgr.GetRpBalance(address);
-        });
-
-        $.each(account.rippleAddress, function(i){
-            var address = account.rippleAddress[i];
-            if(address.addressType == 0){
-                var opt = $("<option />", {
-                    value : address.address,
-                    text : address.nickname
-                });
-                $(self.address).append(opt);
-            }
-        });
-        $(self.address).selectpicker('refresh');
-        accMgr.GetRpBalance($(self.address).val(), function(addr){
-            updateIOU(addr.balances);
-        })
-    });
-
-    */
-
-
-
     self.root = $(root).find("div.rpMaster-panel");
+    $(self.root).hide();
 };
 
 Master.prototype.UpdateBaseIOUSelect = function(){
@@ -103,53 +61,31 @@ Master.prototype.UpdateBaseIOUSelect = function(){
 
 Master.prototype.StartMaster = function(address, baseiou){
     var self = this;
-    var progressbar = new ProgressBar($("#loading"), "Start to load your transactions");
-
-    progressbar.Show();
-    var txManager = new TxManager();
-    self.accMgr.ManualTxLoad(address, 80, function(result, more, txes){
+    $(self.digButton).hide();
+    self.progressBar.SetProgress(0, "Loading Transactions");
+    self.accMgr.GetTransaction(address, 454109990, -1, function(result, more, txes){
         if(result === Common.RESULT.SUCC){
             if(more){
-                txManager.AddTransactions(txes);
-
-                //debug
-                /*
-                var startLedger = txes[txes.length - 1].ledger;
-                var date = txes[txes.length -1].date;
-                self.accMgr.GetRpBalanceInLedger(address, startLedger, function(result, addrBalance){
-                    if(result === Common.RESULT.SUCC){
-                        self.Analyze(address, baseiou, addrBalance, date, txManager);
-                    }
-                });
-                setTimeout(progressbar.Close.bind(progressbar), 3000);
-                return false;
-                */
-
-                progressbar.SetProgress(100 * (1 - progressbar.Left() * 0.7), "Loading transactions");
-                return true;
-
+                self.progressBar.SetProgress(100 * (1 - self.progressBar.Left() * 0.8), null);
             }else{
-                function cleanTxInLedger(txes, ledger){
-                    for(var i = txes.length - 1; i >= 0; i--){
-                        if(txes[i].ledger === ledger){
-                            txes.splice(i, 1);
+                if(!txes || txes.length == 0){
+                    self.progressBar.SetProgress(80, "Fail to load transactions or no transactions in this address");
+                }else{
+                    self.progressBar.SetProgress(0, "Loading your account starting balance");
+                    var monthTxMgr = new MonthTxMgr(txes);
+                    var startLedger = txes[0].ledger - 1;
+                    var startTime = txes[0].date;
+                    self.accMgr.GetRpBalanceInLedger(address, startLedger, function(result, addrBal){
+                        if(result === Common.RESULT.SUCC){
+                            self.progressBar.SetProgress(100, "Loaded your account starting balance");
+                            self.Analyze(address, baseiou, addrBal, startTime, monthTxMgr);
                         }else{
-                            return;
+                            self.progressBar.SetProgress(80, "Fail to load your account starting balance");
+
                         }
-                    }
+                    });
                 }
-                var startLedger = txes[txes.length - 1].ledger;
-                var date = txes[txes.length -1].date;
-                cleanTxInLedger(txes, startLedger);
-                txManager.AddTransactions(txes);
-                txManager.SetMonthGap(1);
-                self.accMgr.GetRpBalanceInLedger(address, startLedger, function(result, addrBalance){
-                    if(result === Common.RESULT.SUCC){
-                        self.Analyze(address, baseiou, addrBalance, date, txManager);
-                    }
-                });
-                progressbar.SetProgress(100, "finished @" + txManager.early);
-                setTimeout(progressbar.Close.bind(progressbar), 3000);
+
             }
         }
     });
@@ -158,13 +94,14 @@ Master.prototype.StartMaster = function(address, baseiou){
 Master.prototype.Analyze = function(address, baseiou, startBalance, startDate, txManager){
     var self = this;
     var balanceRoot = $(self.root).find("div.balance-stat");
-    var addressBalance = new AddressBalancePage(startBalance);
-    self.timeLabel = $(balanceRoot).find("label.time");
-    $(self.timeLabel).text("Your account balance at time " + Util.formatDate(Util.toTimestamp(startDate), 'MM/dd/yyyy hh:mm:ss'))
-    var balancePanel = new BalancePanel(balanceRoot, addressBalance);
+    ko.cleanNode(balanceRoot[0]);
+    ko.applyBindings(startBalance, balanceRoot[0]);
+    $(self.root).toggle(1000);
+    self.timeP = $(self.root).find("p.time");
+    $(self.timeP).text("Your account balance at time " + Util.formatDate(Util.toTimestamp(startDate), 'MM/dd/yyyy hh:mm:ss'))
     var dataSegRoot = $(self.root).find("div.data-seg");
-    $(dataSegRoot).toggle();
-    self.subAnalyze(dataSegRoot, address, baseiou, addressBalance, startDate, txManager, true);
+    $(dataSegRoot).hide();
+    self.subAnalyze(dataSegRoot, address, baseiou, startBalance, startDate, txManager, true);
 };
 
 Master.prototype.subAnalyze = function(root, address, baseiou, startBalance, startTime, txManager, needEstimation){
@@ -173,13 +110,13 @@ Master.prototype.subAnalyze = function(root, address, baseiou, startBalance, sta
         function preProcess(addrBalancePage, baseiou){
             var baseCurrency = baseiou.substr(0,3);
             var baseIssuer = baseiou.substr(3);
-            var balancePage = addrBalancePage.balancesPage()[0];
+            var balancePage = addrBalancePage.BalancePages()[0];
             if(!balancePage.mastercostcurrency() || (balancePage.mastercostcurrency() !== baseCurrency) || (balancePage.mastercostissuer() !== baseIssuer)){
-                for(var i = 0; i < addrBalancePage.balancesPage().length; i++){
-                    var balancePage = addrBalancePage.balancesPage  ()[i];
+                for(var i = 0; i < addrBalancePage.BalancePages().length; i++){
+                    var balancePage = addrBalancePage.BalancePages()[i];
                     balancePage.mastercostcurrency(baseCurrency);
                     balancePage.mastercostissuer(baseIssuer);
-                    if(balancePage.currency !== baseCurrency || balancePage.issuer !== baseIssuer){
+                    if(balancePage.currency !== baseCurrency || balancePage.issuer() !== baseIssuer){
                         balancePage.mastercostvalue(null);
                     }else{
                         balancePage.mastercostvalue(1);
@@ -187,23 +124,27 @@ Master.prototype.subAnalyze = function(root, address, baseiou, startBalance, sta
                 }
             }
         };
+
         function checkEstimation(addrBalancePage){
-            for(var i = 0; i < addrBalancePage.balancesPage().length; i++){
-                var balancePage = addrBalancePage.balancesPage()[i];
+            for(var i = 0; i < addrBalancePage.BalancePages().length; i++){
+                var balancePage = addrBalancePage.BalancePages()[i];
                 if(!balancePage.mastercostvalue()){
-                    alert("please estimate the cost for " + balancePage.currency + " " + Consts.GetNick(balancePage.issuer));
+                    alert("please estimate the cost for " + balancePage.currency + " " + balancePage.Issuer());
                     return false;
                 }
             }
             return true;
         };
+
         preProcess(startBalance, baseiou);
         var estimationDiv = $("<div />", {
             class : "row white-background",
             "data-bind" : "template: {name:'cost-estimate-template', data:$root}",
-            'style' : "border : 1px solid #000; border-radius:10px"
+            'style' : "border-radius:10px"
         });
+
         self.root.append(estimationDiv);
+
         ko.applyBindings(startBalance, estimationDiv[0]);
         $(estimationDiv).find("button").click(function(){
             if(checkEstimation(startBalance)){
@@ -213,8 +154,6 @@ Master.prototype.subAnalyze = function(root, address, baseiou, startBalance, sta
                     $(estimationDiv).remove();
                 },1200);
                 self.subAnalyze(root, address, baseiou, startBalance, startTime, txManager, false);
-            }else{
-
             }
         });
         return;
@@ -230,10 +169,9 @@ Master.prototype.subAnalyze = function(root, address, baseiou, startBalance, sta
         }else{
             var maxLedger = txes[txes.length -1].ledger;
             var rTime = txes[txes.length -1].date;
-            $(self.timeLabel).text("Your account balance at time " + Util.formatDate(Util.toTimestamp(startTime), 'MM/dd/yyyy hh:mm:ss'))
-            self.accMgr.GetRpBalanceInLedger(address, maxLedger, function(result, addrBalance){
+            $(self.timeP).text("Your account balance at time " + Util.formatDate(Util.toTimestamp(startTime), 'MM/dd/yyyy hh:mm:ss'))
+            self.accMgr.GetRpBalanceInLedger(address, maxLedger, function(result, rBalPage){
                 if(result === Common.RESULT.SUCC){
-                    var rBalPage = new AddressBalancePage(addrBalance);
                     var title = "Your transactions betweeen " + Util.formatDate(Util.toTimestamp(startTime), 'MM/dd/yyyy hh:mm:ss') + " and " + Util.formatDate(Util.toTimestamp(rTime), 'MM/dd/yyyy hh:mm:ss');
                     var masterPage = new ColDataView(root, baseiou, title);
                     var data = self.analyzeInout(txes, baseiou)
@@ -243,12 +181,13 @@ Master.prototype.subAnalyze = function(root, address, baseiou, startBalance, sta
                         if(self.procceedNext(data)){
                             //add analyze
                             self.calculateCostChange(startBalance, baseiou, txes, data, masterPage);
+                            self.SyncCostToServer(startBalance, maxLedger, rTime, baseiou);
                             function updateValue(bal1, bal2){
-                                for(var i in bal1.balancesPage()){
-                                    var bal1Page = bal1.balancesPage()[i];
-                                    for(var j in bal2.balancesPage()){
-                                        var bal2Page = bal2.balancesPage()[j];
-                                        if(bal1Page.currency == bal2Page.currency && bal1Page.issuer == bal2Page.issuer){
+                                for(var i in bal1.BalancePages()){
+                                    var bal1Page = bal1.BalancePages()[i];
+                                    for(var j in bal2.BalancePages()){
+                                        var bal2Page = bal2.BalancePages()[j];
+                                        if(bal1Page.currency == bal2Page.currency && bal1Page.issuer() == bal2Page.issuer()){
                                             bal1Page.value(bal2Page.value());
                                         }
                                     }
@@ -303,10 +242,10 @@ Master.prototype.analyzeInout = function(txes, baseiou){
 Master.prototype.calculateCostChange = function(startBalance, baseiou, txes, inout, masterPage){
     var baseDepose = Util.deposeIOU(baseiou);
     var iouBase = {};
-    for(var i in startBalance.balancesPage()){
-        var balancePage = startBalance.balancesPage()[i];
+    for(var i in startBalance.BalancePages()){
+        var balancePage = startBalance.BalancePages()[i];
         var iouBaseItem = {
-            iou : balancePage.currency + balancePage.issuer,
+            iou : balancePage.currency + balancePage.issuer(),
             value : balancePage.value(),
             cost : balancePage.mastercostvalue()
         };
@@ -367,9 +306,9 @@ Master.prototype.calculateCostChange = function(startBalance, baseiou, txes, ino
     for(var iou in iouBase){
         if(iouBase.hasOwnProperty(iou)){
             var found = false;
-            for(var i in startBalance.balancesPage()){
-                var balancePage = startBalance.balancesPage()[i];
-                var iouBal = balancePage.currency + balancePage.issuer;
+            for(var i in startBalance.BalancePages()){
+                var balancePage = startBalance.BalancePages()[i];
+                var iouBal = balancePage.currency + balancePage.issuer();
                 if(iou == iouBal){
                     found = true;
                     balancePage.mastercostvalue(iouBase[iou].cost);
@@ -382,12 +321,18 @@ Master.prototype.calculateCostChange = function(startBalance, baseiou, txes, ino
                 balPage.mastercostcurrency(baseDepose.currency);
                 balPage.mastercostissuer(baseDepose.issuer);
                 balPage.mastercostvalue(iouBase[iou].cost);
-                startBalance.balancesPage.push(balPage);
+                startBalance.BalancePages.push(balPage);
             }
         }
     }
 };
 
+Master.prototype.SyncCostToServer = function(addrBalance, ledger, time, baseiou){
+    for(var i in addrBalance.BalancePages()){
+        var balancePage = addrBalance.BalancePages()[i];
+
+    }
+};
 
 function inoutModel(baseiou){
     this.title = "In&Out Flow";
@@ -416,4 +361,34 @@ function inoutData(type, iou, amount){
         return Util.composeIOU(depose.currency, Consts.GetNick(depose.issuer));
     })
 }
+
+function MonthTxMgr(txes){
+    var self = this;
+    self.months = [];
+    self.curYear = null;
+    self.curMonth = null;
+    self.index = 0;
+    for(var i in txes){
+        var tx = txes[i];
+        var date = Util.toTimestamp(tx.date);
+        var year = date.getYear();
+        var month = date.getMonth();
+        if(!self.curYear || year != self.curYear || month != self.curMonth){
+            self.months.push([]);
+            self.curYear = year;
+            self.curMonth = month;
+        }
+        self.months[self.months.length - 1].push(tx);
+    }
+
+    self.Next = function(){
+        if(self.index > (self.months.length - 1)){
+            return null;
+        }else{
+            return self.months[self.index++];
+        }
+    }
+};
+
+
 

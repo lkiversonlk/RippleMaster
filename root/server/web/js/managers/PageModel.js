@@ -4,6 +4,7 @@ function BalancePage(balance){
     self.currency = balance.currency;
     self.issuer = ko.observable(balance.issuer);
     self.value = ko.observable(balance.value);
+    self.Value = ko.observable(self.value().toFixed(3));
     self.mastercostvalue = ko.observable();
     self.mastercostcurrency = ko.observable();
     self.mastercostissuer = ko.observable();
@@ -23,7 +24,7 @@ function BalancePage(balance){
     self.iou = self.currency + self.issuer();
     self.MasterCost = ko.computed(function(){
         if(self.mastercostvalue()){
-            return self.mastercostvalue() + " " + self.mastercostcurrency() + " " + Consts.GetNick(self.mastercostissuer());
+            return self.mastercostvalue().toFixed(3) + " " + self.mastercostcurrency() + " " + Consts.GetNick(self.mastercostissuer());
         }else{
             return "run RP Master to get cost";
         }

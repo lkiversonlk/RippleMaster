@@ -2,7 +2,7 @@ function ColDataView(root, baseiou, title){
     var self = this;
     self.baseiou = baseiou;
     var div = $("<div />", {
-        style : "border: 1px solid #000; border-radius : 10px"
+        style : "border-radius : 10px"
     });
     $(root).append(div);
     self.root = div;
@@ -11,8 +11,8 @@ function ColDataView(root, baseiou, title){
 
 ColDataView.prototype.initialLayout = function(title){
     var self = this;
-    var titleDiv = $("<div />", {
-        class : "master-col-title text-center black-background white-text",
+    var titleDiv = $("<label />", {
+        class : "master-col-title form-control text-center black-background white-text",
         text : title
     });
     var contentDiv = $("<div />", {
@@ -28,7 +28,7 @@ ColDataView.prototype.initialLayout = function(title){
     });
 
     InOut.append($("<label />", {
-        class : "form-control text-center green-background",
+        class : "text-center green-background full-width",
         text : "Send & Receive transactions"
     }));
     var div = $("<div />",{
@@ -40,7 +40,7 @@ ColDataView.prototype.initialLayout = function(title){
         class : "col-md-6"
     });
     tradeTxDiv.append($("<label />", {
-        class : "form-control text-center green-background",
+        class : "text-center green-background full-width",
         text : "Trade transactions"
     }));
     var div = $("<div />",{
@@ -58,21 +58,22 @@ ColDataView.prototype.initialLayout = function(title){
     var concluDiv = $("<div />", {
         class : "row"
     });
+    var balanCha = $("<div />", {
+        class : "col-md-12"
+    });
     var summary = $("<div />", {
-        class : "col-md-6",
+        class : "col-md-12",
         'data-bind' : "template: { name:'inout-form-template', data: data}"
     });
     self.summary = summary[0];
-    var balanCha = $("<div />", {
-        class : "col-md-6"
-    });
     self.balanceChange = new BalanceChangeBox(balanCha);
-    $(concluDiv).append(summary);
     $(concluDiv).append(balanCha);
+    $(concluDiv).append(summary);
     $(contentDiv).append(listDiv);
     $(contentDiv).append($("<div />",{class:"shadow"}));
     $(contentDiv).append(concluDiv);
     $(self.root).append(titleDiv);
+    $(self.root).append($("<div />", {class:"shadow"}));
     $(self.root).append(contentDiv);
     var div = $("<div />");
     var okButton = $("<button />", {

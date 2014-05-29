@@ -61,9 +61,14 @@ TxManager.prototype = {
             var tx = self.txes[i];
             if(tx.date >= startDate) break;
         }
-        for(j = self.txes.length - 1; j >=0 ; j--){
-            var tx = self.txes[j];
-            if(tx.date <= endDate) break;
+
+        if(endDate == -1){
+            j = self.txes.length - 1;
+        }else{
+            for(j = self.txes.length - 1; j >=0 ; j--){
+                var tx = self.txes[j];
+                if(tx.date <= endDate) break;
+            }
         }
         if(i <= j){
             return self.txes.slice(i, j + 1);
