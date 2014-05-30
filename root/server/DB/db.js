@@ -214,6 +214,19 @@ function DB(connectionStr, username, passwd) {
             }
         })
     };*/
+    self.FindOrCreateMasterCost = function(type, unique, callback){
+        MasterCost.findOne({accountType : type, unique : unique}, function(err, doc){
+            if(err){
+                callback(DB.RESULT.FAIL);
+            }else if(doc){
+                callback(DB.RESULT.SUCC, doc);
+            }else{
+                var masterCost = new MasterCost({accountType : type, unique: unique, addresses : []});
+                masterCost.save();
+                callback(DB.RESULT.SUCC, masterCost);
+            }
+        })
+    }
 
     self.Stop = function(){
         mongoose.disconnect();

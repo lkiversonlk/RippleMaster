@@ -236,6 +236,33 @@ Host.prototype.RpStatus = function(callback){
     });
 };
 
+Host.prototype.SaveAccounMasterCost = function(type, unique, data){
+    var self = this;
+    self.db.FindOrCreateMasterCost(type, unique, function(result, mastercost){
+        if(result === DB.RESULT.SUCC){
+            for(var i in mastercost.addresses){
+                if(mastercost.addresses[i].address === data.address){
+                    var currentBalances = mastercost.addresses[i].states;
+                    for(var i in currentBalances){
+                        var state = currentBalances[i];
+                        if(state.ledger >= data.balances.ledger){
+                            currentBalances.splice(i);
+                            break;
+                        }
+                    }
+                    currentBalances.push(data.balances);
+                    return;
+                }
+            };
+            mastercost.addresses.push({
+                address : data.address,
+                states : [data.balances]
+            });
+            mastercost.save();
+        }
+    })
+};
+
 /*
  Host.prototype.UpdateAccountTx = function(account, callback){
  var self = this;

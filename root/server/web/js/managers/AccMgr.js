@@ -241,6 +241,17 @@ AccMgr.prototype.SyncRPAddresses = function(){
             success : function(){}
         }
     );
+};
+
+AccMgr.prototype.SyncMasterCost = function(address, data){
+    var self = this;
+    $.ajax({
+        url : "mastercost",
+        type : "POST",
+        dataType : "json",
+        data : {address : address, balances : data},
+        success : function(){}
+    })
 }
 
 

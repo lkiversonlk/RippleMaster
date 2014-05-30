@@ -162,7 +162,7 @@ Master.prototype.subAnalyze = function(root, address, baseiou, startBalance, sta
     var txes = txManager.Next();
     if(txes === null){
         //ok
-        alert("finished!");
+        self.ListMasterCost();
     }else{
         if(txes.length == 0){
             self.subAnalyze(root, address, baseiou, startBalance, startTime, txManager, false);
@@ -181,7 +181,6 @@ Master.prototype.subAnalyze = function(root, address, baseiou, startBalance, sta
                         if(self.procceedNext(data)){
                             //add analyze
                             self.calculateCostChange(startBalance, baseiou, txes, data, masterPage);
-                            self.SyncCostToServer(startBalance, maxLedger, rTime, baseiou);
                             function updateValue(bal1, bal2){
                                 for(var i in bal1.BalancePages()){
                                     var bal1Page = bal1.BalancePages()[i];
@@ -194,6 +193,7 @@ Master.prototype.subAnalyze = function(root, address, baseiou, startBalance, sta
                                 }
                             };
                             updateValue(startBalance, rBalPage);
+                            self.SyncCostToServer(startBalance, maxLedger, rTime, baseiou);
                             $(root).toggle(1500);
                             setTimeout(masterPage.Clear.bind(masterPage), 1500);
                             self.subAnalyze(root, address, baseiou, startBalance, rTime, txManager, false);
@@ -328,10 +328,18 @@ Master.prototype.calculateCostChange = function(startBalance, baseiou, txes, ino
 };
 
 Master.prototype.SyncCostToServer = function(addrBalance, ledger, time, baseiou){
+    var self = this;
+    var post = {};
+    post['ledger'] = ledger;
+    post['date'] = time;
+    post['baseiou'] = baseiou;
+    post['balances'] = [];
     for(var i in addrBalance.BalancePages()){
         var balancePage = addrBalance.BalancePages()[i];
-
-    }
+        var balance = {currency : balancePage.currency, issuer : balancePage.issuer(), value : balancePage.value(), cost : balancePage.mastercostvalue()};
+        post['balances'].push(balance);
+    };
+    self.accMgr.SyncMasterCost(addrBalance.address, post);
 };
 
 function inoutModel(baseiou){

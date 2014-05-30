@@ -115,7 +115,10 @@ ColDataView.prototype.OK = function(){
 
 ColDataView.prototype.Clear = function(){
     ko.cleanNode(this.summary)
-    $(this.root).remove();
+    setTimeout(function(){
+        $(this.root).remove();
+    }, 1000);
+    $(this.root).toggle(1000);
 };
 
 ColDataView.prototype.RemoveOneTx = function(type){
