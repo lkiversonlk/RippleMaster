@@ -10,7 +10,6 @@ MainPage.prototype = {
     initPage : function(){
         var self = this;
         self.tradePage = new TradePanel($("#trade-content"), self.accMgr);
-
     },
     initBinding : function() {
         var self = this;

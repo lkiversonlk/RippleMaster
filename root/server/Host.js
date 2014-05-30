@@ -228,7 +228,7 @@ Host.prototype.UpdateAccountInfo = function(accountInfo, callback){
 
 Host.prototype.RpStatus = function(callback){
     this.db.AccountCount(function(result, ret){
-        if(ret === DB.RESULT.SUCC){
+        if(result === DB.RESULT.SUCC){
             callback(Common.RESULT.SUCC, ret);
         }else{
             callback(Common.RESULT.FAIL);

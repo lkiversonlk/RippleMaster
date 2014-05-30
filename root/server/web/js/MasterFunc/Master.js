@@ -183,9 +183,11 @@ Master.prototype.subAnalyze = function(root, address, baseiou, startBalance, sta
             }
         });
     }else{
+
         if(txes.length == 0){
             self.subAnalyze(root, address, baseiou, startBalance, startTime, txManager, false);
         }else{
+            self.progressBar.SetProgress(100," next data");
             var maxLedger = txes[txes.length -1].ledger;
             var rTime = txes[txes.length -1].date;
             $(self.timeP).text("Your account balance at time " + Util.formatDate(Util.toTimestamp(startTime), 'MM/dd/yyyy hh:mm:ss'))
@@ -212,6 +214,7 @@ Master.prototype.subAnalyze = function(root, address, baseiou, startBalance, sta
                                 }
                             };
                             updateValue(startBalance, rBalPage);
+                            self.progressBar.SetProgress(10,"Finish one round, loading next round data");
                             self.SyncCostToServer(startBalance, maxLedger, rTime, baseiou);
                             $(root).toggle(1500);
                             setTimeout(masterPage.Clear.bind(masterPage), 1500);
