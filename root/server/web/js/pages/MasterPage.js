@@ -79,9 +79,9 @@ ColDataView.prototype.initialLayout = function(title){
     var okButton = $("<button />", {
         class : "btn btn-primary form-control",
         type : "button",
-        text : "OK"
+        text : "OK",
+        style : "margin-top:20px"
     });
-    $(div).append(okButton);
     $(self.root).append(okButton);
     $(okButton).click(self.OK.bind(self));
 };

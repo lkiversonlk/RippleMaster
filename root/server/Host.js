@@ -240,17 +240,15 @@ Host.prototype.SaveAccounMasterCost = function(type, unique, data){
     var self = this;
     self.db.FindOrCreateMasterCost(type, unique, function(result, mastercost){
         if(result === DB.RESULT.SUCC){
-            for(var i in mastercost.addresses){
+            for(var i = 0; i < mastercost.addresses.length; i++ ){
                 if(mastercost.addresses[i].address === data.address){
-                    var currentBalances = mastercost.addresses[i].states;
-                    for(var i in currentBalances){
-                        var state = currentBalances[i];
-                        if(state.ledger >= data.balances.ledger){
-                            currentBalances.splice(i);
-                            break;
+                    for(var j = 0; j < mastercost.addresses[i].states.length; j++){
+                        if(mastercost.addresses[i].states[j].ledger == data.balances.ledger){
+                            mastercost.addresses[i].states.splice(j,1);
                         }
                     }
-                    currentBalances.push(data.balances);
+                    mastercost.addresses[i].states.push(data.balances);
+                    mastercost.save();
                     return;
                 }
             };

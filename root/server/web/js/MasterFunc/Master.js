@@ -18,26 +18,37 @@ function Master(root, accMgr){
 
     self.baseSelect = $(root).find("div.baseiouSelect");
 
+    self.costsList = $(root).find("div.cost-list")[0];
 
     ko.applyBindings(self.IOUSelectModel, $(self.baseSelect).find("select.baseIOU")[0]);
 
     $(self.baseSelect).hide();
     self.digButton = $(root).find("button.startMaster");
     $(self.digButton).click(function(){
+        $(self.digButton).hide();
         self.UpdateBaseIOUSelect();
         self.progressBar.SetProgress(0, "Trying to load your previous calculate result");
         self.progressBar.SetProgress(20);
 
         self.accMgr.LoadMasterCost(self.SelectPageModel.selectedAddress(), function(result, costs){
             if(result != Common.RESULT.SUCC || !costs || costs.length == 0){
+                self.ClearCostList();
                 self.progressBar.SetProgress(100, "Please run RP Master on your address");
                 $(self.baseSelect).toggle(1000);
+                $(self.baseSelect).find("button.RPMaster").unbind();
                 $(self.baseSelect).find("button.RPMaster").one('click', function(){
                     $(self.baseSelect).toggle(1000);
                     self.StartMaster(self.SelectPageModel.selectedAddress(), self.IOUSelectModel.selectedIOU());
-                })
+                });
+                $(self.baseSelect).find("button.Cancel").unbind();
+                $(self.baseSelect).find("button.Cancel").one('click', function(){
+                    $(self.baseSelect).toggle(1000);
+                    $(self.digButton).show();
+                });
             }else{
-
+                $(self.digButton).show();
+                self.progressBar.SetProgress(100, "Master cost loaded");
+                self.ListMasterCost(costs);
             }
         });
     });
@@ -61,9 +72,8 @@ Master.prototype.UpdateBaseIOUSelect = function(){
 
 Master.prototype.StartMaster = function(address, baseiou){
     var self = this;
-    $(self.digButton).hide();
     self.progressBar.SetProgress(0, "Loading Transactions");
-    self.accMgr.GetTransaction(address, 454109990, -1, function(result, more, txes){
+    self.accMgr.GetTransaction(address, -1, -1, function(result, more, txes){
         if(result === Common.RESULT.SUCC){
             if(more){
                 self.progressBar.SetProgress(100 * (1 - self.progressBar.Left() * 0.8), null);
@@ -81,7 +91,6 @@ Master.prototype.StartMaster = function(address, baseiou){
                             self.Analyze(address, baseiou, addrBal, startTime, monthTxMgr);
                         }else{
                             self.progressBar.SetProgress(80, "Fail to load your account starting balance");
-
                         }
                     });
                 }
@@ -95,6 +104,7 @@ Master.prototype.Analyze = function(address, baseiou, startBalance, startDate, t
     var self = this;
     var balanceRoot = $(self.root).find("div.balance-stat");
     ko.cleanNode(balanceRoot[0]);
+    $(balanceRoot).empty();
     ko.applyBindings(startBalance, balanceRoot[0]);
     $(self.root).toggle(1000);
     self.timeP = $(self.root).find("p.time");
@@ -161,8 +171,17 @@ Master.prototype.subAnalyze = function(root, address, baseiou, startBalance, sta
 
     var txes = txManager.Next();
     if(txes === null){
-        //ok
-        self.ListMasterCost();
+        $(self.digButton).show();
+        $(self.root).hide();
+        self.progressBar.SetProgress(50, "RP Master finished, loading your result");
+        self.accMgr.LoadMasterCost(address, function(result, cost){
+            if(result === Common.RESULT.SUCC){
+                self.ListMasterCost(cost);
+                self.progressBar.SetProgress(100, "RP Master");
+            }else{
+                self.progressBar.SetProgress(70, "Fail to load result");
+            }
+        });
     }else{
         if(txes.length == 0){
             self.subAnalyze(root, address, baseiou, startBalance, startTime, txManager, false);
@@ -340,6 +359,23 @@ Master.prototype.SyncCostToServer = function(addrBalance, ledger, time, baseiou)
         post['balances'].push(balance);
     };
     self.accMgr.SyncMasterCost(addrBalance.address, post);
+};
+
+Master.prototype.ClearCostList = function(){
+    var self = this;
+    if(self.costsListData){
+        self.costsListData.MasterCostPages.removeAll();
+    }
+};
+
+Master.prototype.ListMasterCost = function(costs){
+    var self = this;
+    if(!self.costsListData){
+        self.costsListData = new MasterCostListPage(costs);
+        ko.applyBindings(self.costsListData, self.costsList);
+    }else{
+        self.costsListData.Update(costs);
+    }
 };
 
 function inoutModel(baseiou){

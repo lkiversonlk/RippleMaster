@@ -116,7 +116,7 @@ AccMgr.prototype.GetRpBalanceInLedger = function(address, ledger, callback){
     var self = this;
     self.rpMaster.AddrBalanceInLedger(address, ledger, function(result, address){
         if(result === Common.RESULT.SUCC){
-            var ret = new AddressPage(address, self.mapper[address.address]);
+            var ret = new AddressPage(address.address, self.mapper[address.address]);
             ret.updateBalances(address.balances);
             callback(result, ret);
         }else{

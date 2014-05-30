@@ -98,7 +98,8 @@ function DB(connectionStr, username, passwd) {
                         callback(DB.RESULT.SUCC, addrState.states);
                         return;
                     }
-                }
+                };
+                callback(DB.RESULT.FAIL_NOT_EXISIT);
             }else{
                 callback(DB.RESULT.FAIL_NOT_EXISIT);
             }

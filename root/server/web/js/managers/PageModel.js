@@ -24,7 +24,7 @@ function BalancePage(balance){
     self.iou = self.currency + self.issuer();
     self.MasterCost = ko.computed(function(){
         if(self.mastercostvalue()){
-            return self.mastercostvalue().toFixed(3) + " " + self.mastercostcurrency() + " " + Consts.GetNick(self.mastercostissuer());
+            return new Number(self.mastercostvalue()).toFixed(3) + " " + self.mastercostcurrency() + " " + Consts.GetNick(self.mastercostissuer());
         }else{
             return "run RP Master to get cost";
         }
@@ -164,6 +164,59 @@ function AccountPage(clientMaster){
             ret.push({address : addressPage.address, nickname : addressPage.Nickname(), addressType : 1});
         }
         return ret;
+    }
+}
+
+function BalanceCostPage(balanceCost){
+    var self = this;
+    self.cost = balanceCost.cost;
+    self.currency = balanceCost.currency;
+    self.value = balanceCost.value;
+    self.issuer = balanceCost.issuer;
+    self.Issuer = ko.computed(function(){
+        return Consts.GetNick(self.issuer);
+    });
+    self.Value = ko.computed(function(){
+        return self.value.toFixed(3);
+    });
+    self.Cost = ko.computed(function(){
+        return self.cost.toFixed(3);
+    })
+};
+
+function MasterCostPage(masterCost){
+    var self = this;
+    self.date = masterCost.date;
+    self.Date = ko.computed(function(){
+        return Util.formatDate(Util.toTimestamp(self.date), "MM/dd/yyyy hh:mm:ss");
+    });
+
+    self.ledger = masterCost.ledger;
+    self.baseiou = masterCost.baseiou;
+    self.BaseIOU = ko.computed(function(){
+        var depose = Util.deposeIOU(self.baseiou);
+        return depose.currency + " " + Consts.GetNick(depose.issuer);
+    });
+
+    self.BalanceCostPages = ko.observableArray();
+
+    for(var i in masterCost.balances){
+        self.BalanceCostPages.push(new BalanceCostPage(masterCost.balances[i]));
+    }
+};
+
+function MasterCostListPage(masterCosts){
+    var self = this;
+    self.MasterCostPages = ko.observableArray();
+    for(var i in masterCosts){
+        self.MasterCostPages.push(new MasterCostPage(masterCosts[i]));
+    };
+
+    self.Update = function(masterCosts){
+        self.MasterCostPages.removeAll();
+        for(var i in masterCosts){
+            self.MasterCostPages.push(new MasterCostPage(masterCosts[i]));
+        };
     }
 }
 

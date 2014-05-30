@@ -271,7 +271,7 @@ app.get("/mastercost", function(req, res){
     if(req.user){
         var type = req.user.substr(0,1);
         var unique = req.user.substr(1);
-        var address = req.body.address;
+        var address = req.query.address;
         host.GetMasterCostListOfAccount(type, unique, address, function(result, costs){
             if(result != Common.RESULT.SUCC){
                 req.pause();
@@ -291,6 +291,7 @@ app.post("/mastercost", function(req, res){
         var address = req.body.address;
         var balances = req.body.balances;
         host.SaveAccounMasterCost(type, unique, {address : address, balances : balances});
+        res.json("succeed");
     }
 })
 
